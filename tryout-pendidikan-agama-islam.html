@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tryout Pendidikan Agama Islam</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Serif:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1a0f;
+    --surface: #152015;
+    --card: #1a2a1a;
+    --border: #2d4a2d;
+    --ink: #e8f0e8;
+    --ink-muted: #8aaa8a;
+    --gold: #c8a84b;
+    --gold-light: #e8c86a;
+    --green: #4caf80;
+    --green-dark: #2d7a50;
+    --red: #e05050;
+    --red-dark: #a02828;
+    --correct-bg: #0d2a1a;
+    --wrong-bg: #2a0d0d;
+    --hover: #202f20;
+    --shadow: rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Serif', Georgia, serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* Geometric pattern background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      repeating-linear-gradient(60deg, transparent, transparent 30px, rgba(200,168,75,0.025) 31px),
+      repeating-linear-gradient(-60deg, transparent, transparent 30px, rgba(200,168,75,0.025) 31px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #0a1a0a 0%, #152515 50%, #0a1a0a 100%);
+    border-bottom: 2px solid var(--gold);
+    padding: 20px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.4;
+  }
+
+  .title-block h1 {
+    font-family: 'Amiri', serif;
+    font-size: 1.4rem;
+    color: var(--gold-light);
+    letter-spacing: 0.03em;
+  }
+
+  .title-block p {
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .scoreboard {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .pill {
+    background: rgba(200,168,75,0.08);
+    border: 1px solid rgba(200,168,75,0.2);
+    border-radius: 4px;
+    padding: 6px 12px;
+    text-align: center;
+    min-width: 64px;
+  }
+
+  .pill .num {
+    font-family: 'Amiri', serif;
+    font-size: 1.4rem;
+    line-height: 1;
+    font-weight: 700;
+  }
+
+  .pill .lbl {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-top: 2px;
+  }
+
+  .pill.total .num { color: #e8e0c8; }
+  .pill.correct .num { color: var(--green); }
+  .pill.wrong .num { color: var(--red); }
+
+  .progress-bar {
+    height: 2px;
+    background: rgba(200,168,75,0.1);
+    position: sticky;
+    top: 82px;
+    z-index: 99;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-dark), var(--gold));
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Multi-answer notice */
+  .multi-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(200,168,75,0.1);
+    border: 1px solid rgba(200,168,75,0.25);
+    border-radius: 3px;
+    padding: 2px 8px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    margin-bottom: 28px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px var(--shadow);
+    transition: border-color 0.3s;
+  }
+
+  .card.s-correct { border-color: var(--green-dark); }
+  .card.s-wrong { border-color: var(--red-dark); }
+
+  .card-top {
+    height: 3px;
+    background: transparent;
+    transition: background 0.3s;
+  }
+  .card.s-correct .card-top { background: var(--green); }
+  .card.s-wrong .card-top { background: var(--red); }
+
+  .q-header {
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .q-num {
+    font-family: 'Amiri', serif;
+    font-size: 1.05rem;
+    color: var(--gold);
+    font-weight: 700;
+    min-width: 30px;
+    flex-shrink: 0;
+  }
+
+  .q-body {
+    flex: 1;
+  }
+
+  .q-text {
+    font-size: 0.92rem;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  .options {
+    padding: 14px 24px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    font-family: 'Noto Serif', serif;
+    font-size: 0.88rem;
+    color: var(--ink);
+    line-height: 1.55;
+  }
+
+  .option:hover:not(:disabled) {
+    background: var(--hover);
+    border-color: var(--gold);
+    transform: translateX(3px);
+  }
+
+  .opt-key {
+    font-family: 'Amiri', serif;
+    font-weight: 700;
+    color: var(--gold);
+    min-width: 20px;
+    flex-shrink: 0;
+    font-size: 0.95rem;
+  }
+
+  .option:disabled { cursor: default; transform: none !important; }
+
+  .option.correct {
+    background: var(--correct-bg) !important;
+    border-color: var(--green) !important;
+    color: var(--green);
+  }
+  .option.correct .opt-key { color: var(--green); }
+
+  .option.wrong {
+    background: var(--wrong-bg) !important;
+    border-color: var(--red) !important;
+    color: var(--red);
+  }
+  .option.wrong .opt-key { color: var(--red); }
+
+  .option.dimmed { opacity: 0.3; }
+
+  /* Multi-select: show checkboxes */
+  .multi-section {
+    padding: 14px 24px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .check-opt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    background: transparent;
+    font-family: 'Noto Serif', serif;
+    font-size: 0.88rem;
+    color: var(--ink);
+    transition: all 0.15s;
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .check-opt:hover:not(:disabled) {
+    background: var(--hover);
+    border-color: var(--gold);
+  }
+
+  .check-opt.selected {
+    background: rgba(200,168,75,0.12);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .check-opt.correct {
+    background: var(--correct-bg) !important;
+    border-color: var(--green) !important;
+    color: var(--green) !important;
+  }
+
+  .check-opt.wrong {
+    background: var(--wrong-bg) !important;
+    border-color: var(--red) !important;
+    color: var(--red) !important;
+  }
+
+  .check-opt.missed {
+    background: rgba(76,175,128,0.08) !important;
+    border-color: var(--green-dark) !important;
+    color: var(--green) !important;
+    opacity: 0.7;
+  }
+
+  .check-opt:disabled { cursor: default; }
+
+  .check-box {
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    transition: all 0.15s;
+  }
+
+  .check-opt.selected .check-box { background: var(--gold); border-color: var(--gold); color: #0a1a0a; }
+  .check-opt.correct .check-box { background: var(--green); border-color: var(--green); color: #fff; }
+  .check-opt.wrong .check-box { background: var(--red); border-color: var(--red); color: #fff; }
+  .check-opt.missed .check-box { background: transparent; border-color: var(--green); color: var(--green); }
+
+  .opt-num {
+    font-family: 'Amiri', serif;
+    font-weight: 700;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .submit-multi {
+    margin: 10px 24px 18px;
+    padding: 9px 20px;
+    background: rgba(200,168,75,0.15);
+    border: 1px solid var(--gold);
+    border-radius: 3px;
+    color: var(--gold-light);
+    font-family: 'Amiri', serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: calc(100% - 48px);
+  }
+
+  .submit-multi:hover { background: rgba(200,168,75,0.25); }
+  .submit-multi:disabled { opacity: 0.4; cursor: default; }
+
+  /* Reveal */
+  .reveal {
+    margin: 0 24px 18px;
+    padding: 11px 14px;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    display: none;
+    align-items: flex-start;
+    gap: 10px;
+    border-left: 3px solid;
+    line-height: 1.6;
+  }
+
+  .reveal.show { display: flex; }
+  .reveal.is-correct { background: var(--correct-bg); border-color: var(--green); color: #7ad9a8; }
+  .reveal.is-wrong { background: var(--wrong-bg); border-color: var(--red); color: #e08080; }
+  .reveal .icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .reveal strong { color: inherit; font-weight: 600; }
+
+  /* Summary */
+  .summary {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 44px 32px;
+    text-align: center;
+    margin-top: 48px;
+    position: relative;
+  }
+
+  .summary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .summary.show { display: block; }
+
+  .summary h2 {
+    font-family: 'Amiri', serif;
+    font-size: 2.2rem;
+    color: var(--gold-light);
+    margin-bottom: 6px;
+  }
+
+  .summary .sub {
+    color: var(--ink-muted);
+    font-style: italic;
+    font-size: 0.85rem;
+    margin-bottom: 36px;
+  }
+
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+
+  .stat {
+    padding: 18px 24px;
+    border: 1px solid rgba(200,168,75,0.2);
+    border-radius: 4px;
+    min-width: 110px;
+  }
+
+  .stat .big {
+    font-family: 'Amiri', serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat .slabel {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .stat.total .big { color: #e8e0c8; }
+  .stat.correct .big { color: var(--green); }
+  .stat.wrong .big { color: var(--red); }
+
+  .score-line {
+    font-size: 1rem;
+    color: var(--ink-muted);
+    margin-bottom: 28px;
+  }
+
+  .score-line span {
+    font-family: 'Amiri', serif;
+    font-size: 1.6rem;
+    color: var(--gold-light);
+  }
+
+  .btn-reset {
+    background: linear-gradient(135deg, var(--green-dark), var(--gold));
+    color: var(--bg);
+    border: none;
+    padding: 12px 36px;
+    font-family: 'Amiri', serif;
+    font-size: 1.05rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+
+  .btn-reset:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(200,168,75,0.25);
+  }
+
+  @media (max-width: 600px) {
+    .header { flex-direction: column; align-items: flex-start; padding: 16px; }
+    .scoreboard { align-self: stretch; justify-content: space-between; }
+    .container { padding: 24px 12px 60px; }
+    .q-header, .options, .multi-section { padding-left: 14px; padding-right: 14px; }
+    .submit-multi { margin-left: 14px; margin-right: 14px; width: calc(100% - 28px); }
+    .reveal { margin-left: 14px; margin-right: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="title-block">
+    <h1>Tryout Pendidikan Agama Islam</h1>
+    <p>MKWN4101 &mdash; 150 Soal &mdash; Pilihan Ganda & Multi Jawaban</p>
+  </div>
+  <div class="scoreboard">
+    <div class="pill total"><div class="num" id="sc-total">0</div><div class="lbl">Dijawab</div></div>
+    <div class="pill correct"><div class="num" id="sc-correct">0</div><div class="lbl">Benar</div></div>
+    <div class="pill wrong"><div class="num" id="sc-wrong">0</div><div class="lbl">Salah</div></div>
+  </div>
+</header>
+
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+<div class="container" id="quiz"></div>
+
+<script>
+const QUIZ = [{"page": 1, "q": "Dalam Islam, individu memiliki tanggung jawab terhadap keluarganya. Berikut beberapa pernyataan: Pernyataan yang menunjukkan tanggung jawab individu terhadap keluarga adalah....", "opts": {"1": "Membantu memenuhi kebutuhan keluarga sesuai dengan kemampuannya.", "2": "Mengabaikan nasihat orang tua karena memiliki kebebasan pribadi.", "3": "Menjaga hubungan baik dengan anggota keluarga dan saling menghormati. banksoalu banksoalut b"}, "correct": ["1", "3"], "type": "multi"}, {"page": 2, "q": "Dalam Islam, manusia memiliki fitrah yang membimbingnya untuk memahami ajaran agama. Berikut beberapa pernyataan: Manakah pernyataan yang benar terkait peran fitrah dalam memahami ajaran Islam?", "opts": {"1": "Fitrah manusia selalu mendorong seseorang untuk mencari kebenaran.", "2": "Islam diturunkan untuk menyesuaikan fitrah manusia yang suci.", "3": "Manusia lahir dalam keadaan bebas dari pengaruh baik dan buruk. banksoalu banksoalut b"}, "correct": ["1", "2"], "type": "multi"}, {"page": 3, "q": "Hadis Nabi Muhammad SAW banyak memberikan motivasi kepada umat Islam untuk menuntut ilmu. Salah satu hadis yang menegaskan kewajiban menuntut ilmu bagi setiap Muslim berbunyi....", "opts": {"A": "\"Carilah ilmu walaupun sampai ke negeri Cina\"", "B": "\"Barang siapa mengajarkan ilmu, maka ia akan mendapat pahala yang terus mengalir\"", "C": "\"Menuntut ilmu itu wajib bagi setiap Muslim\"", "D": "\"Sebaik-baik manusia adalah yang paling bermanfaat bagi orang lain\" lut banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 4, "q": "Ali melihat seekor burung membuat sarang dengan cara yang sama seperti burung lainnya sejak dahulu. Sementara itu, manusia dapat membangun berbagai jenis rumah dengan desain yang terus berkembang sesuai dengan ilmu pengetahuan dan teknologi. Fenomena ini menunjukkan bahwa....", "opts": {"A": "Akal manusia memungkinkan mereka untuk berinovasi dan berkembang", "B": "Burung memiliki kecerdasan yang lebih tinggi dari manusia dalam membangun sarang", "C": "Manusia dan burung memiliki cara berpikir yang sama dalam membangun tempat tinggal", "D": "Kemampuan akal manusia terbatas seperti halnya insting burung dalam membuat sarang ksoalut banksoalu lut banksoalut b b"}, "correct": ["A"], "type": "single"}, {"page": 5, "q": "Di sebuah kota, muncul gerakan yang melarang pendirian rumah ibadah bagi pemeluk agama minoritas dengan alasan menjaga ketertiban sosial. Hal ini menimbulkan pro dan kontra di masyarakat. Bagaimana seharusnya pemerintah dan masyarakat menyikapi situasi ini?", "opts": {"A": "Mendukung larangan tersebut untuk menghindari potensi konflik yang lebih besar.", "B": "Mengupayakan dialog dan menjamin kebebasan beribadah sesuai dengan hak asasi manusia yang dijamin oleh konstitusi.", "C": "Mengizinkan pendirian rumah ibadah hanya jika mayoritas masyarakat menyetujuinya.", "D": "Mengabaikan tuntutan kelompok minoritas agar tidak memicu konflik dengan kelompok mayoritas. anksoalut banksoalu alut banksoalut b b"}, "correct": ["B"], "type": "single"}, {"page": 6, "q": "Dalam Islam, setiap individu memiliki hak kepemilikan atas harta benda yang diperolehnya secara halal. Oleh karena itu, tindakan yang dilarang dalam Islam karena melanggar hak milik orang lain adalah....", "opts": {"A": "menggunakan harta dengan boros", "B": "menghindari pajak negara", "C": "menjual barang dengan harga tinggi", "D": "merampas atau mencuri harta orang lain lut banksoalu banksoalut b"}, "correct": ["D"], "type": "single"}, {"page": 7, "q": "Akhlak kepada Allah yang paling utama yaitu meyakini bahwa Allah adalah satu-satunya Tuhan yang berhak disembah dan tidak menyekutukan-Nya. Konsep ini dikenal sebagai....", "opts": {"A": "Syirik", "B": "Tauhid", "C": "Bid’ah", "D": "Khurafat lut banksoalu banksoalut b"}, "correct": ["B", "C"], "type": "single"}, {"page": 8, "q": "Di sebuah kota dengan masyarakat yang heterogen, terjadi ketegangan antara dua kelompok masyarakat akibat perbedaan budaya dan agama. Para tokoh agama dari berbagai keyakinan kemudian menginisiasi dialog dan kegiatan sosial bersama untuk mempererat hubungan antarwarga. Berdasarkan peran mereka, apa dampak positif dari keterlibatan umat beragama dalam situasi ini?", "opts": {"A": "Meningkatkan segregasi sosial agar setiap kelompok tetap terjaga identitasnya", "B": "Mencegah eskalasi konflik melalui dialog dan kerja sama lintas agama", "C": "Menguatkan dominasi satu kelompok agama atas kelompok lainnya", "D": "Membatasi kebebasan individu dalam menyampaikan pendapatnya soalut banksoalu banksoalut b b"}, "correct": ["B"], "type": "single"}, {"page": 9, "q": "Dalam suatu negara, semua warga negara mendapatkan hak yang sama di depan hukum, tanpa memandang status sosial, ekonomi, atau latar belakang mereka. Hal ini mencerminkan prinsip....", "opts": {"A": "Supremasi hukum", "B": "Keadilan", "C": "Egalitarianisme", "D": "Pluralisme lut banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 10, "q": "Seorang pemimpin di suatu organisasi selalu menganggap dirinya paling benar dan meremehkan pendapat bawahannya. Akibatnya, para anggota merasa tidak dihargai dan enggan berpartisipasi dalam diskusi. Dampak negatif dari sikap takabbur ini adalah....", "opts": {"A": "Meningkatkan solidaritas antaranggota organisasi", "B": "Menumbuhkan rasa hormat dari bawahan kepada pemimpin", "C": "Menurunkan semangat kerja dan menghambat kerja sama dalam organisasi", "D": "Meningkatkan kepercayaan diri anggota dalam menyampaikan pendapat lut banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 11, "q": "Dalam Islam, berbuat baik kepada sesama merupakan kewajiban yang dianjurkan oleh Allah SWT. Salah satu bentuk berbuat baik kepada orang lain adalah....", "opts": {"A": "Memperlakukan orang lain dengan sopan dan menghormati mereka", "B": "Membantu orang lain hanya ketika kita memiliki kelebihan harta", "C": "Menghindari interaksi dengan orang lain agar tidak menimbulkan konflik", "D": "Memberikan bantuan hanya kepada orang yang seagama banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 12, "q": "Rizal sering mendiskusikan berbagai teori ilmiah di kampusnya. Namun, ia selalu memeriksa kebenaran informasi yang diterima dengan merujuk pada Al-Qur’an dan hadis sebelum mempercayainya. Bagaimana iman dan ilmu berkontribusi terhadap budaya akademik dalam kasus Rizal?", "opts": {"A": "Iman membimbing seseorang untuk selalu mencari kebenaran dan tidak mudah menerima informasi tanpa analisis.", "B": "Iman menghambat kebebasan berpikir dalam dunia akademik.", "C": "Ilmu lebih penting dari iman dalam menganalisis suatu informasi.", "D": "Dalam akademik, semua informasi harus diterima tanpa mempertimbangkan aspek keimanan. ksoalut banksoalu ut banksoalut b b"}, "correct": ["A"], "type": "single"}, {"page": 13, "q": "Fatimah adalah seorang mahasiswa yang gigih dalam belajar. Ia selalu mengatur waktunya dengan baik, mengerjakan tugas tepat waktu, dan tidak mudah menyerah dalam menghadapi tantangan akademik. Apa prinsip etos kerja yang diterapkan Fatimah dalam mencapai kesuksesan?", "opts": {"A": "Kerja keras dan disiplin akan membawa kesuksesan dan keberkahan.", "B": "Kesuksesan hanya bisa diraih dengan bakat alami, bukan kerja keras.", "C": "Berusaha tidak penting karena rezeki sudah ditentukan tanpa perlu usaha.", "D": "Menjadi sukses hanya ditentukan oleh keberuntungan. alut banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 14, "q": "Dalam Al-Qur’an, salah satu istilah yang digunakan untuk menyebut manusia adalah basyar. Istilah ini menunjukkan bahwa manusia memiliki....", "opts": {"A": "Kedudukan sebagai hamba Allah yang harus beribadah", "B": "Kelebihan berupa akal untuk berpikir dan memahami", "C": "Sifat biologis dan jasmani yang sama dengan makhluk lainnya", "D": "Tanggung jawab sebagai pemimpin di muka bumi banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 15, "q": "Di sebuah desa, masyarakatnya hidup rukun, saling tolong-menolong, dan menerapkan prinsip keadilan dalam kehidupan sehari-hari. Tradisi gotong royong dan musyawarah menjadi kebiasaan yang kuat. Prinsip Islam manakah yang paling berperan dalam membentuk kehidupan sosial seperti ini?", "opts": {"A": "Individualisme dalam ekonomi", "B": "Ukhuwah Islamiyah dan prinsip musyawarah", "C": "Kebebasan mutlak tanpa aturan", "D": "Paham sekuler yang memisahkan agama dan kehidupan sosial alut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 16, "q": "Dalam Al-Qur’an, Allah SWT menyebut manusia sebagai khalifah di bumi. Dalil yang secara jelas menyatakan hal ini terdapat dalam....", "opts": {"A": "QS. Al-Baqarah: 30", "B": "QS. Al-A’raf: 56", "C": "QS. Hud: 61", "D": "QS. Al-An’am: 165 banksoalu banksoalut b"}, "correct": ["A", "B"], "type": "single"}, {"page": 17, "q": "Ayat-ayat dalam Al-Qur'an sering kali masih bersifat global dan membutuhkan perincian lebih lanjut dari Sunnah. Contoh perincian tersebut adalah....", "opts": {"A": "Keharaman riba yang diperkuat oleh Sunnah dengan tambahan hukuman bagi pelakunya", "B": "Larangan meminum khamr yang dijelaskan dalam Sunnah tentang akibat buruknya", "C": "Keutamaan puasa yang diperjelas oleh Sunnah dalam hal hikmah dan manfaatnya", "D": "Kewajiban shalat dalam Al-Qur’an yang diperinci oleh Sunnah dalam hal jumlah rakaat dan tata cara pelaksanaannya alut banksoalu banksoalut b"}, "correct": ["D"], "type": "single"}, {"page": 18, "q": "Salah satu peran ilmu dalam memperkokoh iman adalah memantapkan keyakinan terhadap akidah. Hal ini karena....", "opts": {"A": "Ilmu memberikan pemahaman yang lebih rasional dan logis tentang akidah Islam.", "B": "Ilmu hanya membahas aspek sosial tanpa kaitan dengan keyakinan.", "C": "Ilmu mendorong keraguan terhadap ajaran Islam.", "D": "Ilmu tidak diperlukan dalam memahami keyakinan beragama. banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 19, "q": "Ilmu alam, termasuk sains dan teknologi, banyak diapresiasi dalam Al-Qur'an. Salah satu ayat yang menekankan pentingnya sains adalah....", "opts": {"A": "Afala yandhuruna ila al-ibili kaifa khuliqat (QS. Al-Ghasyiyah: 17)", "B": "Wa aqimish shalata wa aatiz zakah (QS. Al-Baqarah: 43)", "C": "Wa mayyattaqillaha yaj‘al lahu makhraja (QS. At-Talaq: 2)", "D": "Inna a‘thainaka al-kauthar (QS. Al-Kautsar: 1) banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 20, "q": "Bagaimana hubungan antara Al-Qur’an dan Sunnah dalam sistem hukum Islam?", "opts": {"A": "Sunnah berdiri sendiri sebagai sumber hukum yang terpisah dari Al-Qur’an", "B": "Sunnah adalah penjelas, penguat, dan pelengkap hukum-hukum dalam Al-Qur’an", "C": "Sunnah hanya boleh digunakan ketika tidak ada hukum dalam Al-Qur’an", "D": "Sunnah bertentangan dengan Al-Qur’an sehingga sering kali tidak digunakan banksoalu nksoalut b"}, "correct": ["A", "B", "C"], "type": "single"}, {"page": 21, "q": "Rasulullah SAW bersabda, “Barang siapa yang menempuh jalan untuk mencari ilmu, maka Allah akan memudahkan baginya jalan menuju ....” (HR. Muslim). Kata yang tepat untuk melengkapi hadis tersebut adalah .....", "opts": {"A": "Kesuksesan", "B": "Surga", "C": "Kesejahteraan", "D": "Kebahagiaan dunia ut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 22, "q": "Di sebuah negara yang memiliki masyarakat dengan beragam latar belakang agama dan budaya, muncul perdebatan terkait penerapan hukum syariat. Sebagian masyarakat merasa bahwa hukum tersebut hanya berlaku bagi umat Islam, sementara yang lain menganggapnya dapat diterapkan secara universal. Tantangan utama dalam penerapan hukum syariat pada kasus ini adalah....", "opts": {"A": "kurangnya pemahaman masyarakat tentang hukum syariat", "B": "adanya perbedaan mazhab dalam islam", "C": "pluralitas masyarakat yang memiliki sistem hukum berbeda", "D": "kurangnya sarana hukum yang memadai soalut banksoalu banksoalut b b"}, "correct": ["C"], "type": "single"}, {"page": 23, "q": "Dalam Islam, terdapat sunnah yang tidak diwajibkan tetapi tetap dianjurkan untuk dilakukan. Salah satu contoh sunnah ghairu muakkad adalah....", "opts": {"A": "Salat Witir setelah salat Isya", "B": "Berdoa sebelum dan sesudah makan", "C": "Membayar zakat fitrah saat Idul Fitri", "D": "Menghindari makanan haram banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 24, "q": "Dalam Islam, seseorang yang mengamalkan ilmunya akan mendapatkan pahala dan keberkahan, karena....", "opts": {"A": "Ilmu yang bermanfaat akan terus mengalirkan pahala meskipun seseorang telah wafat", "B": "Ilmu hanya penting untuk kehidupan dunia saja", "C": "Ilmu tidak mempengaruhi kehidupan akhirat", "D": "Ilmu hanya memberikan keuntungan materi banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 25, "q": "Dalam era digital saat ini, banyak orang menyalahgunakan teknologi untuk menyebarkan hoaks, ujaran kebencian, atau melakukan kejahatan siber. Seorang muslim yang memiliki iman yang kuat akan menyikapi kemajuan teknologi dengan cara....", "opts": {"A": "Menggunakan teknologi dengan prinsip etika Islam, seperti menyebarkan kebaikan dan ilmu yang bermanfaat", "B": "Menghindari teknologi sama sekali agar tidak terjerumus dalam keburukan yang ada di dalamnya", "C": "Menggunakan teknologi dengan bebas karena Islam tidak memberikan batasan terhadap perkembangan zaman", "D": "Mengabaikan pengaruh teknologi karena iman seseorang tidak bergantung pada lingkungan digital nksoalut banksoalu alut banksoalut b b"}, "correct": ["A"], "type": "single"}, {"page": 26, "q": "Istilah \"agama\" dalam bahasa Inggris dikenal dengan istilah....", "opts": {"A": "Religion", "B": "Ad-Deen", "C": "Faith", "D": "Spiritual banksoalu nksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 27, "q": "Dalam hukum Islam, setiap individu harus mendapatkan haknya secara adil, tanpa membeda-bedakan status sosial, ras, atau agama. Prinsip ini dikenal sebagai....", "opts": {"A": "Prinsip keadilan", "B": "Prinsip ta’awun", "C": "Prinsip tasamuh", "D": "Prinsip tauhid banksoalu banksoalut b"}, "correct": ["A", "B"], "type": "single"}, {"page": 28, "q": "Islam menjamin kebebasan bagi setiap individu dalam berbagai aspek kehidupan, termasuk kebebasan beragama, berpendapat, dan berekspresi. Namun, kebebasan ini tetap dibatasi oleh....", "opts": {"A": "Keinginan individu tanpa aturan", "B": "Norma dan hukum yang berlaku dalam masyarakat", "C": "Hak kelompok mayoritas saja", "D": "Kebijakan pemerintah tanpa pertimbangan rakyat lut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 29, "q": "Dalam Surah An-Nisaa’ ayat 48, Allah SWT berfirman: َه ِ فَقಕ಴ه َ َلَ يَغْفِرُ اَنْ يُّشْرَكَ بِهٖ وَ يَغْفِرُ مَا دُوْ نَ ذ ٰ لِكَ لِمَنْ يَّشَا ۤ ءُ ُۚ وَ مَنْ يُّشْرِ كْ بِاಕዛ َّاِن دِ اف ْ تَرٰ ٰٓ ى اِث ْ مًا عَظِيْمًا \"Bagaimana Sunnah Nabi menguatkan hukum dalam ayat ini?", "opts": {"A": "Nabi menjelaskan dalam hadits bahwa dosa syirik tidak akan diampuni kecuali dengan taubat sebelum wafat.", "B": "Nabi membolehkan seseorang untuk menyembah selain Allah jika dalam keadaan terpaksa.", "C": "Nabi menjelaskan bahwa syirik adalah dosa kecil yang tidak berdampak besar bagi kehidupan seseorang.", "D": "Nabi menyatakan bahwa syirik hanya berlaku untuk penyembahan berhala saja. banksoalut banksoalu oalut banksoalut b b"}, "correct": ["A"], "type": "single"}, {"page": 30, "q": "Dalam QS Luqman/31:14, Allah mengingatkan tentang perjuangan seorang ibu yang mengandung dalam keadaan lemah. Berdasarkan ayat ini, bagaimana sikap seorang anak jika ibunya meminta sesuatu yang tidak sesuai dengan syariat Islam?", "opts": {"A": "Tetap mengikuti permintaan ibu agar tidak menyakitinya", "B": "Menolak dengan kasar karena tidak boleh taat dalam kemaksiatan", "C": "Menolak dengan baik sambil tetap menghormati dan berbuat baik kepada ibu", "D": "Mengikuti permintaan ibu karena bakti kepada orang tua lebih utama daripada aturan syariat alut banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 31, "q": "Agama yang muncul berdasarkan pemikiran manusia tanpa adanya wahyu disebut....", "opts": {"A": "Agama Nonwahyu", "B": "Agama Wahyu", "C": "Agama Misionaris", "D": "Agama Universal banksoalu nksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 32, "q": "Dalam Islam, segala sesuatu yang ada di dunia ini merupakan ciptaan Allah, termasuk ilmu dan teknologi. Bagaimana pandangan Islam terhadap teknologi dalam konteks ini?", "opts": {"A": "teknologi adalah hasil akal manusia tanpa kaitan dengan agama.", "B": "teknologi adalah anugerah allah yang harus dimanfaatkan dengan bijak.", "C": "islam tidak membahas masalah teknologi karena bukan bagian dari ibadah.", "D": "semakin canggih teknologi, semakin jauh manusia dari ajaran islam. banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 33, "q": "Di bawah ini adalah beberapa contoh perbuatan yang sering dilakukan dalam kehidupan sehari-hari: Manakah yang termasuk amal shalih?", "opts": {"1": "Membantu orang tua menyelesaikan pekerjaan rumah", "2": "Membantu teman dalam kesulitan tanpa mengharapkan imbalan", "3": "Diskusi bersama dalam ujian banksoalu banksoalut b"}, "correct": ["1", "2"], "type": "multi"}, {"page": 34, "q": "Berikut ini adalah contoh penerapan moral dan akhlak dalam hubungan dengan keluarga, kecuali....", "opts": {"A": "Menghormati dan menaati orang tua", "B": "Membantu saudara yang sedang mengalami kesulitan", "C": "Berperilaku baik hanya kepada teman yang sepaham", "D": "Menyayangi adik dan memperlakukan dengan baik banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 35, "q": "Pernyataan yang benar terkait pentingnya kejujuran dalam belajar adalah ....", "opts": {"1": "Laporan harus berdasarkan hasil eksperimen yang sesungguhnya.", "2": "Jika hasil eksperimen tidak sesuai harapan, lebih baik mengubah data agar terlihat baik.", "3": "Memalsukan data eksperimen dapat merugikan perkembangan ilmu pengetahuan. banksoalu anksoalut b"}, "correct": ["1"], "type": "multi"}, {"page": 36, "q": "Di era modern, banyak orang yang mulai memisahkan agama dari kehidupan sehari-hari. Mereka menganggap bahwa agama hanya urusan pribadi dan tidak relevan dalam urusan sosial, politik, maupun ekonomi. Fenomena ini merupakan tantangan dalam pembinaan iman yang dikenal sebagai....", "opts": {"A": "Pluralisme dan relativisme", "B": "Sekularisme", "C": "Materialisme", "D": "Radikalisme alut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 37, "q": "Manusia dalam penciptaannya mengalami proses perubahan dari saripati tanah menjadi air mani yang disimpan dalam tempat yang kokoh. Hal ini dijelaskan dalam....", "opts": {"A": "QS Al-Mu’minuun (23): 12", "B": "QS Al-Mu’minuun (23): 13", "C": "QS Al-Mu’minuun (23): 14", "D": "QS At-Tiin (95): 4 banksoalu banksoalut b"}, "correct": ["A", "B"], "type": "single"}, {"page": 38, "q": "Dalam suatu komunitas masyarakat, bantuan sosial hanya diberikan kepada kelompok tertentu berdasarkan kedekatan dengan pejabat setempat, sementara masyarakat lain yang lebih membutuhkan tidak mendapatkan bantuan. Apa dampak utama dari ketidakadilan ini terhadap masyarakat?", "opts": {"A": "Meningkatkan solidaritas antar warga yang tidak mendapatkan bantuan", "B": "Menimbulkan kecemburuan sosial dan mengurangi rasa persatuan", "C": "Memotivasi warga untuk lebih dekat dengan pejabat pemerintah", "D": "Menjadikan masyarakat lebih mandiri dan tidak bergantung pada bantuan alut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 39, "q": "Ahmad adalah seorang pedagang yang selalu jujur dalam menjual dagangannya. Ia tidak pernah menipu timbangan atau menaikkan harga secara tidak wajar. Ia meyakini bahwa semua perbuatannya akan dipertanggungjawabkan di hadapan Allah pada hari akhir. Sikap Ahmad mencerminkan bahwa keimanan kepada hari akhir berpengaruh terhadap....", "opts": {"A": "Kedisiplinan dalam bekerja", "B": "Kejujuran dalam bermuamalah", "C": "Sikap toleransi terhadap sesama", "D": "Kemauan untuk bersedekah alut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 40, "q": "Seorang pemimpin yang memiliki sifat shidiq akan selalu mengutamakan kebenaran dalam setiap kebijakan yang dibuat. Dalam konteks politik modern, bagaimana penerapan sifat ini dapat menghadapi tantangan realitas politik yang penuh dengan kepentingan dan diplomasi?", "opts": {"A": "dengan memastikan setiap janji politik yang disampaikan selalu dapat direalisasikan tanpa kompromi", "B": "dengan tetap berkata jujur meskipun dapat menurunkan popularitas dan menghadapi tekanan politik", "C": "dengan menyesuaikan kebenaran sesuai dengan kepentingan politik yang lebih besar", "D": "dengan menutupi fakta tertentu demi menjaga stabilitas pemerintahan ksoalut banksoalu ut banksoalut b b"}, "correct": ["B"], "type": "single"}, {"page": 41, "q": "Salah satu faktor yang menyebabkan kesulitan dalam penerapan politik Islam di era modern adalah kurangnya pemahaman umat tentang prinsip-prinsip politik dalam Islam. Hal ini berakibat pada....", "opts": {"A": "Pengabaian nilai-nilai Islam dalam kebijakan publik", "B": "Meningkatnya partisipasi politik umat Islam", "C": "Percepatan penerapan hukum Islam di negara-negara Muslim", "D": "Hilangnya peran negara dalam urusan agama lut banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 42, "q": "Seseorang yang yakin bahwa setiap tantangan dapat dihadapi dengan usaha dan doa yang sungguh-sungguh menunjukkan sikap....", "opts": {"A": "Pesimis", "B": "Optimis dalam menghadapi masa depan", "C": "Sombong", "D": "Putus asa banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 43, "q": "Sekularisme dalam politik dan kehidupan sosial menekankan pemisahan agama dari kehidupan publik. Dalam Islam, prinsip yang bertentangan dengan sekularisme adalah", "opts": {"A": "Islam mengatur seluruh aspek kehidupan, termasuk sosial dan politik", "B": "Agama hanya mengatur ibadah dan hubungan manusia dengan Tuhan", "C": "Setiap individu bebas menjalankan agamanya tanpa aturan tambahan", "D": "Negara harus bersikap netral terhadap semua agama banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 44, "q": "Dalam pertemuan RT untuk menentukan pembangunan fasilitas umum, beberapa peserta lebih mengutamakan kepentingan pribadi dibanding kepentingan bersama. Apa tantangan yang muncul dalam musyawarah ini?", "opts": {"A": "Tidak adanya kesepakatan bersama", "B": "Munculnya kepentingan pribadi dalam musyawarah", "C": "Musyawarah selalu berujung pada konflik", "D": "Keputusan yang diambil tidak sah secara hukum lut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 45, "q": "Kepercayaan kepada banyak dewa, di mana setiap dewa memiliki peran tertentu dalam kehidupan manusia, disebut....", "opts": {"A": "Politeisme", "B": "Monoteisme", "C": "Deisme", "D": "Panteisme banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 46, "q": "Menurut Al-Qur’an, persatuan dan persaudaraan merupakan kunci dalam membangun bangsa yang kuat dan harmonis. Prinsip ini ditekankan dalam ayat:", "opts": {"A": "(QS. Ali Imran: 103).", "B": "(QS. At-Talaq: 2).", "C": "(QS. Al-Ankabut: 45).", "D": "(QS. Al-Kafirun: 1-2). banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 47, "q": "Allah menciptakan sesuatu pada kelazimannya melalui periode tertentu secara bertahap dan berproses. Contoh dari penciptaan ini adalah....", "opts": {"A": "Penciptaan langit dan bumi dalam enam masa", "B": "Mukjizat Nabi Musa membelah laut", "C": "Mukjizat Nabi Isa menghidupkan orang mati", "D": "Peristiwa Isra Mi’raj banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 48, "q": "Keyakinan bahwa hanya Allah yang menciptakan, mengatur, dan memelihara alam semesta disebut .....", "opts": {"A": "Tauhid Uluhiyyah", "B": "Tauhid Rububiyyah", "C": "Tauhid Asma' wa Sifat", "D": "Tauhid Hakimiyyah banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 49, "q": "Berikut ini yang merupakan dampak positif yang ditimbulkan oleh kerukunan antar umat beragama tersebut adaah ….", "opts": {"1": "Terciptanya suasana aman dan damai dalam kehidupan bermasyarakat", "2": "Terhambatnya komunikasi antar kelompok karena perbedaan budaya", "3": "Terwujudnya kerja sama lintas agama dalam kegiatan kemanusiaan banksoalu nksoalut b"}, "correct": ["1", "3"], "type": "multi"}, {"page": 50, "q": "Seorang gubernur dikenal sebagai pemimpin yang jujur dan selalu menepati janji kampanyenya. Ia transparan dalam pengelolaan anggaran dan tidak terlibat dalam kasus korupsi. Apa dampak utama dari integritas pemimpin ini terhadap masyarakat?", "opts": {"A": "mengharuskan semua pejabat pemerintah memiliki standar moral yang sama", "B": "membuat oposisi politik kehilangan peluang untuk mengkritik pemerintah", "C": "menghilangkan sepenuhnya praktik korupsi dalam birokrasi pemerintahan", "D": "meningkatkan kepercayaan publik terhadap pemerintah dan kebijakan yang diterapkan alut banksoalu banksoalut b"}, "correct": ["D"], "type": "single"}, {"page": 51, "q": "Sebagai bagian dari masyarakat, setiap individu memiliki kewajiban tertentu. Berikut beberapa contoh tanggung jawab tersebut: Manakah pernyataan yang benar tentang tanggung jawab individu dalam masyarakat?", "opts": {"1": "Tidak mau berpartisipasi dalam kegiatan masyarakat karena bukan urusannya.", "2": "Menghormati aturan dan norma yang berlaku di masyarakat.", "3": "Berkontribusi dalam kegiatan sosial dan gotong royong.. banksoalu banksoalut b"}, "correct": ["2", "3"], "type": "multi"}, {"page": 52, "q": "Perhatikan pernyataan berikut: Pernyataan yang menunjukkan peran fitrah dalam memahami ajaran Islam adalah....", "opts": {"1": "Setiap manusia sejak lahir memiliki kecenderungan untuk mengenal dan mengakui keberadaan Allah", "2": "Fitrah manusia selalu condong pada kebaikan dan kebenaran.", "3": "Keimanan seseorang sepenuhnya dipengaruhi oleh faktor eksternal tanpa adanya peran fitrah. lut banksoalu banksoalut b"}, "correct": ["1", "2"], "type": "multi"}, {"page": 53, "q": "Proses penyebaran Islam ke berbagai wilayah turut memengaruhi perkembangan ilmu pengetahuan. Salah satu faktor utama yang menyebabkan ilmu berkembang pesat dalam peradaban Islam adalah....", "opts": {"A": "Penyebaran Islam yang melibatkan interaksi dengan berbagai peradaban lain", "B": "Larangan umat Islam untuk berinteraksi dengan non-Muslim", "C": "Pembatasan terhadap ilmu-ilmu yang berasal dari Yunani dan Persia", "D": "Fokus utama umat Islam hanya pada ilmu keagamaan tanpa memperhatikan ilmu dunia alut banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 54, "q": "Seorang ilmuwan mampu menemukan vaksin untuk mengobati suatu penyakit setelah melalui penelitian yang panjang, sedangkan hewan tidak dapat melakukan hal yang sama. Kemampuan manusia dalam menemukan solusi terhadap permasalahan kesehatan menunjukkan bahwa....", "opts": {"A": "Akal manusia memungkinkan mereka berpikir rasional dan menyelesaikan masalah", "B": "Hewan sebenarnya juga dapat melakukan penelitian ilmiah jika dilatih dengan baik", "C": "Manusia dan hewan memiliki cara berpikir yang sama dalam menghadapi masalah", "D": "Penemuan vaksin tidak ada hubungannya dengan akal manusia alut banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 55, "q": "Dalam sebuah sekolah negeri, terdapat siswa dari berbagai latar belakang agama. Beberapa siswa merasa enggan untuk bekerja sama dalam kelompok tugas karena perbedaan keyakinan. Akibatnya, suasana belajar menjadi kurang kondusif. Bagaimana cara terbaik untuk mengatasi masalah ini?", "opts": {"A": "Memisahkan siswa berdasarkan agama agar mereka merasa lebih nyaman.", "B": "Mengadakan program kerja sama lintas agama yang menekankan nilai toleransi dan kebersamaan.", "C": "Memaksa siswa mengikuti pelajaran agama di luar keyakinan mereka agar memahami satu sama lain.", "D": "Membiarkan mereka tetap dalam kondisi terpisah tanpa ada intervensi dari guru atau sekolah.. nksoalut banksoalu lut banksoalut b b"}, "correct": ["B"], "type": "single"}, {"page": 56, "q": "Islam mengajarkan bahwa setiap manusia berhak mendapatkan perlindungan atas kehormatannya. Salah satu bentuk pelanggaran hak ini yang dilarang dalam Islam adalah....", "opts": {"A": "Menyampaikan kritik terhadap kebijakan pemerintah", "B": "Menghina atau menuduh seseorang tanpa bukti (qadzaf)", "C": "Menyampaikan kebenaran meskipun menyakitkan", "D": "Menjauhi pergaulan dengan orang yang berbeda keyakinan ut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 57, "q": "Seorang Muslim wajib menjalankan ibadah sebagai bentuk penghambaan kepada Allah. Salah satu dalil yang menjelaskan kewajiban ini adalah firman Allah dalam Surah Adz- Dzariyat/51:56, yang artinya: \"Dan Aku tidak menciptakan jin dan manusia melainkan supaya mereka menyembah-Ku.\" Dari ayat tersebut, dapat disimpulkan bahwa tujuan utama penciptaan manusia adalah....", "opts": {"A": "Menjalin hubungan baik dengan sesama manusia", "B": "Memenuhi kebutuhan duniawi secara maksimal", "C": "Beribadah dan mengabdikan diri hanya kepada Allah", "D": "Menjaga keseimbangan antara dunia dan akhirat oalut banksoalu banksoalut b b"}, "correct": ["C"], "type": "single"}, {"page": 58, "q": "Sebuah lembaga keagamaan mendirikan sekolah gratis bagi anak-anak kurang mampu. Dalam jangka panjang, apa dampak positif yang dapat ditimbulkan dari upaya ini?", "opts": {"A": "Meningkatkan angka putus sekolah di daerah tersebut", "B": "Mengurangi kesempatan bagi anak-anak non-agama untuk belajar", "C": "Membantu meningkatkan kualitas sumber daya manusia di masyarakat", "D": "Membatasi pendidikan hanya untuk kelompok agama tertentu banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 59, "q": "Sebuah negara memastikan bahwa hukum berlaku bagi semua warga, termasuk pejabat negara dan masyarakat umum, tanpa pengecualian. Prinsip yang sedang diterapkan adalah....", "opts": {"A": "Persamaan", "B": "Pengawasan sosial", "C": "Supremasi hukum", "D": "Pluralisme ut banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 60, "q": "Dalam suatu komunitas, terdapat seseorang yang selalu merasa iri terhadap kesuksesan orang lain. Ia sering menyebarkan fitnah untuk menjatuhkan teman-temannya. Jika perilaku ini terus berlanjut, dampak negatif yang dapat timbul dalam kehidupan sosial adalah....", "opts": {"A": "Meningkatkan motivasi kerja sama dalam komunitas", "B": "Menciptakan suasana kerja yang harmonis dan penuh kepercayaan", "C": "Memicu permusuhan dan mengurangi rasa saling percaya antaranggota komunitas", "D": "Membantu dalam membangun persaingan sehat antarindividu alut banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 61, "q": "Dalam kehidupan bermasyarakat, setiap individu memiliki hak dan kewajiban yang harus dipenuhi. Contoh dari menunaikan hak dan kewajiban terhadap sesama adalah....", "opts": {"A": "hanya menuntut hak tanpa menjalankan kewajiban", "B": "mengabaikan hak orang lain jika tidak ada yang mengawasi", "C": "membayar hutang tepat waktu dan menepati janji", "D": "menunda pembayaran gaji karyawan meskipun mampu membayarnya banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 62, "q": "Fatimah mendapat tugas menulis makalah, tetapi ia tergoda untuk menyalin tulisan orang lain tanpa menyebutkan sumbernya. Setelah mempertimbangkan nilai kejujuran dalam Islam, ia memutuskan untuk menulis dengan usahanya sendiri dan menyertakan sumber yang benar. Bagaimana iman dan ilmu berperan dalam membentuk budaya akademik dalam kasus Fatimah?", "opts": {"A": "Iman mengajarkan kejujuran, sementara ilmu mengajarkan cara berpikir kritis dan bertanggung jawab.", "B": "Iman hanya berpengaruh pada ibadah, bukan dalam aktivitas akademik.", "C": "Ilmu lebih penting dari iman, sehingga cara memperoleh ilmu tidak perlu memperhatikan nilai agama.", "D": "Kejujuran dalam akademik tidak penting selama hasilnya baik banksoalut banksoalu oalut banksoalut b b"}, "correct": ["A"], "type": "single"}, {"page": 63, "q": "Ahmad adalah seorang pengusaha Muslim yang selalu bekerja keras dan jujur dalam usahanya. Ia tidak pernah menipu pelanggan dan selalu menjaga kualitas produknya. Akhirnya, usahanya berkembang pesat, dan ia mendapatkan banyak pelanggan setia. Bagaimana etos kerja Ahmad mendukung kesuksesannya menurut ajaran Islam?", "opts": {"A": "dengan bekerja keras dan jujur, ia mendapat keberkahan dalam usahanya.", "B": "kejujuran dalam bisnis tidak berpengaruh terhadap kesuksesan.", "C": "keberhasilan bisnis hanya ditentukan oleh modal besar, bukan kerja keras.", "D": "islam tidak mengatur bagaimana seseorang bekerja dalam mencari rezeki. alut banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 64, "q": "Istilah insan dalam Al-Qur’an digunakan untuk menggambarkan manusia sebagai....", "opts": {"A": "Makhluk yang memiliki sifat lemah dan mudah lupa", "B": "Makhluk yang hanya tunduk pada hawa nafsunya", "C": "Khalifah yang bertugas mengelola bumi dengan bijaksana", "D": "Hamba Allah yang sempurna tanpa kekurangan banksoalu nksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 65, "q": "Sebuah negara menerapkan hukum yang berdasarkan prinsip keadilan dan kesejahteraan bagi seluruh rakyatnya. Dalam Islam, konsep ini sejalan dengan....", "opts": {"A": "Prinsip syura dan keadilan dalam pemerintahan", "B": "Kebebasan absolut dalam menentukan hukum", "C": "Sistem kapitalisme tanpa batas", "D": "Otoritarianisme tanpa partisipasi masyarakat banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 66, "q": "Allah SWT berfirman dalam Al-Qur’an bahwa manusia dijadikan sebagai khalifah di bumi dan diberi kelebihan di antara makhluk lainnya. Dalil yang menjelaskan hal ini adalah....", "opts": {"A": "QS. Shad: 26", "B": "QS. Al-Baqarah: 30", "C": "QS. Al-An’am: 165", "D": "QS. Al-A’raf: 56 banksoalu banksoalut b"}, "correct": ["B", "C"], "type": "single"}, {"page": 67, "q": "Dalam memahami hukum-hukum Islam, Sunnah berperan memberikan penjelasan terhadap ayat-ayat Al-Qur'an. Contoh dari peran ini adalah....", "opts": {"A": "Sunnah menguatkan larangan riba yang sudah disebutkan dalam Al-Qur’an", "B": "Sunnah membatasi ayat tentang kebebasan menikahi perempuan hingga empat orang saja", "C": "Sunnah menciptakan hukum baru yang tidak disebutkan dalam Al-Qur’an, seperti larangan memakan daging keledai jinak", "D": "Sunnah menjelaskan tata cara shalat lima waktu yang disebutkan secara umum dalam Al-Qur’an oalut banksoalu banksoalut b b"}, "correct": ["D"], "type": "single"}, {"page": 68, "q": "Bagaimana ilmu dapat meningkatkan kualitas ibadah seorang Muslim?", "opts": {"A": "Dengan ilmu, seorang Muslim memahami tata cara ibadah yang benar sesuai syariat.", "B": "Ilmu hanya berperan dalam aspek akademik, bukan dalam ibadah.", "C": "Ilmu mengurangi kebutuhan untuk beribadah karena manusia menjadi lebih rasional.", "D": "Ilmu tidak berpengaruh terhadap kualitas ibadah seseorang. banksoalu nksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 69, "q": "Ilmu tauhid dan aqidah merupakan salah satu ilmu yang sangat diapresiasi dalam Al- Qur’an karena....", "opts": {"A": "mengajarkan tentang keesaan Allah dan dasar keimanan", "B": "membantu manusia dalam memahami fenomena alam", "C": "mengembangkan keterampilan dalam bidang medis", "D": "menjelaskan hukum-hukum sosial dalam kehidupan banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 70, "q": "Dalam banyak hal, Sunnah Nabi SAW berperan sebagai penjelas terhadap hukum yang ada dalam Al-Qur’an. Salah satu contoh peran Sunnah dalam memperjelas isi Al-Qur’an adalah....", "opts": {"A": "sunnah menggantikan hukum yang sudah disebutkan dalam Al-Qur’an", "B": "sunnah menafsirkan ayat-ayat yang bersifat umum dalam Al-Qur’an", "C": "sunnah hanya berlaku untuk masa hidup Nabi SAW", "D": "sunnah bertentangan dengan hukum yang ada dalam Al-Qur’an ut banksoalu banksoalut b"}, "correct": ["A", "B"], "type": "single"}, {"page": 71, "q": "Mengapa menuntut ilmu dalam Islam dianggap sebagai ibadah?", "opts": {"A": "Karena ilmu dapat meningkatkan status sosial seseorang", "B": "Karena ilmu dapat menjadikan seseorang lebih kaya", "C": "Karena ilmu digunakan untuk mendekatkan diri kepada Allah SWT", "D": "Karena ilmu dapat membuat seseorang lebih dihormati banksoalu nksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 72, "q": "Dalam suatu daerah, pemerintah ingin menerapkan hukum syariat, tetapi terjadi perdebatan di kalangan umat Islam sendiri karena adanya perbedaan pandangan fiqih antara mazhab Hanafi, Maliki, Syafi’i, dan Hanbali. Tantangan yang dihadapi dalam kasus ini adalah....", "opts": {"A": "Kurangnya pemimpin yang tegas dalam mengambil keputusan", "B": "Perbedaan interpretasi dalam hukum Islam berdasarkan mazhab yang berbeda", "C": "Tidak adanya dukungan dari masyarakat untuk penerapan hukum syariat", "D": "Kurangnya sarana dan infrastruktur untuk menjalankan hukum syariat alut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 73, "q": "Dalam Islam, terdapat ibadah sunnah yang sangat dianjurkan karena memiliki keutamaan besar. Salah satu contoh sunnah muakkad dalam kehidupan sehari-hari adalah....", "opts": {"A": "Salat Tahajud ketika sedang memiliki keinginan tertentu", "B": "Salat Rawatib sebelum dan sesudah salat wajib", "C": "Membaca Al-Qur'an hanya pada bulan Ramadhan", "D": "Berzikir hanya ketika menghadapi kesulitan banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 74, "q": "Ilmu yang diamalkan dapat membantu seseorang dalam mengembangkan potensi diri, karena....", "opts": {"A": "Ilmu membuka peluang untuk memperbaiki kualitas hidup dan keterampilan", "B": "Ilmu hanya bermanfaat bagi mereka yang cerdas saja", "C": "Ilmu hanya penting bagi para akademisi dan ilmuwan", "D": "Ilmu tidak berpengaruh terhadap perkembangan diri seseorang banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 75, "q": "Seorang akuntan muslim menemukan adanya kecurangan dalam laporan keuangan perusahaannya yang dapat merugikan banyak orang. Atasannya meminta agar ia tidak melaporkan hal tersebut demi menjaga reputasi perusahaan. Sebagai seorang yang beriman, tindakan yang paling tepat menurut prinsip Islam adalah....", "opts": {"A": "mengikuti perintah atasan untuk menghindari konflik dan menjaga loyalitas", "B": "melaporkan kecurangan tersebut meskipun berisiko kehilangan pekerjaannya", "C": "mencari kompromi dengan atasan agar laporan tetap diperbaiki tanpa harus dilaporkan", "D": "mengabaikan masalah tersebut karena bukan tanggung jawab pribadinya oalut banksoalut banksoalut b b"}, "correct": ["B"], "type": "single"}, {"page": 76, "q": "Kata \"agama\" dalam bahasa Sanskerta memiliki makna....", "opts": {"A": "tidak kacau dan jalan", "B": "ketundukan dan kepatuhan", "C": "aturan dan kepercayaan", "D": "perjanjian dan kesepakatan banksoalu nksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 77, "q": "Hukum Islam berlandaskan pada prinsip bahwa Allah adalah satu-satunya sumber hukum dan segala perintah serta larangan harus merujuk kepada-Nya. Prinsip ini dikenal dengan istilah....", "opts": {"A": "prinsip al-hurriyah", "B": "prinsip musawah", "C": "prinsip tauhid", "D": "prinsip tasamuh ut banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 78, "q": "Dalam sistem pemerintahan Islam, rakyat memiliki hak untuk memilih pemimpin mereka dan memberikan masukan terhadap kebijakan yang dibuat. Dalam sejarah Islam, prinsip ini diterapkan ketika....", "opts": {"A": "Rasulullah SAW menetapkan Abu Bakar sebagai penggantinya sebelum wafat", "B": "Khalifah Umar bin Khattab memilih penggantinya secara otoriter", "C": "Khalifah Abu Bakar dipilih melalui musyawarah di Saqifah Bani Sa'idah", "D": "Bani Umayyah menerapkan sistem monarki turun-temurun ut banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 79, "q": "Dalam Surah Al-Baqarah ayat 43, Allah SWT berfirman: َ وَ اَقِيْمُوا الصَّل ٰ وةَ وَ ا ٰ تُوا الزَّك ٰ وةَ وَ ارْ كَعُوْ ا مَعَ الرّٰكِعِيْن Bagaimana Sunnah Nabi menguatkan perintah dalam ayat tersebut?", "opts": {"A": "Nabi menjelaskan tata cara shalat dan zakat secara rinci dalam hadits-haditsnya.", "B": "Nabi menambah jumlah shalat wajib menjadi tujuh kali sehari.", "C": "Nabi menghapus kewajiban zakat bagi orang yang miskin.", "D": "Nabi menyatakan bahwa shalat dan zakat cukup dikerjakan sekali seumur hidup. soalut banksoalu banksoalut b b"}, "correct": ["A"], "type": "single"}, {"page": 80, "q": "QS An-Nisaa’/4:36 menjelaskan tentang kewajiban menyembah Allah dan berbuat baik kepada orang tua. Jika seseorang selalu beribadah kepada Allah tetapi berkata kasar kepada orang tuanya, maka bagaimana status ibadahnya menurut ayat ini?", "opts": {"A": "tetap diterima karena ibadah adalah hubungan langsung dengan Allah", "B": "tidak sempurna karena perbuatan baik kepada orang tua adalah perintah utama setelah menyembah Allah", "C": "sah tetapi tidak mendapat pahala karena kurangnya adab kepada orang tua", "D": "ibadahnya batal dan harus diulang karena menyakiti orang tua adalah dosa besar alut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 81, "q": "Agama yang bersumber dari wahyu Allah dan disampaikan kepada manusia melalui rasul disebut....", "opts": {"A": "Agama Wahyu", "B": "Agama Nonwahyu", "C": "Agama Misionaris", "D": "Agama Rasial banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 82, "q": "Salah satu manfaat besar teknologi adalah mendukung umat Islam dalam menjalankan ibadah. Contoh penggunaan teknologi yang benar dalam ibadah adalah....", "opts": {"A": "Menggunakan media sosial untuk menyebarkan segala hal tanpa verifikasi.", "B": "Mengandalkan teknologi sepenuhnya tanpa perlu belajar ibadah secara manual.", "C": "Menggunakan teknologi untuk mengubah tata cara ibadah agar lebih efisien.", "D": "Menggunakan aplikasi pengingat waktu shalat dan Al-Qur’an digital banksoalu banksoalut b"}, "correct": ["D"], "type": "single"}, {"page": 83, "q": "Di bawah ini adalah beberapa contoh perbuatan yang sering dilakukan dalam kehidupan sehari-hari: Manakah yang termasuk amal shalih?", "opts": {"1": "membantu orang tua menyelesaikan pekerjaan rumah", "2": "berinfak kepada fakir miskin", "3": "membantu teman dalam kesulitan tanpa mengharapkan imbalan banksoalu banksoalut b"}, "correct": ["2"], "type": "multi"}, {"page": 84, "q": "Salah satu bentuk hubungan moral dan akhlak seorang Muslim dengan Allah adalah....", "opts": {"A": "Melaksanakan ibadah dengan ikhlas dan penuh ketaatan", "B": "Menjalin hubungan baik dengan sesama manusia", "C": "Menghormati orang yang lebih tua dan menyayangi yang lebih muda", "D": "Menjaga keseimbangan ekosistem dan lingkungan banksoalu nksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 85, "q": "Perhatikan pernyataan berikut: Pernyataan yang benar terkait pentingnya kejujuran dalam belajar adalah ....", "opts": {"1": "Kejujuran dalam ujian mencerminkan integritas dan kepribadian seseorang.", "2": "Tidak mencontek dalam ujian menunjukkan sikap tanggung jawab terhadap proses pembelajaran.", "3": "ika tidak belajar, lebih baik mencontek daripada mendapatkan nilai buruk. banksoalu banksoalut b"}, "correct": ["1", "2"], "type": "multi"}, {"page": 86, "q": "Di era digital, kemudahan akses informasi melalui internet dan media sosial membawa dampak besar bagi kehidupan beragama. Salah satu tantangan yang muncul adalah banyaknya berita hoaks, ajaran menyimpang, serta pengaruh budaya yang tidak sesuai dengan ajaran Islam. Tantangan ini termasuk dalam kategori....", "opts": {"A": "Pluralisme dan relativisme", "B": "Sekularisme", "C": "Kemajuan teknologi dan media sosial", "D": "Materialisme dan hedonisme alut banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 87, "q": "Ayat dalam Al-Qur’an yang menjelaskan tahapan penciptaan manusia dari segumpal darah hingga menjadi makhluk yang sempurna terdapat dalam....", "opts": {"A": "QS Al-Mu’minuun (23): 12", "B": "QS Al-Mu’minuun (23): 13", "C": "QS Al-Mu’minuun (23): 14", "D": "QS As-Sajdah (32): 7 banksoalu banksoalut b"}, "correct": ["B", "C"], "type": "single"}, {"page": 88, "q": "Dalam sebuah perusahaan, seorang atasan sering memberikan promosi hanya kepada karyawan yang berasal dari daerah yang sama dengannya, meskipun ada karyawan lain yang lebih berprestasi. Bagaimana dampak dari kebijakan tidak adil ini terhadap lingkungan kerja?", "opts": {"A": "Meningkatkan motivasi karyawan untuk bekerja lebih keras", "B": "Menimbulkan ketidakpuasan dan mengurangi kepercayaan karyawan", "C": "Mempererat hubungan sosial antar karyawan di perusahaan", "D": "Menjadikan suasana kerja lebih kompetitif dan profesional alut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 89, "q": "Fadilah selalu menyisihkan sebagian penghasilannya untuk membantu fakir miskin. Ia yakin bahwa setiap kebaikan akan mendapatkan balasan di akhirat. Perilaku Fadilah mencerminkan bahwa keimanan kepada hari akhir dapat meningkatkan....", "opts": {"A": "Sikap egois terhadap harta", "B": "Kepedulian sosial dan semangat berbagi", "C": "Rasa takut dalam berbisnis", "D": "Sifat kikir dalam kehidupan sehari-hari ut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 90, "q": "Seorang pemimpin Islam harus memiliki sifat tabligh, yaitu menyampaikan kebenaran kepada rakyatnya. Dalam era digital dan media sosial saat ini, tantangan utama dalam menerapkan tabligh adalah....", "opts": {"A": "Menyampaikan informasi secara transparan meskipun dapat memicu perpecahan atau instabilitas politik", "B": "Menghindari penyebaran informasi yang dapat melemahkan citra pemerintah meskipun itu adalah kebenaran", "C": "Menggunakan media sosial sebagai alat propaganda untuk memperkuat kekuasaan", "D": "Menjaga citra pemerintah dengan hanya menyampaikan informasi yang bersifat positif oalut banksoalu banksoalut b b"}, "correct": ["A"], "type": "single"}, {"page": 91, "q": "Dalam konteks politik modern, penerapan prinsip-prinsip kekuasaan Islam sering menghadapi tantangan dari keberagaman sistem pemerintahan dan ideologi yang dianut oleh negara-negara di dunia. Tantangan ini dikenal sebagai....", "opts": {"A": "sekularisasi politik", "B": "internal konflik di dunia islam", "C": "kurangnya pemahaman tentang politik islam", "D": "pluralitas ideologi dan sistem pemerintahan ut banksoalu banksoalut b"}, "correct": ["D"], "type": "single"}, {"page": 92, "q": "Seorang muslim yang telah berusaha semaksimal mungkin lalu menyerahkan hasil akhirnya kepada Allah disebut memiliki sikap....", "opts": {"A": "Tawakal", "B": "Optimis", "C": "Konsisten", "D": "Menepati janji banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 93, "q": "Fenomena globalisasi menyebabkan tersebarnya nilai-nilai Barat yang terkadang bertentangan dengan Islam. Tantangan utama dari penyebaran nilai-nilai tersebut bagi umat Islam adalah ....", "opts": {"A": "Meningkatkan rasa ingin tahu terhadap budaya lain", "B": "Membuka peluang kerja sama antarbangsa", "C": "Potensi pergeseran moral dan gaya hidup yang bertentangan dengan ajaran Islam", "D": "Memperluas wawasan dan pengetahuan global ut banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 94, "q": "Dalam rapat warga membahas kebijakan lingkungan, hanya sedikit orang yang hadir dan memberikan pendapat. Bagaimana tantangan utama dalam musyawarah ini?", "opts": {"A": "Masyarakat tidak memiliki hak untuk berpendapat", "B": "Kurangnya partisipasi masyarakat", "C": "Setiap keputusan harus berdasarkan suara mayoritas", "D": "Adanya kepentingan politik dalam musyawarah banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 95, "q": "Seseorang yang mempercayai bahwa ada banyak dewa, tetapi hanya menyembah satu dewa utama, menganut paham....", "opts": {"A": "Animisme", "B": "Henoteisme", "C": "Deisme", "D": "Eklektisme banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 96, "q": "Islam mengajarkan prinsip kebebasan yang bertanggung jawab, terutama dalam aspek keyakinan dan berpendapat. Ayat berikut yang sesuai dengan prinsip tersebut adalah ….", "opts": {"A": "(QS. Al-Baqarah: 256).", "B": "(QS. Al-Isra: 36).", "C": "(QS. Al-Kahfi: 29).", "D": "(QS. Ar-Ra’d: 11). banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 97, "q": "Dalam Islam, diyakini bahwa segala peristiwa di alam ini diketahui dan disaksikan oleh Allah SWT. Hal ini menunjukkan bahwa Allah memiliki sifat....", "opts": {"A": "Al-Wadud dan Al-Ghaffar", "B": "Al-Rahman dan Al-Rahim", "C": "Al-Adl dan Al-Hakim", "D": "Al-Basir dan Al-Khabir banksoalu banksoalut b"}, "correct": ["D"], "type": "single"}, {"page": 98, "q": "Seseorang yang hanya beribadah kepada Allah tanpa menyekutukan-Nya dengan sesuatu yang lain berarti telah mengamalkan....", "opts": {"A": "Tauhid Rububiyyah", "B": "Tauhid Irodah wa Qadar", "C": "Tauhid Uluhiyyah", "D": "Tauhid Mulkiyyah banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 99, "q": "Perhatikan pernayataan berikut: Berikut ini yang merupakan dampak positif yang ditimbulkan oleh kerukunan antar umat beragama tersebut adalah….", "opts": {"1": "terbinanya kerja sama dalam pembangunan dan kegiatan sosial lintas agama", "2": "meningkatnya sikap saling menghargai dan terciptanya kehidupan sosial yang harmonis", "3": "berkembangnya kelompok eksklusif yang hanya bergaul dengan satu agama saja lut banksoalu banksoalut b"}, "correct": ["1", "2"], "type": "multi"}, {"page": 100, "q": "Seorang wali kota dikenal sebagai pemimpin yang tegas terhadap korupsi dan tidak memberikan toleransi terhadap praktik suap di instansinya. Apa dampak yang paling mungkin terjadi dari sikap pemimpin ini?", "opts": {"A": "Budaya kerja yang lebih profesional dan transparan dalam pemerintahan", "B": "Semua pegawai pemerintah otomatis menjadi jujur tanpa pengawasan", "C": "Oposisi politik tidak lagi memiliki kritik terhadap pemerintahan", "D": "Masyarakat tidak perlu lagi mengawasi kinerja pemerintah lut banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 101, "q": "Seorang mahasiswa memiliki kewajiban untuk bertanggung jawab terhadap dirinya sendiri. Berikut beberapa bentuk tanggung jawab tersebut: Manakah pernyataan yang benar terkait tanggung jawab individu terhadap diri sendiri?", "opts": {"1": "Menjaga kesehatan fisik dan mental.", "2": "Menuntut ilmu dan meningkatkan keterampilan.", "3": "Mengandalkan orang lain untuk menyelesaikan masalah pribadinya. banksoalu banksoalut b"}, "correct": ["1", "2"], "type": "multi"}, {"page": 102, "q": "Islam mengajarkan bahwa manusia memiliki fitrah yang mendorongnya berperilaku baik. Berikut beberapa pernyataan: Pernyataan yang benar tentang peran fitrah dalam memahami ajaran Islam adalah....", "opts": {"1": "Manusia secara alami memiliki rasa ingin tahu tentang Tuhan dan kebaikan.", "2": "Fitrah mengajarkan manusia untuk membedakan mana yang baik dan buruk.", "3": "Fitrah tidak memiliki peran dalam menentukan moral seseorang. banksoalu banksoalut b"}, "correct": ["1", "2"], "type": "multi"}, {"page": 103, "q": "Dalam sejarah Islam, ilmu pengetahuan berkembang pesat karena adanya perintah dalam Al-Qur'an yang menekankan pentingnya membaca dan mencari ilmu. Ayat pertama yang diturunkan kepada Nabi Muhammad SAW menegaskan hal ini. Ayat tersebut adalah....", "opts": {"A": "QS Al-Mu’minun: 12", "B": "QS Al-‘Alaq: 1-5", "C": "QS Al-Baqarah: 2", "D": "QS Al-Fatihah: 1 alut banksoalu banksoalut b"}, "correct": ["A", "B"], "type": "single"}, {"page": 104, "q": "Dalam kehidupan sehari-hari, manusia dapat membedakan antara yang baik dan yang buruk berdasarkan pertimbangan moral, sementara hewan bertindak berdasarkan naluri. Contohnya, seseorang yang mencuri dapat dihukum karena mengetahui bahwa perbuatannya salah, sedangkan seekor kucing yang mencuri ikan tidak bisa dihukum. Hal ini menunjukkan bahwa....", "opts": {"A": "Manusia dan hewan memiliki tingkat kecerdasan yang sama", "B": "Manusia memiliki akal yang membuatnya bertanggung jawab atas perbuatannya", "C": "Hewan memiliki naluri yang lebih tinggi daripada manusia", "D": "Akal manusia tidak berperan dalam menentukan baik dan buruk oalut banksoalu banksoalut b b"}, "correct": ["B"], "type": "single"}, {"page": 105, "q": "Di sebuah desa, terdapat beragam komunitas agama yang hidup berdampingan. Namun, menjelang hari besar keagamaan, terjadi kesalahpahaman mengenai penggunaan fasilitas umum untuk ibadah dan perayaan. Ketegangan mulai muncul di antara warga. Apa tindakan yang paling tepat untuk menjaga toleransi dalam kasus tersebut?", "opts": {"A": "Meminta pemerintah setempat untuk melarang perayaan hari besar keagamaan di fasilitas umum.", "B": "Mengedepankan dialog antarwarga dan mencari solusi bersama berdasarkan prinsip keadilan dan kesetaraan.", "C": "Mengizinkan satu kelompok agama untuk menggunakan fasilitas umum tanpa mempertimbangkan kelompok lain.", "D": "Menerapkan kebijakan yang mengutamakan mayoritas tanpa memperhatikan kepentingan minoritas. banksoalut banksoalu oalut banksoalut b b"}, "correct": ["B"], "type": "single"}, {"page": 106, "q": "Islam sangat menekankan perlindungan terhadap hak hidup setiap manusia. Hal ini ditegaskan dalam Al-Qur'an yang menyatakan bahwa membunuh satu jiwa tanpa alasan yang dibenarkan sama dengan membunuh seluruh manusia. Ayat yang menegaskan prinsip ini adalah....", "opts": {"A": "QS. Al-Ma'idah: 32", "B": "QS. Al-Baqarah: 286", "C": "QS. Al-Isra: 23", "D": "QS. Al-Kahfi: 110 alut banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 107, "q": "Bersyukur merupakan akhlak kepada Allah yang diwujudkan dalam bentuk lisan, hati, dan perbuatan. Salah satu cara bersyukur dengan perbuatan adalah....", "opts": {"A": "Mengucapkan \"Alhamdulillah\" setelah menerima nikmat", "B": "Meyakini dalam hati bahwa semua nikmat berasal dari Allah", "C": "Menggunakan nikmat Allah sesuai dengan yang diridhai-Nya", "D": "Menganggap nikmat yang diperoleh merupakan hasil usaha sendiri banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 108, "q": "Dalam sebuah desa, terdapat komunitas agama yang rutin mengadakan program berbagi sembako kepada warga miskin tanpa melihat latar belakang agama mereka. Apa dampak utama dari keterlibatan komunitas agama dalam kehidupan sosial ini?", "opts": {"A": "Meningkatkan kesenjangan sosial antara kelompok kaya dan miskin", "B": "Memperkuat rasa persaudaraan dan kepedulian antarwarga", "C": "Memunculkan persaingan antaragama dalam kegiatan amal", "D": "Mengharuskan semua warga mengikuti aturan agama tertentu lut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 109, "q": "Dalam sebuah komunitas, semua anggota diberikan kesempatan yang sama dalam pendidikan, pekerjaan, dan kehidupan sosial, tanpa memandang perbedaan gender, ras, atau status ekonomi. Hal ini mencerminkan prinsip....", "opts": {"A": "Keadilan", "B": "Persamaan", "C": "Supremasi hukum", "D": "Pengawasan sosial ut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 110, "q": "Di sebuah kantor, beberapa karyawan sering membicarakan keburukan teman mereka di belakangnya. Akibatnya, teman yang menjadi korban gunjingan merasa tersisih dan tidak nyaman dalam bekerja. Dampak negatif dari perilaku ini adalah....", "opts": {"A": "Mempererat hubungan pertemanan antarpegawai", "B": "Menumbuhkan semangat kerja sama dalam tim", "C": "Menurunkan kepercayaan dan menyebabkan konflik antarpegawai", "D": "Meningkatkan motivasi kerja karena adanya kritik membangun ut banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 111, "q": "Islam mengajarkan agar umatnya saling membantu dalam kebaikan dan takwa. Salah satu contoh konkret dari perintah ini adalah....", "opts": {"A": "Mendukung kelompok tertentu tanpa mempertimbangkan nilai keadilan", "B": "Membantu teman dalam menyontek saat ujian agar mereka tidak gagal", "C": "Menutupi kesalahan teman meskipun ia melakukan kezaliman", "D": "Bekerjasama dalam tindakan yang membawa manfaat bagi sesama, seperti bakti sosial ut banksoalu banksoalut b"}, "correct": ["D"], "type": "single"}, {"page": 112, "q": "Ahmad adalah seorang mahasiswa yang selalu memulai belajarnya dengan berdoa dan merasa bahwa mencari ilmu adalah bagian dari ibadah kepada Allah SWT. Ia juga rajin membaca dan berdiskusi untuk memperdalam pemahamannya.: Bagaimana hubungan antara iman dan ilmu dalam membentuk budaya akademik seperti yang dilakukan Ahmad?", "opts": {"A": "iman menjadikan seseorang lebih semangat dalam menuntut ilmu karena menganggapnya sebagai ibadah.", "B": "ilmu dan iman tidak memiliki hubungan dalam membentuk budaya akademik.", "C": "iman hanya berkaitan dengan ibadah, sedangkan ilmu hanya untuk keperluan dunia.", "D": "ilmu lebih penting dari iman dalam membentuk budaya akademik. ksoalut banksoalu ut banksoalut b b"}, "correct": ["A"], "type": "single"}, {"page": 113, "q": "Ali bekerja di sebuah perusahaan yang sangat ketat dalam waktu kerja. Ia selalu datang tepat waktu, menyelesaikan pekerjaannya dengan baik, dan tidak suka menunda-nunda tugasnya. Atas dedikasinya, ia mendapat promosi jabatan. Bagaimana kedisiplinan dalam bekerja sesuai dengan ajaran Islam?", "opts": {"A": "Kedisiplinan merupakan bagian dari profesionalisme dan mendapat pahala di sisi Allah.", "B": "Disiplin dalam pekerjaan hanya penting jika diawasi oleh atasan.", "C": "Islam tidak mengajarkan kedisiplinan dalam bekerja.", "D": "Kesuksesan dalam pekerjaan hanya bergantung pada relasi, bukan kedisiplinan. oalut banksoalu banksoalut b b"}, "correct": ["A"], "type": "single"}, {"page": 114, "q": "Al-Qur’an sering menggunakan istilah an-naas untuk merujuk kepada manusia dalam arti....", "opts": {"A": "Individu tertentu yang memiliki keistimewaan", "B": "Kumpulan manusia secara umum, baik mukmin maupun kafir", "C": "Hamba yang diciptakan hanya untuk beribadah", "D": "Makhluk yang memiliki tugas sebagai khalifah di bumi banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 115, "q": "Dalam suatu komunitas Muslim, pemerintah setempat menggalakkan program zakat, infaq, dan sedekah untuk membantu masyarakat miskin. Program ini mencerminkan ajaran Islam tentang....", "opts": {"A": "Persaingan bebas dalam ekonomi", "B": "Keseimbangan antara hak individu dan kewajiban sosial", "C": "Menimbun kekayaan sebagai tanda keberhasilan", "D": "Mengutamakan kepentingan individu daripada masyarakat ut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 116, "q": "Allah SWT menegaskan dalam Al-Qur’an bahwa Nabi Dawud AS diangkat sebagai khalifah di bumi dan diperintahkan untuk memutuskan perkara dengan adil. Dalil yang mendukung pernyataan ini adalah....", "opts": {"A": "QS. Hud: 61", "B": "QS. Shad: 26", "C": "QS. Al-A’raf: 56", "D": "QS. Al-An’am: 165 ut banksoalu banksoalut b"}, "correct": ["B", "C"], "type": "single"}, {"page": 117, "q": "Sunnah memiliki berbagai peran dalam hubungannya dengan Al-Qur'an. Salah satu peran sunnah adalah menguatkan hukum suatu peristiwa yang telah ditetapkan dalam Al- Qur’an. Manakah contoh yang tepat untuk peran ini?", "opts": {"A": "kewajiban shalat yang disebutkan dalam Al-Qur’an kemudian dijelaskan tata caranya dalam Sunnah", "B": "larangan riba dalam Al-Qur’an yang diperkuat dengan hadits Nabi tentang jenis-jenis riba", "C": "ayat tentang zakat yang kemudian diperinci oleh Sunnah mengenai kadar zakat", "D": "ayat tentang kebolehan menikah lebih dari satu yang kemudian dibatasi dengan syarat tertentu dalam Sunnah ksoalut banksoalu ut banksoalut b b"}, "correct": ["B"], "type": "single"}, {"page": 118, "q": "Mengapa ilmu menjadi dasar dalam memperkokoh iman seseorang melalui pemahaman keagungan Allah SWT?", "opts": {"A": "ilmu membantu memahami sifat-sifat Allah yang Maha Esa dan Maha Kuasa.", "B": "ilmu hanya digunakan untuk memahami hukum Islam tanpa kaitan dengan iman.", "C": "ilmu menjadikan manusia bebas berbuat sesuka hati tanpa takut kepada Allah.", "D": "ilmu lebih berfokus pada aspek duniawi daripada hubungan dengan Allah. banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 119, "q": "Al-Qur’an memberikan banyak perhatian terhadap kesehatan dan kedokteran. Salah satu contoh ayat yang berkaitan dengan kesehatan adalah....", "opts": {"A": "Wa idza maridtu fahuwa yashfin (QS. Asy-Syu‘ara: 80)", "B": "Alif laam miim (QS. Al-Baqarah: 1)", "C": "La ikraha fid-din (QS. Al-Baqarah: 256)", "D": "Inna anzalnahu fi lailatil qadr (QS. Al-Qadr: 1) banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 120, "q": "Dalam Islam, Sunnah memiliki kedudukan penting sebagai sumber hukum setelah Al- Qur’an. Hal ini didasarkan pada dalil bahwa....", "opts": {"A": "Sunnah Nabi SAW merupakan wahyu yang tidak tertulis dan menjadi bagian dari ajaran Islam", "B": "Sunnah hanya berupa kebiasaan Nabi SAW yang tidak relevan dengan hukum Islam", "C": "Sunnah Nabi SAW tidak diperlukan jika Al-Qur’an sudah mencakup semua aspek hukum", "D": "Sunnah Nabi SAW hanya bersifat anjuran dan tidak mengandung ketetapan hukum alut banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 121, "q": "Dalam Islam, menuntut ilmu merupakan kewajiban yang diperintahkan langsung oleh Allah SWT. Hal ini sesuai dengan ayat Al-Qur'an berikut:", "opts": {"A": "Iqra’ bismi rabbika alladzi khalaq (Al-‘Alaq: 1)", "B": "La yukallifullahu nafsan illa wus’aha (Al-Baqarah: 286)", "C": "Wa’tasimū bihablillāhi jamī‘an (Ali ‘Imran: 103)", "D": "Fa inna ma’al ‘usri yusra (Al-Insyirah: 6) banksoalu banksoalut b"}, "correct": ["A", "B"], "type": "single"}, {"page": 122, "q": "Dalam sebuah penelitian, ditemukan bahwa banyak masyarakat masih memiliki pemahaman yang terbatas tentang hukum syariat, sehingga sering terjadi penolakan atau salah tafsir terhadap penerapannya. Salah satu penyebab utama dari tantangan ini adalah....", "opts": {"A": "Kurangnya pendidikan dan sosialisasi hukum Islam", "B": "Ketidaksiapan pemerintah dalam menerapkan hukum syariat", "C": "Tidak adanya ulama yang mendukung hukum syariat", "D": "Pengaruh budaya asing yang masuk ke dalam masyarakat alut banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 123, "q": "Seorang muslim yang ingin menjalankan usahanya sesuai dengan prinsip Islam harus memastikan bahwa produknya memiliki sertifikasi halal. Salah satu contoh penerapan hukum halal dalam kehidupan sehari-hari adalah....", "opts": {"A": "Memakan makanan yang bersumber dari hewan yang disembelih sesuai syariat", "B": "Mengonsumsi makanan tanpa melihat sumbernya", "C": "Membeli barang bajakan karena harganya lebih murah", "D": "Menggunakan uang riba untuk modal usaha ut banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 124, "q": "Salah satu manfaat mengamalkan ilmu bagi diri sendiri adalah meningkatkan keimanan dan ketakwaan. Hal ini terjadi karena....", "opts": {"A": "Ilmu dapat menggantikan ibadah wajib yang lain", "B": "Ilmu menjadikan seseorang lebih kaya dan terpandang", "C": "Ilmu dapat digunakan untuk mendapatkan kekuasaan", "D": "Ilmu membantu seseorang memahami ajaran agama dengan lebih baik banksoalu banksoalut b"}, "correct": ["D"], "type": "single"}, {"page": 125, "q": "Seorang mahasiswa yang sedang sibuk dengan tugas akhirnya sering merasa lelah dan ingin meninggalkan salat berjamaah di masjid. Namun, ia tetap melakukannya meskipun dalam kondisi lelah dan sibuk. Dalam konteks iman, sikap mahasiswa tersebut mencerminkan....", "opts": {"A": "Kebiasaan yang terbentuk dari lingkungan, bukan karena dorongan keimanan", "B": "Ketundukan kepada Allah yang menjadi ciri orang yang benar-benar beriman", "C": "Pemaksaan diri dalam ibadah yang dapat menurunkan kualitas keimanannya", "D": "Sikap fanatik dalam beribadah yang tidak mempertimbangkan kondisi fisik alut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 126, "q": "Dalam bahasa Arab, istilah yang sering digunakan untuk menyebut agama adalah....", "opts": {"A": "Ma’ruf", "B": "Sunnah", "C": "Ibadah", "D": "Ad-Deen banksoalu nksoalut b"}, "correct": ["D"], "type": "single"}, {"page": 127, "q": "Islam menjunjung tinggi kebebasan manusia dalam beragama, berpendapat, dan bertindak selama tidak melanggar hukum syariat. Prinsip hukum Islam yang berkaitan dengan kebebasan ini disebut....", "opts": {"A": "Prinsip musawah", "B": "Prinsip tasamuh", "C": "Prinsip al-hurriyah", "D": "Prinsip ta’awun ut banksoalu banksoalut b"}, "correct": ["C", "D"], "type": "single"}, {"page": 128, "q": "Dalam Islam, konsep musyawarah menjadi prinsip utama dalam pengambilan keputusan, baik dalam keluarga, pemerintahan, maupun komunitas. Hal ini ditegaskan dalam Al- Qur'an, salah satunya dalam....", "opts": {"A": "QS. Al-Baqarah: 256", "B": "QS. Asy-Syura: 38", "C": "QS. Al-Ma'un: 1-3", "D": "QS. Al-Kahfi: 29 ut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 129, "q": "Dalam Surah Al-Israa’ ayat 23, Allah SWT berfirman: َوَ قَضٰ ى رَبُّكَ اََّ ا تَعْبُدُوْْٓ ا اَِّ ا ْٓ اِيااهُ وَ بِال ْ وَ الِدَيْنِ اِحْسٰنًا ۗ اِماا يَبْل ُ غَنا عِنْدَكَ ال ْ كِبَرَ اَح دُهُمَآْ اَوْ كِل ٰ هُمَا فََلَ تَق ُ لْ ل ا هُمَآْ ا ُ ف ٍّ وا ََّ تَنْهَرْ هُمَا وَ ق ُ لْ ل ا هُمَا قَوْ َّ ً كَرِ يْمًا Bagaimana Sunnah Nabi menguatkan hukum dalam ayat ini?", "opts": {"A": "Nabi menyatakan dalam hadits bahwa ridha Allah tergantung pada ridha orang tua.", "B": "Nabi membolehkan seseorang untuk berbicara kasar kepada orang tua jika sedang marah.", "C": "Nabi menjelaskan bahwa berbakti kepada orang tua hanya wajib jika mereka masih hidup.", "D": "Nabi menegaskan bahwa cukup dengan mendoakan orang tua tanpa harus berbakti secara nyata. nksoalut banksoalu alut banksoalut b b"}, "correct": ["A"], "type": "single"}, {"page": 130, "q": "QS Al-Israa’/17:23-24 melarang seorang anak berkata kasar kepada orang tua, termasuk mengatakan \"ah\". Dalam konteks kehidupan modern, bentuk lain dari larangan ini dapat berupa....", "opts": {"A": "Mengabaikan panggilan orang tua saat sibuk bermain ponsel", "B": "Tidak membelikan hadiah untuk orang tua saat hari ulang tahunnya", "C": "Meminta izin kepada orang tua sebelum mengambil keputusan", "D": "Berbicara dengan orang tua menggunakan bahasa formal dan sopan ut banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 131, "q": "Agama yang memiliki misi untuk menyebarkan ajarannya ke seluruh dunia tanpa terbatas oleh ras atau wilayah disebut....", "opts": {"A": "Agama Misionaris", "B": "Agama Nonmisionaris", "C": "Agama Rasial", "D": "Agama Tradisional banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 132, "q": "Islam memberikan pedoman moral dalam penggunaan teknologi. Di antara pilihan berikut, manakah yang sesuai dengan etika Islam dalam penggunaan teknologi?", "opts": {"A": "Menggunakan teknologi untuk menebar manfaat dan kebaikan.", "B": "Menyebarkan informasi tanpa memeriksa kebenarannya.", "C": "Menggunakan teknologi untuk kepentingan pribadi tanpa memikirkan dampak sosial.", "D": "Memanfaatkan teknologi tanpa mempertimbangkan hukum halal dan haram. banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 133, "q": "Di bawah ini adalah beberapa contoh perbuatan yang sering dilakukan dalam kehidupan sehari-hari: Manakah yang termasuk amal shalih?", "opts": {"1": "Menolong teman yang sedang terkena musibah", "2": "Berinfak kepada fakir miskin", "3": "Menyontek saat ujian agar mendapat nilai tinggi banksoalu banksoalut b"}, "correct": ["2"], "type": "multi"}, {"page": 134, "q": "Sikap menjaga kebersihan diri, kesehatan jasmani dan rohani mencerminkan hubungan moral dan akhlak dengan....", "opts": {"A": "Diri sendiri", "B": "Allah", "C": "Keluarga", "D": "Sesama manusia banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 135, "q": "Perhatikan pernyataan berikut: Pernyataan yang benar terkait pentingnya kejujuran dalam belajar adalah ....", "opts": {"1": "Kejujuran dalam belajar membentuk karakter yang bertanggung jawab.", "2": "Menyalin tugas dari internet tanpa menyebutkan sumber bukan masalah besar", "3": "Bersikap jujur dalam belajar membantu dalam pemahaman yang lebih mendalam. banksoalu nksoalut b"}, "correct": ["1", "3"], "type": "multi"}, {"page": 136, "q": "Saat ini, banyak kasus kejahatan seperti korupsi, penyalahgunaan narkoba, serta pergaulan bebas yang semakin meningkat di berbagai kalangan masyarakat. Kondisi ini menunjukkan adanya tantangan dalam pembinaan iman yang berkaitan dengan....", "opts": {"A": "Krisis moral dan etika", "B": "Kemajuan teknologi", "C": "Relativisme budaya", "D": "Tekanan hidup dan materialisme ut banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 137, "q": "Ayat dalam Al-Qur’an yang menjelaskan bahwa manusia diciptakan dari saripati tanah terdapat dalam....", "opts": {"A": "QS Al-Mu’minuun (23): 12", "B": "QS Al-Mu’minuun (23): 13", "C": "QS Al-Mu’minuun (23): 14", "D": "QS Qaaf (50): 16 banksoalu banksoalut b"}, "correct": ["A", "B"], "type": "single"}, {"page": 138, "q": "Seorang pemimpin di sebuah organisasi mahasiswa selalu memberikan perlakuan khusus kepada kelompok tertentu dan mengabaikan kepentingan kelompok lain. Akibatnya, banyak anggota organisasi yang mulai kehilangan kepercayaan dan enggan berpartisipasi dalam kegiatan. Apa dampak negatif utama dari perilaku pemimpin tersebut?", "opts": {"A": "meningkatkan persaingan sehat antaranggota organisasi", "B": "memperkuat loyalitas kelompok tertentu dalam organisasi", "C": "menurunkan rasa kebersamaan dan menimbulkan perpecahan", "D": "memotivasi anggota lain untuk lebih aktif agar diperhatikan oalut banksoalu banksoalut b b"}, "correct": ["C"], "type": "single"}, {"page": 139, "q": "Seorang pejabat memiliki kesempatan untuk melakukan korupsi tanpa diketahui oleh orang lain. Namun, ia memilih untuk tidak melakukannya karena yakin bahwa perbuatannya akan mendapat balasan di akhirat. Keyakinan ini menunjukkan bahwa keimanan kepada hari akhir dapat mencegah seseorang dari....", "opts": {"A": "Berbuat zalim terhadap orang lain", "B": "Berpikir kritis dalam mengambil keputusan", "C": "Bertindak berdasarkan opini publik", "D": "Menjadi lebih cerdas dalam mengatur keuangan alut banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 140, "q": "Dalam Islam, amanah adalah salah satu sifat wajib yang harus dimiliki seorang pemimpin. Namun, dalam praktik pemerintahan modern, amanah sering kali diuji oleh tekanan politik dan ekonomi. Dalam situasi di mana seorang pemimpin harus memilih antara keputusan yang menguntungkan kelompok tertentu atau keputusan yang sesuai dengan kepentingan umum, sikap amanah yang benar adalah....", "opts": {"A": "Mengutamakan keputusan yang menguntungkan kelompok yang paling berpengaruh dalam pemerintahan", "B": "Mengambil keputusan berdasarkan nilai-nilai keadilan dan kemaslahatan rakyat meskipun berisiko kehilangan dukungan", "C": "Mengikuti keputusan yang diinginkan oleh mayoritas tanpa mempertimbangkan dampaknya", "D": "Menyesuaikan kebijakan dengan tuntutan pihak yang memberikan dukungan finansial terbesar banksoalut banksoalu ksoalut banksoalut b ut b"}, "correct": ["B"], "type": "single"}, {"page": 141, "q": "Di banyak negara Muslim, pemisahan antara agama dan negara menjadi tren yang semakin menguat, di mana nilai-nilai Islam tidak lagi menjadi dasar utama dalam kebijakan negara. Fenomena ini disebut....", "opts": {"A": "Dominasi kekuasaan global", "B": "Tuntutan modernisasi dan hak asasi manusia", "C": "Sekularisasi politik", "D": "Pluralitas ideologi dan sistem pemerintahan ut banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 142, "q": "Seorang mahasiswa yang selalu mengevaluasi dirinya dan mencari kebenaran berdasarkan fakta serta logika berarti telah mengamalkan sikap....", "opts": {"A": "Tawakal", "B": "Mawas diri dan bersikap ilmiah", "C": "Optimis dalam menghadapi masa depan", "D": "Tidak sombong banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 143, "q": "Di era modern, kebebasan sering kali dipahami sebagai hak individu untuk melakukan apa saja tanpa batasan. Dalam pandangan Islam, kebebasan harus dibatasi oleh ....", "opts": {"A": "norma sosial dan budaya yang berkembang", "B": "kepentingan mayoritas masyarakat", "C": "hukum Allah SWT dan prinsip syariah", "D": "kebiasaan masyarakat setempat banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 144, "q": "Dalam suatu musyawarah desa untuk menentukan alokasi dana pembangunan, seorang tokoh masyarakat yang berpengaruh mendominasi pembicaraan dan menolak pendapat warga lain. Apa tantangan utama yang muncul dalam musyawarah tersebut?", "opts": {"A": "tidak adanya aturan tertulis dalam musyawarah", "B": "dominasi kelompok atau individu tertentu", "C": "kurangnya partisipasi warga dalam musyawarah", "D": "keputusan diambil tanpa pertimbangan logis ut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 145, "q": "Keyakinan bahwa roh atau kekuatan gaib terdapat dalam benda-benda alam seperti pohon, batu, dan sungai disebut ....", "opts": {"A": "Politeisme", "B": "Henoteisme", "C": "Animisme/Dinamisme", "D": "Deisme banksoalu banksoalut b"}, "correct": ["C"], "type": "single"}, {"page": 146, "q": "Dalam Islam, semua manusia memiliki derajat yang sama di hadapan Allah SWT. Prinsip persamaan ini dijelaskan dalam ayat:", "opts": {"A": "(QS. Al-Hujurat: 13).", "B": "(QS. An-Nisa: 103).", "C": "(QS. Al-Isra: 32).", "D": "(QS. At-Tin: 4). banksoalu banksoalut b"}, "correct": ["A"], "type": "single"}, {"page": 147, "q": "Sebagian proses penciptaan terjadi sangat cepat menurut pandangan manusia, seperti dalam peristiwa mukjizat Rasul Allah. Salah satu contoh mukjizat tersebut adalah....", "opts": {"A": "Penciptaan manusia yang melalui tahapan tertentu", "B": "Mukjizat Nabi Muhammad SAW membelah bulan", "C": "Perputaran bumi mengelilingi matahari", "D": "Proses fotosintesis tumbuhan banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 148, "q": "Meyakini bahwa Allah memiliki nama-nama dan sifat-sifat yang sempurna, tanpa menyerupakan-Nya dengan makhluk-Nya, merupakan konsep....", "opts": {"A": "Tauhid Rububiyyah", "B": "Tauhid Asma' wa Sifat", "C": "Tauhid Hakimiyyah", "D": "Tauhid Irodah wa Qadar banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}, {"page": 149, "q": "Perhatikan pernyataan berikut: Berikut ini yang merupakan dampak positif yang ditimbulkan oleh kerukunan antar umat beragama tersebut adalah….", "opts": {"1": "Menurunnya potensi konflik antar kelompok agama dalam Masyarakat", "2": "Munculnya sikap acuh terhadap perbedaan keyakinan di lingkungan sekitar", "3": "Tumbuhnya semangat persatuan dan kesatuan dalam keberagaman banksoalu banksoalut b"}, "correct": ["1", "3"], "type": "multi"}, {"page": 150, "q": "Sebuah negara yang dipimpin oleh seorang pemimpin yang memiliki integritas tinggi mengalami peningkatan pesat dalam ekonomi dan stabilitas sosial. Faktor apa yang paling mungkin berkontribusi terhadap kemajuan ini?", "opts": {"A": "Rakyat lebih patuh terhadap pemerintah tanpa adanya protes", "B": "Investasi asing dan dalam negeri meningkat karena kepercayaan terhadap kepemimpinan", "C": "Semua kebijakan pemerintah diterima tanpa ada perbedaan pendapat", "D": "Pemimpin memiliki kekuasaan mutlak dalam pengambilan keputusan alut banksoalu banksoalut b"}, "correct": ["B"], "type": "single"}];
+
+let answered = 0, correct = 0, wrong = 0;
+
+function updateScore() {
+  document.getElementById('sc-total').textContent = answered;
+  document.getElementById('sc-correct').textContent = correct;
+  document.getElementById('sc-wrong').textContent = wrong;
+  document.getElementById('progress').style.width = Math.round(answered/QUIZ.length*100) + '%';
+  if (answered === QUIZ.length) showSummary();
+}
+
+function buildQuiz() {
+  answered = 0; correct = 0; wrong = 0;
+  updateScore();
+  const container = document.getElementById('quiz');
+  container.innerHTML = '';
+  document.getElementById('summary').style.display = 'none';
+
+  QUIZ.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'card-' + idx;
+
+    const topBar = document.createElement('div');
+    topBar.className = 'card-top';
+
+    const qHeader = document.createElement('div');
+    qHeader.className = 'q-header';
+
+    const isMulti = item.type === 'multi';
+    const badge = isMulti ? '<span class="multi-badge">✦ Multi Jawaban</span>' : '';
+    qHeader.innerHTML = `
+      <span class="q-num">${idx+1}.</span>
+      <div class="q-body"><span class="q-text">${item.q}</span>${badge}</div>
+    `;
+
+    card.appendChild(topBar);
+    card.appendChild(qHeader);
+
+    if (isMulti) {
+      buildMulti(card, item, idx);
+    } else {
+      buildSingle(card, item, idx);
+    }
+
+    container.appendChild(card);
+  });
+}
+
+function buildSingle(card, item, idx) {
+  const optsDiv = document.createElement('div');
+  optsDiv.className = 'options';
+  optsDiv.id = 'opts-' + idx;
+
+  ['A','B','C','D'].forEach(letter => {
+    if (!item.opts[letter]) return;
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.dataset.letter = letter;
+    btn.innerHTML = `<span class="opt-key">${letter}.</span><span>${item.opts[letter]}</span>`;
+    btn.addEventListener('click', () => handleSingle(idx, letter, item.correct[0], item));
+    optsDiv.appendChild(btn);
+  });
+
+  const reveal = document.createElement('div');
+  reveal.className = 'reveal';
+  reveal.id = 'reveal-' + idx;
+
+  card.appendChild(optsDiv);
+  card.appendChild(reveal);
+}
+
+function handleSingle(idx, chosen, correctAns, item) {
+  const optsDiv = document.getElementById('opts-' + idx);
+  const reveal = document.getElementById('reveal-' + idx);
+  const card = document.getElementById('card-' + idx);
+
+  optsDiv.querySelectorAll('.option').forEach(btn => {
+    btn.disabled = true;
+    const l = btn.dataset.letter;
+    if (l === correctAns) btn.classList.add('correct');
+    else if (l === chosen) btn.classList.add('wrong');
+    else btn.classList.add('dimmed');
+  });
+
+  const isCorrect = chosen === correctAns;
+  card.classList.add(isCorrect ? 's-correct' : 's-wrong');
+  reveal.classList.add('show', isCorrect ? 'is-correct' : 'is-wrong');
+
+  if (isCorrect) {
+    reveal.innerHTML = `<span class="icon">✓</span><span><strong>Benar!</strong> Jawaban: <strong>${correctAns}. ${item.opts[correctAns]}</strong></span>`;
+    correct++;
+  } else {
+    reveal.innerHTML = `<span class="icon">✗</span><span><strong>Salah.</strong> Jawaban benar: <strong>${correctAns}. ${item.opts[correctAns]}</strong></span>`;
+    wrong++;
+  }
+
+  answered++;
+  updateScore();
+  scrollToNext(idx);
+}
+
+function buildMulti(card, item, idx) {
+  const section = document.createElement('div');
+  section.className = 'multi-section';
+  section.id = 'multi-' + idx;
+
+  const selected = new Set();
+
+  Object.entries(item.opts).forEach(([num, text]) => {
+    const btn = document.createElement('button');
+    btn.className = 'check-opt';
+    btn.dataset.num = num;
+    btn.innerHTML = `<span class="check-box"></span><span class="opt-num">${num})</span><span>${text}</span>`;
+    btn.addEventListener('click', () => {
+      if (selected.has(num)) {
+        selected.delete(num);
+        btn.classList.remove('selected');
+        btn.querySelector('.check-box').textContent = '';
+      } else {
+        selected.add(num);
+        btn.classList.add('selected');
+        btn.querySelector('.check-box').textContent = '✓';
+      }
+    });
+    section.appendChild(btn);
+  });
+
+  const submitBtn = document.createElement('button');
+  submitBtn.className = 'submit-multi';
+  submitBtn.id = 'submit-' + idx;
+  submitBtn.textContent = 'Kirim Jawaban';
+  submitBtn.addEventListener('click', () => handleMulti(idx, selected, item));
+
+  const reveal = document.createElement('div');
+  reveal.className = 'reveal';
+  reveal.id = 'reveal-' + idx;
+
+  card.appendChild(section);
+  card.appendChild(submitBtn);
+  card.appendChild(reveal);
+}
+
+function handleMulti(idx, selected, item) {
+  const section = document.getElementById('multi-' + idx);
+  const reveal = document.getElementById('reveal-' + idx);
+  const card = document.getElementById('card-' + idx);
+  const submitBtn = document.getElementById('submit-' + idx);
+  const correctSet = new Set(item.correct);
+
+  submitBtn.disabled = true;
+
+  section.querySelectorAll('.check-opt').forEach(btn => {
+    btn.disabled = true;
+    const num = btn.dataset.num;
+    const wasSelected = selected.has(num);
+    const isCorrect = correctSet.has(num);
+    btn.classList.remove('selected');
+    btn.querySelector('.check-box').textContent = '';
+
+    if (wasSelected && isCorrect) {
+      btn.classList.add('correct');
+      btn.querySelector('.check-box').textContent = '✓';
+    } else if (wasSelected && !isCorrect) {
+      btn.classList.add('wrong');
+      btn.querySelector('.check-box').textContent = '✗';
+    } else if (!wasSelected && isCorrect) {
+      btn.classList.add('missed');
+      btn.querySelector('.check-box').textContent = '✓';
+    }
+  });
+
+  // Check if fully correct
+  const selectedArr = [...selected].sort();
+  const correctArr = [...correctSet].sort();
+  const isFullyCorrect = selectedArr.length === correctArr.length &&
+    selectedArr.every((v, i) => v === correctArr[i]);
+
+  card.classList.add(isFullyCorrect ? 's-correct' : 's-wrong');
+  reveal.classList.add('show', isFullyCorrect ? 'is-correct' : 'is-wrong');
+
+  const correctLabels = correctArr.map(n => n + ') ' + item.opts[n]).join(', ');
+
+  if (isFullyCorrect) {
+    reveal.innerHTML = `<span class="icon">✓</span><span><strong>Benar!</strong> Semua jawaban tepat: <strong>${correctLabels}</strong></span>`;
+    correct++;
+  } else {
+    reveal.innerHTML = `<span class="icon">✗</span><span><strong>Salah.</strong> Jawaban benar: <strong>${correctLabels}</strong></span>`;
+    wrong++;
+  }
+
+  answered++;
+  updateScore();
+  scrollToNext(idx);
+}
+
+function scrollToNext(idx) {
+  setTimeout(() => {
+    const next = document.getElementById('card-' + (idx+1));
+    if (next) window.scrollTo({ top: next.getBoundingClientRect().top + scrollY - 110, behavior: 'smooth' });
+  }, 400);
+}
+
+function showSummary() {
+  const s = document.getElementById('summary');
+  s.style.display = 'block';
+  s.classList.add('show');
+  document.getElementById('f-total').textContent = answered;
+  document.getElementById('f-correct').textContent = correct;
+  document.getElementById('f-wrong').textContent = wrong;
+  document.getElementById('f-pct').textContent = Math.round(correct/QUIZ.length*100) + '%';
+  setTimeout(() => s.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+}
+
+buildQuiz();
+</script>
+
+<div id="summary" class="summary" style="display:none">
+  <div style="max-width:600px;margin:0 auto;">
+    <h2>Hasil Tryout</h2>
+    <p class="sub">Pendidikan Agama Islam &mdash; MKWN4101</p>
+    <div class="stats">
+      <div class="stat total"><div class="big" id="f-total">0</div><div class="slabel">Total Soal</div></div>
+      <div class="stat correct"><div class="big" id="f-correct">0</div><div class="slabel">Benar</div></div>
+      <div class="stat wrong"><div class="big" id="f-wrong">0</div><div class="slabel">Salah</div></div>
+    </div>
+    <p class="score-line">Nilai Akhir: <span id="f-pct">0%</span></p>
+    <button class="btn-reset" onclick="buildQuiz(); window.scrollTo({top:0,behavior:'smooth'})">Ulangi Tryout</button>
+  </div>
+</div>
+
+</body>
+</html>
