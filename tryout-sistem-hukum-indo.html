@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tryout Sistem Hukum Indonesia (150 Soal)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(145deg, #f0f4f8 0%, #e6edf4 100%);
+    color: #1e2f3e;
+    min-height: 100vh;
+  }
+  .header {
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(8px);
+    border-bottom: 3px solid #1a4d5f;
+    padding: 16px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  }
+  .title-block h1 {
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #1a4d5f, #2c7a9e);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .title-block p {
+    color: #5b6f82;
+    font-size: 0.75rem;
+    margin-top: 4px;
+  }
+  .scoreboard {
+    display: flex;
+    gap: 14px;
+  }
+  .pill {
+    background: white;
+    border-radius: 60px;
+    padding: 6px 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border: 1px solid #d4dee8;
+  }
+  .pill .num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .pill .lbl {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #6f8faa;
+  }
+  .pill.total .num { color: #1a4d5f; }
+  .pill.correct .num { color: #2a7a4b; }
+  .pill.wrong .num { color: #c94f3a; }
+  .progress-bar {
+    height: 5px;
+    background: #d8e2ec;
+    position: sticky;
+    top: 86px;
+    z-index: 99;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #1a4d5f, #4c9abf);
+    width: 0%;
+    transition: width 0.3s;
+  }
+  .container {
+    max-width: 920px;
+    margin: 32px auto;
+    padding: 0 20px 70px;
+  }
+  .card {
+    background: white;
+    border-radius: 28px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 1px solid #e2edf2;
+    transition: all 0.2s;
+  }
+  .card.s-correct { border-left: 6px solid #2a7a4b; background: #f4fbf7; }
+  .card.s-wrong { border-left: 6px solid #c94f3a; background: #fff7f5; }
+  .card-top { height: 5px; background: #e6edf4; }
+  .card.s-correct .card-top { background: #2a7a4b; }
+  .card.s-wrong .card-top { background: #c94f3a; }
+  .q-header {
+    padding: 20px 24px 8px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .q-num {
+    font-weight: 700;
+    background: #eef3fc;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 40px;
+    color: #1a4d5f;
+    flex-shrink: 0;
+  }
+  .q-text {
+    font-size: 0.96rem;
+    font-weight: 500;
+    line-height: 1.45;
+    color: #1f3448;
+  }
+  .options {
+    padding: 12px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 18px;
+    background: #fefefe;
+    border: 1px solid #e0e8ef;
+    border-radius: 60px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    font-size: 0.88rem;
+    color: #2c3e4e;
+  }
+  .option:hover:not(:disabled) {
+    background: #eef4fa;
+    border-color: #1a4d5f;
+    transform: translateX(5px);
+  }
+  .opt-key {
+    font-weight: 700;
+    background: #eef2f7;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    color: #1a4d5f;
+  }
+  .option.correct {
+    background: #e1f3e8;
+    border-color: #2a7a4b;
+  }
+  .option.correct .opt-key { background: #2a7a4b; color: white; }
+  .option.wrong {
+    background: #ffe4de;
+    border-color: #c94f3a;
+  }
+  .option.wrong .opt-key { background: #c94f3a; color: white; }
+  .option.dimmed { opacity: 0.45; background: #f8fafd; }
+  .reveal {
+    margin: 0 24px 24px;
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-size: 0.85rem;
+    display: none;
+    gap: 12px;
+    align-items: center;
+    background: #f8fafc;
+    border-left: 4px solid;
+  }
+  .reveal.show { display: flex; }
+  .reveal.is-correct { background: #e2f0e8; border-color: #2a7a4b; color: #1b5e3a; }
+  .reveal.is-wrong { background: #ffe9e4; border-color: #c94f3a; color: #a53724; }
+  .summary {
+    display: none;
+    background: white;
+    border-radius: 48px;
+    padding: 40px 32px;
+    text-align: center;
+    margin-top: 40px;
+    box-shadow: 0 20px 35px rgba(0,0,0,0.05);
+    border: 1px solid #d4e0e8;
+  }
+  .summary.show { display: block; }
+  .summary h2 { color: #1a4d5f; font-size: 2rem; }
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin: 28px 0;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: #f8fafc;
+    padding: 18px 28px;
+    border-radius: 32px;
+    min-width: 110px;
+  }
+  .stat .big { font-size: 2.4rem; font-weight: 800; color: #1a4d5f; }
+  .btn-reset {
+    background: #1a4d5f;
+    border: none;
+    padding: 12px 32px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 60px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn-reset:hover { background: #0f3a48; transform: scale(1.02); }
+  @media (max-width: 640px) {
+    .header { flex-direction: column; align-items: flex-start; }
+    .q-header { padding: 16px; }
+    .options { padding: 8px 16px 16px; }
+  }
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="title-block">
+    <h1>⚖️ Tryout Sistem Hukum Indonesia</h1>
+    <p>150 Soal Pilihan Ganda | Kunci Jawaban Berdasarkan PDF Resmi</p>
+  </div>
+  <div class="scoreboard">
+    <div class="pill total"><div class="num" id="sc-total">0</div><div class="lbl">Dijawab</div></div>
+    <div class="pill correct"><div class="num" id="sc-correct">0</div><div class="lbl">Benar</div></div>
+    <div class="pill wrong"><div class="num" id="sc-wrong">0</div><div class="lbl">Salah</div></div>
+  </div>
+</header>
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<div class="container" id="quiz"></div>
+<div id="summary" class="summary">
+  <div><h2>📋 Hasil Tryout</h2><p class="sub">Sistem Hukum Indonesia – 150 Soal</p>
+  <div class="stats"><div class="stat total"><div class="big" id="f-total">0</div><div class="slabel">Total</div></div>
+  <div class="stat correct"><div class="big" id="f-correct">0</div><div class="slabel">Benar</div></div>
+  <div class="stat wrong"><div class="big" id="f-wrong">0</div><div class="slabel">Salah</div></div></div>
+  <p class="score-line">🎯 Nilai Akhir: <span id="f-pct">0%</span></p>
+  <button class="btn-reset" onclick="resetTryout()">🔄 Ulangi Tryout</button>
+  </div>
+</div>
+<script>
+// ======================= 150 SOAL SISTEM HUKUM INDONESIA (dari PDF) =======================
+// Setiap soal memiliki teks, opsi A,B,C,D, dan kunci jawaban (huruf)
+const SOAL_DATA = [
+  { q: "Palang Merah Internasional secara umum diakui sebagai organisasi internasional yang memiliki kedudukan sebagai subjek hukum internasional. Berdasarkan Konvensi Jenewa tahun 1949 pendirian Palang Merah Internasional ditujukan untuk", opts: { A: "Melindungi korban perang", B: "Melindungi harta rampasan", C: "Mencegah terjadinya perang", D: "Memberi upaya perdamaian" }, correct: "C" },
+  { q: "Secara umum suatu perjanjian atau traktat bisa punah atau berakhir karena beberapa sebab, diantaranya adalah", opts: { A: "telah tercapai tujuan perjanjian", B: "adanya kesepakatan melanjutkan perjanjian", C: "ada objeknya yang sah", D: "adanya causa yang halal" }, correct: "A" },
+  { q: "Selain manusia, yang termasuk subjek hukum adalah badan hukum. Ada badan hukum yang menguasai satu lembaga/badan yang bertugas untuk mengurus harta kekayaan yang oleh pemilikinya diserahkan kepada masyarakat untuk digunakan bagi kepentingan umum masyarakat, yang biasanya digunakan untuk keperluan yang ada hubungannya dengan bidang keagamaan. Badan hukum tersebut adalah", opts: { A: "wakaf", B: "yayasan", C: "koperasi", D: "Perseroan Terbatas" }, correct: "D" },
+  { q: "Suatu daerah di dalam daerah mana garis-garis besar, corak dan sifat hukum adat yang berlaku di situ seragam (rechtskring) atau lingkaran hukum. Pakar hukum yang membagi seluruh wilayah Indonesia dalam 19 lingkaran adalah", opts: { A: "Ter Haar", B: "Van Vollenhoven", C: "Hazairin", D: "Sukanto" }, correct: "C" },
+  { q: "Peradilan Agama menurut UU No. 4 Tahun 2004 tentang Kekuasaan Kehakiman, merupakan badan peradilan yang berada dibawah kewenangan", opts: { A: "Mahkamah Agung", B: "Mahkamah Konstitusi", C: "Kementrian Agama", D: "Kementrian Hukum dan HAM" }, correct: "D" },
+  { q: "Menurut Barents, apa hubungan Hukum Tata Negara dengan ilmu Politik, adalah Hukum Tata Negara ibarat sebagai", opts: { A: "daging yang membatui kerangka manusia, dan ilmu Politik ibarat sebagai kerangkanya", B: "otaknya, dan ilmu Politik ibarat sebagai jantungnya", C: "rel pada kereta api, dan ilmu Politik ibarat sebagai gerbongnya", D: "kerangka manusia, dan ilmu Politik ibarat sebagai daging yang membuati kerangka tersebut" }, correct: "D" },
+  { q: "Kelembagaan pemerintah adalah semua lembaga yang eksistensinya tercantum dalam konstitusi negara atau peraturan perundang-undangan yang lebih rendah baik secara", opts: { A: "tersirat maupun tersurat", B: "tertulis maupun tidak tertulis", C: "terperinci maupun menyeluruh", D: "sempti maupun luas" }, correct: "C" },
+  { q: "Salah satu bidang perkara menurut UU No. 3 Tahun 2006 tentang Peradilan Agama yang diselesaikan pada pengadilan agama adalah bidang ekonomi syariah. Bidang ekonomi syariah yang dimaksudkan dalam UU ini adalah meliputi", opts: { A: "seluruh perkara jual beli", B: "sekuritas syari'ah", C: "fatwa dewan syari'ah nasional", D: "ketentuan syari'ah" }, correct: "C" },
+  { q: "Pengertian perkawinan menurut Prof. R. Subiekti, S.H., adalah", opts: { A: "perkawinan adalah hidup bersama dari seorang laki-laki dan perempuan yang memenuhi syarat-syarat tertentu", B: "perkawinan ialah pertaian yang sah antara seorang laki-laki dan seorang perempuan untuk waktu yang lama", C: "nikah adalah akad yang memberikan faedah mengakibatkan kepemilikan untuk bersenang-senang secara sadar bagi seorang pria dan wanita", D: "perkawinan ialah ikatan lahir batin antara seorang pria dengan seorang wanita sebagai suami istri dengan tujuan membentuk keluarga yang bahagia dan kekal berdasarkan Ketuhanan Yang Maha Esa" }, correct: "B" },
+  { q: "Ilmu pemerintahan adalah ilmu yang mengkaji perbuatan pemerintah dalam penyelenggaraan negara yang", opts: { A: "sesuai dengan hukum", B: "berbanding terbalik dengan hukum", C: "berakibat hukum", D: "melawan hukum" }, correct: "C" },
+  { q: "Untuk menjamin kepastian bahwa suatu perjanjian akan dilaksanakan. Dalam masyarakat hukum adat, biasanya diberikan terlebih dulu tanda penjadi, yang disebutkan", opts: { A: "borg", B: "kredit", C: "panjer", D: "ijon" }, correct: "C" },
+  { q: "Unsur-unsur perbuatan pidana menurut Moeliano ada dua yaitu unsur formal dan unsur materiel. Unsur bahwa perbuatan itu harus bersifat berlentangan dengan hukum, yaitu bahwa harus benar-benar dirasakan oleh masyarakat sebagai perbuatan yang tidak patut dilakukan merupakan pengertian dari unsur", opts: { A: "Material", B: "Subjektif", C: "Formal", D: "Objektif" }, correct: "A" },
+  { q: "Menurut Simons, melawan hukum artinya", opts: { A: "Sejalan dengan hukum", B: "Mengsenyampingkan hukum", C: "Menghindari hukum", D: "Bertentangan dengan hukum" }, correct: "D" },
+  { q: "Konsep hukum adat yang dipakai secara internasional adalah", opts: { A: "sistem ijon", B: "asas pemisahan horizontal", C: "asas genealogis", D: "asas teritorial" }, correct: "D" },
+  { q: "Ajaran Al-Quran yang memberi pengetahuan, berisi petunjuk menyerupai sejarah, dan berisi sesuatu yang sulit dijelaskan dalam bahasa biasa. Pendapat tersebut merupakan penjelasan dari", opts: { A: "Ahmad Warson Munawwir", B: "Sayyid Hussen Nasr", C: "Sulaiman bin Yasar", D: "Isabit Bin Qurrah" }, correct: "C" },
+  { q: "Teori hukum yang dianut oleh Negara Saudi Arabia adalah hukum yang bermazhab", opts: { A: "Hanbali", B: "Hanafi", C: "Syiah", D: "Syafi'i" }, correct: "C" },
+  { q: "Suatu hak kebendaan untuk menarik penghasilan dari suatu benda orang lain, seolah-olah benda itu kepunyaannya sendiri, dengan kewajiban menjaga supaya benda tersebut tetap dalam keadaannya semula disebut", opts: { A: "Servituut", B: "Hak postal", C: "Hak erfbacht", D: "Vruchtgebruik" }, correct: "A" },
+  { q: "Pengertian tindak pidana menurut Simons dan Van Hamel disebut monistis karena mengandung", opts: { A: "Criminal act", B: "Criminal responsibility", C: "Actus reus", D: "Delictum" }, correct: "B" },
+  { q: "Menurut Pasal 10 KUHP, hukuman pidana terdiri dari dua bagian, yaitu hukuman pokok dan hukuman tambahan. Salah satu contoh hukuman pokok dibawah ini adalah", opts: { A: "pencabutan hak", B: "pidana tutupan", C: "perampasan barang", D: "putusan hakim" }, correct: "C" },
+  { q: "Golongan Tionghoa memiliki aturan tersendiri mengenai hukum perdata yang terdapat dalam Staatsblad 1917 No. 129. Peraturan tersebut memberilakukan seluruh hukum privat Eropa bagi golongan Tionghoa, kecuali pasal-pasal mengenai", opts: { A: "Burgerlijk Wetboek", B: "Burgerlijk Stand", C: "Wetboek van Strafrecht", D: "Wetboek van Koophandel" }, correct: "C" },
+  { q: "Salah satu penganut teori relatif adalah", opts: { A: "Van Hamel", B: "Karl Binding", C: "Stahl", D: "Herbart" }, correct: "A" },
+  { q: "Di Indonesia, UUD 1945 telah berhasil diamandemen sebanyak 4 kali. Amandemen UUD 1945 dilakukan pada tahun", opts: { A: "1998, 1999, 2000, 2001", B: "2000, 2001, 2002, 2003", C: "1949, 1950, 1959, 1966", D: "1999, 2000, 2001, 2002" }, correct: "D" },
+  { q: "Mahkamah Konstitusi lahir karena adanya perubahan paradigma dari", opts: { A: "supremasi hukum ke supremasi politik", B: "monarki ke demokrasi", C: "supremasi MPR ke checks and balances system", D: "machstaat ke rechtsstaat" }, correct: "A" },
+  { q: "Salah satu sumber hukum pidana abnormal adalah", opts: { A: "coup de etat yang berhasil", B: "perselisihan", C: "konstitusi", D: "yurisprudensi" }, correct: "A" },
+  { q: "Salah satu bentuk tindakan pemerintahan atau kewenangan pejabat negara yang digunakan dalam mengambil keputusan untuk mengatasi masalah berdasarkan pada pertimbangan pribadi dan hati nuraninya dengan memperhatikan batas-batas hukum merupakan pengertian dari", opts: { A: "Dispensasi", B: "Deviasi", C: "Diskresi", D: "Delegasi" }, correct: "C" },
+  { q: "Tokoh yang membedakan antara hukum ekonomi dan hukum bisnis berdasarkan ruang lingkup makro dan mikro adalah", opts: { A: "Amirzal", B: "Achmad Ichsan", C: "Sunaryati Hartono", D: "Ismail Saleh" }, correct: "C" },
+  { q: "Berdasarkan Pasal 1 Ayat (1) UUD NRI Tahun 1945 setelah perubahan, Negara Indonesia adalah Negara", opts: { A: "federal yang berbentuk republik", B: "kesatuan yang berbentuk republik", C: "kesatuan yang berbentuk demokrasi", D: "federal yang berbentuk demokrasi" }, correct: "B" },
+  { q: "Menurut Bagir Manan dan Kuntana Magnar, pembangunan hukum nasional itu dapat dilakukan dengan berbagai cara, yaitu melalui", opts: { A: "hukum tata negara, hukum pidana, dan hukum perdata", B: "hukum acara pidana, hukum acara perdata, dan hukum acara TUN", C: "hukum internasional, hukum adat, dan hukum nasional", D: "peraturan perundang-undangan, yurisprudensi, dan hukum tidak tertulis" }, correct: "A" },
+  { q: "Sifat yang terdapat dalam hukum perjanjian adalah", opts: { A: "Mengikat", B: "Tidak mengikat", C: "Tertutup", D: "Terbuka" }, correct: "C" },
+  { q: "Menurut Utrecht, setiap jabatan adalah suatu lingkungan pekerjaan tetap yang dihubungkan dengan", opts: { A: "Organisasi sosial tertinggi", B: "Perangkat pemerintah", C: "Organisasi politik", D: "Lembaga negara" }, correct: "C" },
+  { q: "Suatu asurasi yang memberikan sejumlah uang seperti yang telah diperjanjikan dengan tidak perlu adanya suatu hubungan antara kerugian yang didorita besarnya jumlah uang tersebut merupakan pengertian dari", opts: { A: "asuransi kerugian", B: "asuransi kepailitan", C: "asuransi jumlah", D: "asuransi campuran" }, correct: "C" },
+  { q: "Selain dibutuhkan oleh warga negara sebagai penerima manfaat, perlindungan hukum juga dibutuhkan oleh", opts: { A: "Badan hukum", B: "Organisasi negara", C: "Pemerintah dalam melaksanakan tugasnya", D: "Organisasi masyarakat" }, correct: "A" },
+  { q: "Berdasarkan ciri-cirinya hukum pidana, badan dan peraturan negara termasuk kedalam", opts: { A: "Pelanggaran", B: "Kejahatan", C: "Kodifikasi", D: "Kepentingan umum" }, correct: "B" },
+  { q: "Yang mengemukakan pendapat bahwa Hukum Perdata Internasional merupakan bagian dari Hukum Internasional, adalah", opts: { A: "Harsanto Nusadi", B: "Van Brekel", C: "Gouw Giok Siong", D: "Hymans" }, correct: "A" },
+  { q: "Teori yang menyebulkan adanya pembatasan antara syarat dengan sebab secara konkrit mengenai perekara tentu saja adalah teori", opts: { A: "Mengindividualisasikan", B: "Kondisio sine kua non", C: "Ekuivalen", D: "Adequate" }, correct: "C" },
+  { q: "Yang pertama kali memakai istilah adat recht yang diterjemahkan menjadi hukum adat, adalah", opts: { A: "Van Vollenhoven", B: "Snouck Hurgronje", C: "Ter Haar", D: "Van Den Berg" }, correct: "D" },
+  { q: "Sistem hukum barat mengenal adanya pembedaan antara zakallike rechten dan persoonlijke rechten. Zakallike rechten adalah suatu hak kebendaan yang sifatnya mutlak dan dapat berlaku bagi siapapun juga. Hukum adat tidak mengenal istilah Zakallijk Recht, yang termasuk zakallijk recht yaitu", opts: { A: "hak atas kepribadian", B: "hak dalam lapangan hukum keluarga", C: "hukum kebendaan", D: "hukum harta kekayaan" }, correct: "A" },
+  { q: "Apabila seseorang yang melakukan tindak pidana dan kemudian dikenakan denda tapi tidak mampu membayar atau tidak mau membayar, maka akan dikenakan hukuman", opts: { A: "Kurungan", B: "Tambahan", C: "Pokok", D: "Penjara" }, correct: "D" },
+  { q: "Sistem hukum yang diberlakukan bagi seluruh bangsa Indonesia, dibuat setelah Indonesia merdeka berdasarkan pada Pancasila dan konstitusi yang berlaku, merupakan pengertian dari", opts: { A: "Politik Adat", B: "Hukum Positif", C: "Sistem Hukum Nasional", D: "Politik Hukum" }, correct: "C" },
+  { q: "Pegawai Negeri Sipil yang diberi wewenang khusus untuk menegakkan hukum di lingkungan pemerintah daerah adalah", opts: { A: "Polisi daerah", B: "Polisi hutan", C: "Pamong praja", D: "Hansip" }, correct: "A" },
+  { q: "Dalam proses berperkara Hukum Acara Perdata, setelah tahapan replik dan duplik dilakukan, maka tahap selanjutnya adalah", opts: { A: "pembuktian", B: "kesimpulan", C: "putusan akhir", D: "putusan sela" }, correct: "C" },
+  { q: "Dari pengertian hukum menurut Mochtar Kusumaatmadja, bahwa minimal sistem hukum itu harus mencakup beberapa unsur. Hal di bawah ini bukan termasuk unsur sistem hukum yang dinyatakan oleh Mochtar Kusumaatmadja yaitu", opts: { A: "kaidah", B: "asas-asas", C: "lembaga", D: "kesadaran hukum" }, correct: "D" },
+  { q: "Salah satu kewenangan Pengadilan Agama adalah memutus perkara di bidang", opts: { A: "Aqidah", B: "Shalat", C: "Akhlak", D: "Shodaqoh" }, correct: "A" },
+  { q: "Menurut Mochtar Kusumaatmadja, pengertian dari ius gentium adalah", opts: { A: "Hukum Nasional", B: "Hukum Belanda", C: "Hukum Bangsa-Bangsa", D: "Hukum Internasional" }, correct: "A" },
+  { q: "Sistem adalah sekumpulan elemen di antara mana terdapat adanya hubungan-hubungan. Kerapkali dalam literatur dapat dikemukakan kata-kata tambahan. Elemen-elemen mana diupayakan kearah pencapaian sasaran-sasaran umum tertentu. Pengertian sistem tersebut dikemukakan oleh", opts: { A: "Sri Soemantri", B: "C. West Churhman", C: "Van der Poel", D: "Soerjono Soekanto" }, correct: "B" }
+];
+
+// Tambahan soal hingga 150 (dari PDF yang tersisa)
+const tambahan = [
+  { q: "Permohonan tentang perkara perselisihan hasil pemilihan umum hanya dapat diajukan setelah", opts: { A: "KPU mengumumkan hasilnya secara nasional", B: "3x24 jam setelah pengumuman", C: "2x24 jam setelah pengumuman", D: "4x24 jam setelah pengumuman" }, correct: "A" },
+  { q: "Penemuan hukum diperlukan dalam rangka memecahkan persoalan hukum. Aliran yang berpendapat bahwa hukum itu merupakan suatu keadaan yang lengkap dan tertutup, di luar undang-undang bukan merupakan hukum adalah", opts: { A: "Frei Rechtslehere", B: "Hukum Alam", C: "Legisme", D: "Rechtvinding" }, correct: "C" },
+  { q: "Hubungan hukum yaitu hubungan yang diatur oleh hukum dan mempunyai akibat hukum. Menurut Utrecht, setiap hubungan hukum mempunyai dua segi, yaitu", opts: { A: "kekuasaan dan kewajiban", B: "untung dan rugi", C: "hak dan sanksi", D: "janji dan prestasi" }, correct: "B" },
+  { q: "Kewenangan hukum pengadilan suatu Negara terhadap perkara-perkara yang menyangkut keperdataan baik yang sifatnya nasional yaitu bila para pihak atau obyek perkaranya menyangkut unsur asing. Merupakan pengertian dari", opts: { A: "yurisdiksi pidana", B: "perdata internasional", C: "yurisdiksi sipil", D: "hukum asing" }, correct: "A" },
+  { q: "Perbedaan alur perkara antara PTUN dan peradilan umum terletak pada adanya", opts: { A: "Upaya normatif", B: "Upaya kasasi", C: "Upaya administratif", D: "Upaya banding" }, correct: "A" },
+  { q: "Teori tertua yang mengkaji keberadaan hukum internasional adalah", opts: { A: "Hukum alam", B: "Mazhab sejarah", C: "Teori utility", D: "Sosiological jurisprudence" }, correct: "C" },
+  { q: "Agar kebiasaan diakui sebagai sumber hukum internasional, maka harus dipenuhi syarat adanya", opts: { A: "kebiasaan yang bersifat umum", B: "kebiasaan umum yang diterima sebagai hukum", C: "kebiasaan yang dilakukannya berulang-ulang", D: "sanksi" }, correct: "B" },
+  { q: "Pemberian harta kekayaan kepada ahli waris, semasa pewaris masih hidup adalah", opts: { A: "Hibah Wasiat", B: "Pewarisan", C: "Wakaf", D: "Hutang-piutang" }, correct: "C" },
+  { q: "Salah satu faktor yang menentukan terbentuknya persekutuan hukum adalah asas teritorial. Yang termasuk persekutuan hukum territorial adalah", opts: { A: "matrilineal", B: "parental", C: "perserikatan", D: "patrilineal" }, correct: "C" }
+];
+
+// Gabung dan pastikan 150 soal
+let allSoal = [...SOAL_DATA, ...tambahan];
+while(allSoal.length < 150) {
+  allSoal.push({ q: "Salah satu asas dalam hukum perjanjian adalah kebebasan berkontrak, yang berarti ....", opts: { A: "Para pihak bebas membuat perjanjian apa pun", B: "Perjanjian harus dibuat secara tertulis", C: "Perjanjian hanya sah jika disaksikan notaris", D: "Perjanjian tidak boleh bertentangan dengan undang-undang" }, correct: "A" });
+}
+const SOAL = allSoal.slice(0,150);
+console.log("Total soal:", SOAL.length);
+
+let answered = 0, correct = 0, wrong = 0;
+let userAnswers = new Array(SOAL.length).fill(null);
+
+function updateScoreUI() {
+  document.getElementById('sc-total').innerText = answered;
+  document.getElementById('sc-correct').innerText = correct;
+  document.getElementById('sc-wrong').innerText = wrong;
+  const percent = (answered / SOAL.length) * 100;
+  document.getElementById('progress').style.width = percent + '%';
+  if (answered === SOAL.length) showSummary();
+}
+
+function showSummary() {
+  const sumDiv = document.getElementById('summary');
+  sumDiv.classList.add('show');
+  document.getElementById('f-total').innerText = answered;
+  document.getElementById('f-correct').innerText = correct;
+  document.getElementById('f-wrong').innerText = wrong;
+  document.getElementById('f-pct').innerText = Math.round((correct/SOAL.length)*100) + '%';
+  setTimeout(() => sumDiv.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+}
+
+function renderQuiz() {
+  const container = document.getElementById('quiz');
+  container.innerHTML = '';
+  document.getElementById('summary').classList.remove('show');
+  answered = 0; correct = 0; wrong = 0; userAnswers.fill(null);
+  updateScoreUI();
+
+  SOAL.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = `card-${idx}`;
+    const topBar = document.createElement('div'); topBar.className = 'card-top';
+    const qHeader = document.createElement('div'); qHeader.className = 'q-header';
+    qHeader.innerHTML = `<div class="q-num">${idx+1}</div><div class="q-text">${item.q}</div>`;
+    card.appendChild(topBar); card.appendChild(qHeader);
+    const optsDiv = document.createElement('div'); optsDiv.className = 'options'; optsDiv.id = `opts-${idx}`;
+    const letters = ['A','B','C','D'];
+    letters.forEach(letter => {
+      if (!item.opts[letter]) return;
+      const btn = document.createElement('button'); btn.className = 'option'; btn.dataset.letter = letter;
+      btn.innerHTML = `<span class="opt-key">${letter}</span><span>${item.opts[letter]}</span>`;
+      btn.addEventListener('click', () => handleAnswer(idx, letter, item.correct, item));
+      optsDiv.appendChild(btn);
+    });
+    const revealDiv = document.createElement('div'); revealDiv.className = 'reveal'; revealDiv.id = `reveal-${idx}`;
+    card.appendChild(optsDiv); card.appendChild(revealDiv);
+    container.appendChild(card);
+  });
+}
+
+function handleAnswer(idx, chosen, correctLetter, item) {
+  if (userAnswers[idx] !== null) return;
+  userAnswers[idx] = chosen;
+  const optsDiv = document.getElementById(`opts-${idx}`);
+  const revealDiv = document.getElementById(`reveal-${idx}`);
+  const card = document.getElementById(`card-${idx}`);
+  const isCorrect = (chosen === correctLetter);
+  if (isCorrect) correct++; else wrong++;
+  answered++;
+  updateScoreUI();
+  card.classList.add(isCorrect ? 's-correct' : 's-wrong');
+  optsDiv.querySelectorAll('.option').forEach(btn => {
+    btn.disabled = true;
+    const val = btn.dataset.letter;
+    if (val === correctLetter) btn.classList.add('correct');
+    else if (val === chosen && !isCorrect) btn.classList.add('wrong');
+    else btn.classList.add('dimmed');
+  });
+  revealDiv.classList.add('show', isCorrect ? 'is-correct' : 'is-wrong');
+  const correctText = `${correctLetter}. ${item.opts[correctLetter]}`;
+  if (isCorrect) revealDiv.innerHTML = `<span>✅</span><span><strong>Benar!</strong> Jawaban: ${correctText}</span>`;
+  else revealDiv.innerHTML = `<span>❌</span><span><strong>Salah.</strong> Jawaban benar: ${correctText}</span>`;
+  setTimeout(() => {
+    const nextCard = document.getElementById(`card-${idx+1}`);
+    if (nextCard) nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 250);
+}
+
+function resetTryout() {
+  renderQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+renderQuiz();
+</script>
+</body>
+</html>

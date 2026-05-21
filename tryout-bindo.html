@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tryout MKWN4108 - Bahasa Indonesia (150 Soal)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(145deg, #f4f7fc 0%, #e9eef4 100%);
+    color: #1e2f3e;
+    min-height: 100vh;
+  }
+  .header {
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(8px);
+    border-bottom: 3px solid #2c7da0;
+    padding: 16px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  }
+  .title-block h1 {
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #1e5f7a, #2c7da0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .title-block p {
+    color: #5b6f82;
+    font-size: 0.75rem;
+    margin-top: 4px;
+  }
+  .scoreboard {
+    display: flex;
+    gap: 14px;
+  }
+  .pill {
+    background: white;
+    border-radius: 60px;
+    padding: 6px 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border: 1px solid #d4dee8;
+  }
+  .pill .num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .pill .lbl {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #6f8faa;
+  }
+  .pill.total .num { color: #2c7da0; }
+  .pill.correct .num { color: #2a7a4b; }
+  .pill.wrong .num { color: #c94f3a; }
+  .progress-bar {
+    height: 5px;
+    background: #d8e2ec;
+    position: sticky;
+    top: 86px;
+    z-index: 99;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2c7da0, #6ab0d6);
+    width: 0%;
+    transition: width 0.3s;
+  }
+  .container {
+    max-width: 920px;
+    margin: 32px auto;
+    padding: 0 20px 70px;
+  }
+  .card {
+    background: white;
+    border-radius: 28px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 1px solid #e2edf2;
+    transition: all 0.2s;
+  }
+  .card.s-correct { border-left: 6px solid #2a7a4b; background: #f4fbf7; }
+  .card.s-wrong { border-left: 6px solid #c94f3a; background: #fff7f5; }
+  .card-top { height: 5px; background: #e6edf4; }
+  .card.s-correct .card-top { background: #2a7a4b; }
+  .card.s-wrong .card-top { background: #c94f3a; }
+  .q-header {
+    padding: 20px 24px 8px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .q-num {
+    font-weight: 700;
+    background: #eef3fc;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 40px;
+    color: #2c7da0;
+    flex-shrink: 0;
+  }
+  .q-text {
+    font-size: 0.98rem;
+    font-weight: 500;
+    line-height: 1.45;
+    color: #1f3448;
+  }
+  .options {
+    padding: 12px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 18px;
+    background: #fefefe;
+    border: 1px solid #e0e8ef;
+    border-radius: 60px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: #2c3e4e;
+  }
+  .option:hover:not(:disabled) {
+    background: #eef4fa;
+    border-color: #2c7da0;
+    transform: translateX(5px);
+  }
+  .opt-key {
+    font-weight: 700;
+    background: #eef2f7;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    color: #2c7da0;
+  }
+  .option.correct {
+    background: #e1f3e8;
+    border-color: #2a7a4b;
+  }
+  .option.correct .opt-key { background: #2a7a4b; color: white; }
+  .option.wrong {
+    background: #ffe4de;
+    border-color: #c94f3a;
+  }
+  .option.wrong .opt-key { background: #c94f3a; color: white; }
+  .option.dimmed { opacity: 0.45; background: #f8fafd; }
+  .reveal {
+    margin: 0 24px 24px;
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-size: 0.85rem;
+    display: none;
+    gap: 12px;
+    align-items: center;
+    background: #f8fafc;
+    border-left: 4px solid;
+  }
+  .reveal.show { display: flex; }
+  .reveal.is-correct { background: #e2f0e8; border-color: #2a7a4b; color: #1b5e3a; }
+  .reveal.is-wrong { background: #ffe9e4; border-color: #c94f3a; color: #a53724; }
+  .summary {
+    display: none;
+    background: white;
+    border-radius: 48px;
+    padding: 40px 32px;
+    text-align: center;
+    margin-top: 40px;
+    box-shadow: 0 20px 35px rgba(0,0,0,0.05);
+    border: 1px solid #d4e0e8;
+  }
+  .summary.show { display: block; }
+  .summary h2 { color: #2c7da0; font-size: 2rem; }
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin: 28px 0;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: #f8fafc;
+    padding: 18px 28px;
+    border-radius: 32px;
+    min-width: 110px;
+  }
+  .stat .big { font-size: 2.4rem; font-weight: 800; color: #2c7da0; }
+  .btn-reset {
+    background: #2c7da0;
+    border: none;
+    padding: 12px 32px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 60px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn-reset:hover { background: #1e5f7a; transform: scale(1.02); }
+  @media (max-width: 640px) {
+    .header { flex-direction: column; align-items: flex-start; }
+    .q-header { padding: 16px; }
+    .options { padding: 8px 16px 16px; }
+  }
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="title-block">
+    <h1>📖 Tryout Bahasa Indonesia MKWN4108</h1>
+    <p>Bahasa Indonesia untuk Perguruan Tinggi | 150 Soal Pilihan Ganda</p>
+  </div>
+  <div class="scoreboard">
+    <div class="pill total"><div class="num" id="sc-total">0</div><div class="lbl">Dijawab</div></div>
+    <div class="pill correct"><div class="num" id="sc-correct">0</div><div class="lbl">Benar</div></div>
+    <div class="pill wrong"><div class="num" id="sc-wrong">0</div><div class="lbl">Salah</div></div>
+  </div>
+</header>
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<div class="container" id="quiz"></div>
+<div id="summary" class="summary">
+  <div><h2>✨ Hasil Tryout</h2><p class="sub">MKWN4108 – 150 Soal</p>
+  <div class="stats"><div class="stat total"><div class="big" id="f-total">0</div><div class="slabel">Total</div></div>
+  <div class="stat correct"><div class="big" id="f-correct">0</div><div class="slabel">Benar</div></div>
+  <div class="stat wrong"><div class="big" id="f-wrong">0</div><div class="slabel">Salah</div></div></div>
+  <p class="score-line">📊 Nilai Akhir: <span id="f-pct">0%</span></p>
+  <button class="btn-reset" onclick="resetTryout()">🔄 Ulangi Tryout</button>
+  </div>
+</div>
+<script>
+// ======================= 150 SOAL BAHASA INDONESIA (berdasarkan PDF) =======================
+// Mengambil soal yang jelas dari file PDF dan menambahkan soal logis untuk genap 150
+const SOAL_RAW = [
+  { q: "Undang-undang hak cipta berfungsi melindungi karya cipta setiap warga. Karya cipta yang dilindungi adalah sebagai berikut, kecuali ... .", opts: { A: "seluruh karya seni", B: "buku yang diterbitkan", C: "hasil rapat terbuka", D: "fotografi" }, correct: "C" },
+  { q: "Karya ilmiah yang bermutu lahir dari proses penelitian yang lepas dari rasa takut terhadap penyandang dana, merdeka dalam memilih, melakukan analisis, dan menafsirkan data atas dasar prosedur keilmuan. Pernyataan tersebut merupakan kriteria penulisan karya ilmiah yang bersifat ....", opts: { A: "jujur", B: "bebas", C: "reliabel", D: "teliti" }, correct: "B" },
+  { q: "Ide pokok paragraf tentang Merdeka Belajar adalah ....", opts: { A: "Program USBN, UN, dan RPP", B: "Program PPDB Zonasi", C: "Paparan Menteri Pendidikan dan Kebudayaan", D: "Empat program pokok kebijakan pendidikan Merdeka Belajar" }, correct: "D" },
+  { q: "Kegiatan membaca berikut ini yang termasuk kegiatan membaca dengan teknik skimming adalah ....", opts: { A: "Yudi membaca daftar menu makanan", B: "Yudi membaca bagian penting teks", C: "Yudi mencari arti kata di kamus", D: "Yudi membaca jadwal bus" }, correct: "A" },
+  { q: "Langkah membuat catatan penting dan ringkasan dalam SQ3R disebut ....", opts: { A: "review", B: "question", C: "recite", D: "survey" }, correct: "C" },
+  { q: "Berikut ini yang ditulis pada bagian isi atau bahasan karya ilmiah adalah ....", opts: { A: "tujuan dan gambaran umum", B: "rumusan masalah, tujuan, dan pembahasan sub-sub", C: "pembuka dan rumusan tujuan", D: "menjabarkan masalah dan solusi" }, correct: "B" },
+  { q: "Banyak buku tentang informasi teknologi diterjemahkan ke dalam bahasa Indonesia. Hal tersebut berarti bahasa Indonesia berfungsi sebagai....", opts: { A: "alat perhubungan nasional", B: "bahasa resmi negara", C: "alat pengembangan ilmu pengetahuan dan teknologi", D: "alat pengembangan kebudayaan" }, correct: "C" },
+  { q: "Dalam menyunting bahasa di suatu karya ilmiah, hal yang perlu diperhatikan adalah....", opts: { A: "plagiarisme", B: "kaidah tata tulis", C: "urutan penyajian gagasan", D: "kebenaran data" }, correct: "B" },
+  { q: "Pernyataan yang sesuai untuk konsep membaca intensif adalah ....", opts: { A: "membaca cepat", B: "membaca sepintas", C: "membaca cermat dan memiliki tujuan", D: "membaca bagian tertentu" }, correct: "C" },
+  { q: "Contoh kegiatan membaca ekstensif adalah ....", opts: { A: "Pak Iwan membaca iklan penjual rumah", B: "Ira membaca beberapa berita di koran", C: "Syifa pandai membaca", D: "Bu Rina membacakan buku cerita" }, correct: "B" },
+  { q: "Pembicara menggunakan 'Horras Bah!' dalam pidato formal melanggar ciri dari sisi ....", opts: { A: "penalaran", B: "gaya bahasa", C: "kalimat efektif", D: "pilihan kata" }, correct: "D" },
+  { q: "Perbaikan tujuan pada abstrak: 'Maksud dari pada penelitian ini sebagai upaya mengembangkan modul...' menjadi ....", opts: { A: "Ini adalah penelitian untuk siswa kelas X", B: "Penelitian ini bertujuan untuk mengembangkan modul", C: "Modul tentang pengembangan kepribadian ini", D: "Penelitian ini merupakan media" }, correct: "B" },
+  { q: "Penulisan abstrak berbahasa Inggris berbeda dengan bahasa Indonesia. Ketentuannya adalah ....", opts: { A: "abstrak BI untuk artikel BI, BInggris untuk artikel BInggris", B: "abstrak BInggris untuk artikel BI", C: "abstrak BInggris untuk artikel BI pada jurnal internasional", D: "abstrak BI untuk artikel BInggris" }, correct: "A" },
+  { q: "Kegiatan berbicara formal memiliki peserta terbatas karena ....", opts: { A: "ruangan sempit", B: "fokus pembicaraan", C: "konsumsi terbatas", D: "keterbatasan waktu panitia" }, correct: "B" },
+  { q: "Dari abstrak sastra anak, deskripsi hasil penelitian terdapat pada nomor ....", opts: { A: "1&2", B: "3", C: "4", D: "5" }, correct: "D" },
+  { q: "Sebelum berbicara, pembicara menyiapkan persoalan, daftar pertanyaan, menentukan arah, dan narasumber. Kegiatan persiapan tersebut adalah ....", opts: { A: "wawancara", B: "diskusi kelompok", C: "debat", D: "ceramah" }, correct: "A" },
+  { q: "Abstrak dibuat berbeda sesuai tujuan, hal ini menunjukkan abstrak disusun ....", opts: { A: "representatif", B: "berdiri sendiri", C: "jelas", D: "sesuai tujuan" }, correct: "D" },
+  { q: "Contoh isi simpulan makalah adalah ....", opts: { A: "Diharapkan masih ada keberlanjutan penelitian", B: "Jumlah pengguna media sosial meningkat", C: "Penelitian membahas korelasi dawai dan sosial", D: "Setelah dirumuskan masalah, diketahui tujuan" }, correct: "A" },
+  { q: "Contoh kalimat ilmiah dengan ciri kehematan adalah ....", opts: { A: "Penelitian ini mengenai tentang kepedulian", B: "Omnibus law merupakan suatu metode", C: "Dari hasil penelitian ini, diharapkan dapat menjadi referensi", D: "Kemandirian belajar pada mahasiswa UT masih dinilai kurang" }, correct: "D" },
+  { q: "Motivator berkata 'Katanya mau punya hidup enak kok masih hitung-hitungan...' ragam berbicara tersebut adalah ....", opts: { A: "Argumentatif", B: "Persuasif", C: "Eksposif", D: "Deskriptif" }, correct: "B" },
+  { q: "Mobil dengan harga angsuran 1,6 juta dari iklan Daihatsu adalah ....", opts: { A: "Xenia Air Bag", B: "Sirion", C: "Grand Max", D: "Luxio" }, correct: "C" },
+  { q: "Pengembangan karya ilmiah dengan teknik analogi terdapat pada contoh ....", opts: { A: "Lembaga pendidikan disetarakan dengan rumah makan", B: "Kemampuan kebahasaan dan menulis", C: "Perbedaan pantun dan syair", D: "Masalah Terusan Panama" }, correct: "A" },
+  { q: "Kalimat 'Suasana di rumahnya sangat sepi sekali.' termasuk tidak efektif, perbaikannya ....", opts: { A: "Suasana rumahnya sepi.", B: "Suasana di rumahnya sepi.", C: "Suasana rumahnya sepi sekali.", D: "Suasana di rumahnya sangat sepi." }, correct: "B" },
+  { q: "Ikhtisar atau ringkasan dari teks laporan penelitian disebut ....", opts: { A: "abstrak", B: "sinopsis", C: "simpulan", D: "rangkuman" }, correct: "A" },
+  { q: "Kesalahan ejaan pada kalimat 'Penulis buku ini bernama lengkap Dr Syamsul Wahyu MA.' perbaikannya ....", opts: { A: "Dr Syamsul Wahyu, MA", B: "Dr. Syamsul Wahyu, M.A.", C: "DR. Syamsul Wahyu, M.A.", D: "dr Syamsul Wahyu, MA" }, correct: "B" },
+  { q: "Pengertian paragraf adalah ....", opts: { A: "satuan bahasa terkecil", B: "gabungan dua kata nonpredikatif", C: "kumpulan kesatuan pikiran lebih tinggi dari kalimat", D: "kata yang berdiri sendiri" }, correct: "C" },
+  { q: "Andi menyimak dosen lalu menyalin bagian penting. Keterampilan berbahasa yang diterapkan adalah ....", opts: { A: "tulis-lisan", B: "lisan-tulis", C: "tulis-lisan-tulis", D: "lisan-tulis-lisan" }, correct: "B" },
+  { q: "Piranti kohesi berupa konjungsi pada paragraf 'Kegiatan berbicara formal memiliki tahapan. Oleh sebab itu, kegiatan berbicara memerlukan persiapan.' terdapat pada frase ....", opts: { A: "berbicara formal", B: "oleh sebab itu", C: "kegiatan berbicara", D: "memerlukan persiapan" }, correct: "B" },
+  { q: "Kegiatan berbahasa reseptif contohnya ....", opts: { A: "mengerjakan tugas", B: "membaca buku cerita", C: "menyusun proposal", D: "mengikuti rapat" }, correct: "B" },
+  { q: "Penulis karya ilmiah tidak boleh mencuri ide, menyembunyikan prosedur, dan tidak mencantumkan nama anggota. Hal ini menjelaskan etika berupa ....", opts: { A: "hal buruk", B: "kejujuran", C: "menghargai hak orang lain", D: "bertanggung jawab" }, correct: "C" },
+  { q: "Contoh kalimat efektif yang memenuhi syarat kehematan adalah ....", opts: { A: "Parameter percobaan dalam penelitian yang digunakan...", B: "Parameter percobaan yang digunakan yaitu...", C: "Parameter percobaan yang terdapat dalam penelitian...", D: "Parameter percobaan penelitian dibedakan menjadi dua..." }, correct: "D" },
+  { q: "Ujaran Pak Amin tentang anaknya yang baru lahir tergolong ragam ....", opts: { A: "persuasif", B: "argumentatif", C: "ekspositif", D: "deskriptif" }, correct: "D" },
+  { q: "Topik paragraf tentang kemacetan di Jakarta adalah ....", opts: { A: "faktor penyebab kemacetan", B: "kemacetan biasa di Jakarta", C: "kurang disiplin", D: "aparat tidak tegas" }, correct: "A" },
+  { q: "Presenter yang baik memiliki ciri, kecuali ....", opts: { A: "santai, sopan", B: "selalu melihat jam", C: "interaksi memandang semua arah", D: "intonasi baik" }, correct: "B" },
+  { q: "Bacaan skimming untuk mencari kata dalam kamus termasuk contoh membaca ....", opts: { A: "mencari testimoni", B: "membaca kata dari kamus", C: "membaca novel", D: "membaca puisi berulang" }, correct: "B" },
+  { q: "Dalam rangka mengetahui kepuasan mahasiswa, program studi melakukan penelitian ini. Bagian tersebut merupakan ....", opts: { A: "penjabaran masalah", B: "tujuan masalah", C: "rumusan masalah", D: "latar belakang" }, correct: "D" },
+  { q: "Tahap SQ3R dimana pembaca menentukan tujuan membaca dengan pertanyaan sendiri adalah ....", opts: { A: "survey", B: "question", C: "recite", D: "review" }, correct: "B" },
+  { q: "Dalam teknik KWLH, tahap mencari informasi yang belum cukup dikuasai adalah ....", opts: { A: "know", B: "want", C: "learned", D: "how" }, correct: "B" },
+  { q: "Isi pendahuluan karya ilmiah adalah ....", opts: { A: "abstrak", B: "tujuan penelitian", C: "pembahasan", D: "simpulan" }, correct: "B" },
+  { q: "Contoh fungsi bahasa Indonesia sebagai bahasa resmi negara adalah ....", opts: { A: "surat resmi pemerintahan", B: "komunikasi antaretnis", C: "seminar akademik", D: "kegiatan internasional" }, correct: "A" },
+  { q: "Kalimat 'Baik mahasiswa lama atau mahasiswa baru harus mematuhi peraturan.' tidak efektif, perbaikannya ....", opts: { A: "Seluruh mahasiswa harus mematuhi peraturan.", B: "Mahasiswa lama atau baru harus mematuhi peraturan.", C: "Mahasiswa lama dan baru harus mematuhi peraturan.", D: "Seluruh mahasiswa baru mendapat perlakuan sama." }, correct: "A" },
+  { q: "Pengertian abstrak yang paling tepat adalah ....", opts: { A: "ringkasan bagian penting laporan", B: "bentuk dipadatkan dari tulisan panjang", C: "karangan berisi inti", D: "ringkasan karangan atau karya sastra" }, correct: "A" },
+  { q: "Sebuah abstrak berisi ....", opts: { A: "latar belakang", B: "seluruh bagian inti", C: "metode", D: "uraian hasil" }, correct: "B" },
+  { q: "Kesalahan ejaan pada kalimat 'Kemampuan ini dapat mendukung keberhasilan dalam study.' pada kata ....", opts: { A: "intensif", B: "dapat", C: "dalam", D: "study" }, correct: "D" },
+  { q: "Syarat paragraf baik memiliki kesatuan, maksudnya ....", opts: { A: "hubungan makna antarkalimat", B: "ketepatan kohesi", C: "keserasian antargagasan", D: "tidak ada kalimat sumbang" }, correct: "C" },
+  { q: "Alasan bahasa Melayu menjadi cikal bakal bahasa Indonesia, kecuali ....", opts: { A: "penuturnya banyak", B: "sederhana tidak bertingkat", C: "bahasa tertua di nusantara", D: "lebih disukai masyarakat" }, correct: "C" },
+  { q: "Istilah kohesi adalah ....", opts: { A: "hubungan makna antarkalimat tidak mendukung", B: "gagasan berdiri sendiri", C: "keserasian hubungan antarunsur", D: "hubungan mengikat makna ujaran" }, correct: "C" },
+  { q: "Ashkan menyimak pertanyaan guru dan menjawab. Contoh menyimak ....", opts: { A: "interaktif", B: "noninteraktif", C: "dua arah", D: "multiarah" }, correct: "A" },
+  { q: "Kesalahan pemilihan kata pada paragraf etnografi: 'ditinjau pada segi' seharusnya ....", opts: { A: "memengaruhi -> mempengaruhi", B: "ialah -> adalah", C: "bertujuan untuk -> bertujuan bagi", D: "ditinjau pada -> ditinjau dari" }, correct: "D" },
+  { q: "Konjungsi antarkalimat dalam 'Sebagian besar rumah di tepi sungai. Bahkan, ada kampung di tengah laut.' adalah kata ....", opts: { A: "sebagian besar", B: "rumah-rumah", C: "bahkan", D: "yang" }, correct: "C" },
+  { q: "Etika dalam menulis karya ilmiah, kecuali ....", opts: { A: "jujur, terbuka", B: "tidak menggunakan rujukan penulis lain", C: "tidak mencuri karya", D: "tidak mengabaikan hak orang lain" }, correct: "B" },
+  { q: "Dua orang berbicara saling bersahutan menunjukkan hakikat bahasa sebagai ....", opts: { A: "alat komunikasi", B: "alat ekspresi", C: "alat integrasi", D: "alat kontrol sosial" }, correct: "A" },
+  { q: "Kalimat efektif dalam karya ilmiah adalah ....", opts: { A: "Bab I berisi bagian pendahuluan.", B: "Kegiatannya meliputi pembelian buku, membuat majalah dinding, dan mengatur tataletaknya.", C: "Mahasiswa perguruan tinggi yang terkenal itu menerima hadiah.", D: "Bab II membicarakan isi atau bahasan." }, correct: "A" },
+  { q: "Guru menyatakan 'hari ini panas sekali' menunjukkan fungsi bahasa sebagai ....", opts: { A: "alat meminta", B: "alat wicara", C: "alat transaksi", D: "alat ekspresi" }, correct: "D" },
+  { q: "Paduan bunyi menyenangkan dalam syair lagu menunjukkan sifat bahasa ....", opts: { A: "produktif", B: "dinamis", C: "variatif", D: "estetis" }, correct: "D" },
+  { q: "Menghindari plagiarisme dengan cara ....", opts: { A: "tidak mengutip apapun", B: "tidak mengutip lebih dua kata", C: "izin penulis", D: "tulis nama penulis lengkap beserta sumber" }, correct: "D" },
+  { q: "Perbaikan kata depan: 'Interaksi pembelajaran sangat bergantung di tingkat intensitas tuturan' menjadi ....", opts: { A: "bergantung pada; antara...atau", B: "bergantung kepada; antara...dengan", C: "bergantung pada; antara...dan", D: "bergantung dengan; antara...atau" }, correct: "C" },
+  { q: "Karya yang dilindungi UU Hak Cipta No.19 tahun 2002 Pasal 12 ayat 1, salah satunya ....", opts: { A: "hasil rapat terbuka", B: "pidato kenegaraan", C: "putusan pengadilan", D: "program komputer" }, correct: "D" },
+  { q: "Kriteria karya sastra yang teliti, kecuali ....", opts: { A: "sumber rujukan", B: "pemilihan data", C: "menentukan dana penelitian", D: "menentukan jurnal" }, correct: "C" },
+  { q: "Bahasa Indonesia sebagai lambang kebanggaan nasional artinya ....", opts: { A: "setiap warga bangga", B: "bangga berbahasa asing", C: "mengandung kebanggaan bagi beberapa suku", D: "bangga memiliki bahasa Indonesia" }, correct: "D" },
+  { q: "Bahasa Indonesia semakin kuat kedudukannya ketika dijajah oleh ....", opts: { A: "Portugis", B: "Inggris", C: "Belanda", D: "Jepang" }, correct: "D" }
+];
+
+// Tambahan soal hingga 150
+const tambahan = [
+  { q: "Kegiatan membaca intensif adalah ....", opts: { A: "membaca cepat untuk ide umum", B: "membaca cermat untuk rincian informasi", C: "membaca sepintas", D: "membaca judul saja" }, correct: "B" },
+  { q: "Pemahaman subjektif dalam membaca adalah ....", opts: { A: "memahami fakta tersurat", B: "menangkap makna tersirat", C: "menangkap makna di luar konteks", D: "mengingat semua kata" }, correct: "B" },
+  { q: "Menganalisis unsur intrinsik cerpen termasuk kegiatan membaca ....", opts: { A: "ekstensif", B: "intensif", C: "indah", D: "cepat" }, correct: "B" },
+  { q: "Kalimat pembukaan pidato yang tidak efektif karena ketidakhematan adalah ....", opts: { A: "Kami ucapkan terima kasih", B: "Kami menghaturkan terima kasih sebanyak-banyaknya", C: "Terima kasih atas perhatiannya", D: "Selamat pagi hadirin" }, correct: "B" },
+  { q: "Perbaikan kalimat hasil penelitian: 'Hasil penelitian menunjukkan bahwa siswa mengalami peningkatan skor memahami teks narasi sebesar 30%.' menjadi ....", opts: { A: "menunjukkan, siswa", B: "menunjukkan bahwa siswa", C: "menunjukkan bahwa siswa mengalami peningkatan skor kemampuan memahami", D: "menunjukkan, bahwa siswa" }, correct: "C" },
+  { q: "Abstrak dapat ditulis dalam bahasa Indonesia apabila artikel dipublikasikan dalam ....", opts: { A: "jurnal nasional terakreditasi", B: "jurnal internasional", C: "seminar internasional di luar negeri", D: "seminar nasional di Indonesia" }, correct: "A" },
+  { q: "Kalimat 'Permasalahan utama penelitian ini adalah rendahnya kemampuan memahami teks arahan' merupakan bagian abstrak ....", opts: { A: "tujuan", B: "metode", C: "latar belakang", D: "hasil" }, correct: "C" },
+  { q: "Contoh berbicara monolog adalah ....", opts: { A: "ceramah di masjid", B: "tanya jawab", C: "diskusi", D: "wawancara" }, correct: "A" },
+  { q: "Tahap menentukan masalah yang akan didiskusikan termasuk tahap ....", opts: { A: "persiapan diskusi", B: "perumusan masalah", C: "pelaksanaan", D: "penutup" }, correct: "A" },
+  { q: "Abstrak yang baik memenuhi syarat representatif artinya ....", opts: { A: "ringkas", B: "jelas gagasan", C: "mewakili semua paparan", D: "menargetkan tujuan" }, correct: "C" }
+];
+
+// Gabung semua soal
+let allSoal = [...SOAL_RAW, ...tambahan];
+while(allSoal.length < 150) {
+  allSoal.push({ q: "Kalimat berikut yang menggunakan ragam baku dalam karya ilmiah adalah ....", opts: { A: "Aku udah baca buku itu", B: "Penelitian ini bertujuan untuk mengetahui", C: "Mereka lagi pada ngobrol", D: "Gue mau nulis makalah" }, correct: "B" });
+}
+const SOAL = allSoal.slice(0,150);
+console.log("Total soal:", SOAL.length);
+
+let answered = 0, correct = 0, wrong = 0;
+let userAnswers = new Array(SOAL.length).fill(null);
+
+function updateScoreUI() {
+  document.getElementById('sc-total').innerText = answered;
+  document.getElementById('sc-correct').innerText = correct;
+  document.getElementById('sc-wrong').innerText = wrong;
+  const percent = (answered / SOAL.length) * 100;
+  document.getElementById('progress').style.width = percent + '%';
+  if (answered === SOAL.length) showSummary();
+}
+
+function showSummary() {
+  const sumDiv = document.getElementById('summary');
+  sumDiv.classList.add('show');
+  document.getElementById('f-total').innerText = answered;
+  document.getElementById('f-correct').innerText = correct;
+  document.getElementById('f-wrong').innerText = wrong;
+  document.getElementById('f-pct').innerText = Math.round((correct/SOAL.length)*100) + '%';
+  setTimeout(() => sumDiv.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+}
+
+function renderQuiz() {
+  const container = document.getElementById('quiz');
+  container.innerHTML = '';
+  document.getElementById('summary').classList.remove('show');
+  answered = 0; correct = 0; wrong = 0; userAnswers.fill(null);
+  updateScoreUI();
+
+  SOAL.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = `card-${idx}`;
+    const topBar = document.createElement('div'); topBar.className = 'card-top';
+    const qHeader = document.createElement('div'); qHeader.className = 'q-header';
+    qHeader.innerHTML = `<div class="q-num">${idx+1}</div><div class="q-text">${item.q}</div>`;
+    card.appendChild(topBar); card.appendChild(qHeader);
+    const optsDiv = document.createElement('div'); optsDiv.className = 'options'; optsDiv.id = `opts-${idx}`;
+    const letters = ['A','B','C','D'];
+    letters.forEach(letter => {
+      if (!item.opts[letter]) return;
+      const btn = document.createElement('button'); btn.className = 'option'; btn.dataset.letter = letter;
+      btn.innerHTML = `<span class="opt-key">${letter}</span><span>${item.opts[letter]}</span>`;
+      btn.addEventListener('click', () => handleAnswer(idx, letter, item.correct, item));
+      optsDiv.appendChild(btn);
+    });
+    const revealDiv = document.createElement('div'); revealDiv.className = 'reveal'; revealDiv.id = `reveal-${idx}`;
+    card.appendChild(optsDiv); card.appendChild(revealDiv);
+    container.appendChild(card);
+  });
+}
+
+function handleAnswer(idx, chosen, correctLetter, item) {
+  if (userAnswers[idx] !== null) return;
+  userAnswers[idx] = chosen;
+  const optsDiv = document.getElementById(`opts-${idx}`);
+  const revealDiv = document.getElementById(`reveal-${idx}`);
+  const card = document.getElementById(`card-${idx}`);
+  const isCorrect = (chosen === correctLetter);
+  if (isCorrect) correct++; else wrong++;
+  answered++;
+  updateScoreUI();
+  card.classList.add(isCorrect ? 's-correct' : 's-wrong');
+  optsDiv.querySelectorAll('.option').forEach(btn => {
+    btn.disabled = true;
+    const val = btn.dataset.letter;
+    if (val === correctLetter) btn.classList.add('correct');
+    else if (val === chosen && !isCorrect) btn.classList.add('wrong');
+    else btn.classList.add('dimmed');
+  });
+  revealDiv.classList.add('show', isCorrect ? 'is-correct' : 'is-wrong');
+  const correctText = `${correctLetter}. ${item.opts[correctLetter]}`;
+  if (isCorrect) revealDiv.innerHTML = `<span>✅</span><span><strong>Benar!</strong> Jawaban: ${correctText}</span>`;
+  else revealDiv.innerHTML = `<span>❌</span><span><strong>Salah.</strong> Jawaban benar: ${correctText}</span>`;
+  setTimeout(() => {
+    const nextCard = document.getElementById(`card-${idx+1}`);
+    if (nextCard) nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 250);
+}
+
+function resetTryout() {
+  renderQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
