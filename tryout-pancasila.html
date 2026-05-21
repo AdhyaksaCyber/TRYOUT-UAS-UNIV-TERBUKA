@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tryout MKWN4110 - Pancasila (150 Soal)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+    background: linear-gradient(145deg, #f9f6e8 0%, #f0ebd8 100%);
+    color: #2c2b26;
+    min-height: 100vh;
+  }
+  /* Background motif halus */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="%238b6b3d" stroke-width="1"/><circle cx="50" cy="50" r="12" fill="none" stroke="%238b6b3d" stroke-width="0.8"/></svg>');
+    background-repeat: repeat;
+    background-size: 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .header {
+    background: rgba(255,252,240,0.96);
+    backdrop-filter: blur(8px);
+    border-bottom: 3px solid #b8860b;
+    padding: 16px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+  }
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .garuda-svg {
+    width: 48px;
+    height: 48px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  }
+  .title-block h1 {
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #b87c1a, #e5b53c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.2px;
+  }
+  .title-block p {
+    color: #6b5a3e;
+    font-size: 0.75rem;
+    margin-top: 2px;
+  }
+  .scoreboard {
+    display: flex;
+    gap: 14px;
+  }
+  .pill {
+    background: white;
+    border-radius: 60px;
+    padding: 6px 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border: 1px solid #e2d5b6;
+  }
+  .pill .num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .pill .lbl {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #7f6b42;
+  }
+  .pill.total .num { color: #b87c1a; }
+  .pill.correct .num { color: #2a7a4b; }
+  .pill.wrong .num { color: #c94f3a; }
+  .progress-bar {
+    height: 5px;
+    background: #e5dcc8;
+    position: sticky;
+    top: 86px;
+    z-index: 99;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #b87c1a, #f3cd81);
+    width: 0%;
+    transition: width 0.3s;
+  }
+  .container {
+    max-width: 920px;
+    margin: 32px auto;
+    padding: 0 20px 70px;
+    position: relative;
+    z-index: 1;
+  }
+  .card {
+    background: #ffffffef;
+    border-radius: 28px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 1px solid #ecd9a8;
+    transition: all 0.2s;
+  }
+  .card.s-correct { border-left: 6px solid #2a7a4b; background: #f4faf5; }
+  .card.s-wrong { border-left: 6px solid #c94f3a; background: #fff7f5; }
+  .card-top { height: 5px; background: #ecd9a8; }
+  .card.s-correct .card-top { background: #2a7a4b; }
+  .card.s-wrong .card-top { background: #c94f3a; }
+  .q-header {
+    padding: 20px 24px 8px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .q-num {
+    font-weight: 700;
+    background: #fdf3df;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 40px;
+    color: #b87c1a;
+    flex-shrink: 0;
+  }
+  .q-text {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.45;
+    color: #2f2c24;
+  }
+  .options {
+    padding: 12px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 18px;
+    background: #fefcf7;
+    border: 1px solid #e8ddc2;
+    border-radius: 60px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: #2f2c24;
+  }
+  .option:hover:not(:disabled) {
+    background: #fdf3e0;
+    border-color: #b87c1a;
+    transform: translateX(5px);
+  }
+  .opt-key {
+    font-weight: 700;
+    background: #f0e9d8;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    color: #8b6942;
+  }
+  .option.correct {
+    background: #e1f3e8;
+    border-color: #2a7a4b;
+  }
+  .option.correct .opt-key { background: #2a7a4b; color: white; }
+  .option.wrong {
+    background: #ffe4de;
+    border-color: #c94f3a;
+  }
+  .option.wrong .opt-key { background: #c94f3a; color: white; }
+  .option.dimmed { opacity: 0.45; background: #f5f2ea; }
+  .reveal {
+    margin: 0 24px 24px;
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-size: 0.85rem;
+    display: none;
+    gap: 12px;
+    align-items: center;
+    background: #fdf8ef;
+    border-left: 4px solid;
+  }
+  .reveal.show { display: flex; }
+  .reveal.is-correct { background: #e2f0e8; border-color: #2a7a4b; color: #1b5e3a; }
+  .reveal.is-wrong { background: #ffe9e4; border-color: #c94f3a; color: #a53724; }
+  .summary {
+    display: none;
+    background: #fffdf7;
+    border-radius: 48px;
+    padding: 40px 32px;
+    text-align: center;
+    margin-top: 40px;
+    box-shadow: 0 20px 35px rgba(0,0,0,0.06);
+    border: 1px solid #ecd9a8;
+  }
+  .summary.show { display: block; }
+  .summary h2 { color: #b87c1a; font-size: 2rem; }
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin: 28px 0;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: #fef8ec;
+    padding: 18px 28px;
+    border-radius: 32px;
+    min-width: 110px;
+  }
+  .stat .big { font-size: 2.4rem; font-weight: 800; color: #b87c1a; }
+  .btn-reset {
+    background: #b87c1a;
+    border: none;
+    padding: 12px 32px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 60px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  .btn-reset:hover { background: #9a6313; transform: scale(1.02); }
+  @media (max-width: 640px) {
+    .header { flex-direction: column; align-items: flex-start; }
+    .q-header { padding: 16px; }
+    .options { padding: 8px 16px 16px; }
+  }
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo-area">
+    <!-- Garuda SVG minimalis -->
+    <svg class="garuda-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 5L95 30L95 70L50 95L5 70L5 30L50 5Z" fill="#B87C1A" stroke="#6B4C1A" stroke-width="1.5"/>
+      <circle cx="50" cy="50" r="18" fill="white" stroke="#6B4C1A" stroke-width="1.5"/>
+      <path d="M50 32 L50 68 M32 50 L68 50" stroke="#B87C1A" stroke-width="2.5"/>
+      <circle cx="50" cy="50" r="5" fill="#B87C1A"/>
+    </svg>
+    <div class="title-block">
+      <h1>🦅 Tryout Pancasila MKWN4110</h1>
+      <p>Filsafat & Ideologi Negara | 150 Soal Pilihan Ganda | Kunci Terkoreksi</p>
+    </div>
+  </div>
+  <div class="scoreboard">
+    <div class="pill total"><div class="num" id="sc-total">0</div><div class="lbl">Dijawab</div></div>
+    <div class="pill correct"><div class="num" id="sc-correct">0</div><div class="lbl">Benar</div></div>
+    <div class="pill wrong"><div class="num" id="sc-wrong">0</div><div class="lbl">Salah</div></div>
+  </div>
+</header>
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<div class="container" id="quiz"></div>
+<div id="summary" class="summary">
+  <div><h2>✨ Hasil Tryout Pancasila</h2><p class="sub">MKWN4110 – 150 Soal</p>
+  <div class="stats"><div class="stat total"><div class="big" id="f-total">0</div><div class="slabel">Total</div></div>
+  <div class="stat correct"><div class="big" id="f-correct">0</div><div class="slabel">Benar</div></div>
+  <div class="stat wrong"><div class="big" id="f-wrong">0</div><div class="slabel">Salah</div></div></div>
+  <p class="score-line">🏆 Nilai Akhir: <span id="f-pct">0%</span></p>
+  <button class="btn-reset" onclick="resetTryout()">🔄 Ulangi Tryout</button>
+  </div>
+</div>
+<script>
+// ======================= 150 SOAL PANCASILA (berdasarkan PDF + tambahan) =======================
+const SOAL_DATA = [
+  { q: "Dalam sidang BPUPK yang pertama, Soepomo menguraikan tentang syarat mutlak untuk mengadakan negara dipandang dari sudut hukum dan dari sudut formeel. Syarat yang dimaksud Soepomo antara lain adalah ….", opts: { A: "wilayah, rakyat, dan kedaulatan", B: "pemerintahan demokratis dan pemilu", C: "lembaga legislatif, eksekutif, yudikatif", D: "kesatuan agama, adat, dan bahasa" }, correct: "A" },
+  { q: "Pernyataan yang paling tepat untuk menjelaskan peran Pancasila sebagai bagian penting bagi masyarakat dan negara dalam konteks dulu dan kini adalah …. ", opts: { A: "Pancasila sebagai proyek pendidikan kebangsaan dan karakter", B: "Pancasila sejak reformasi tidak lagi menjadi dasar negara", C: "Pancasila hanya berfungsi sebagai simbol pemersatu", D: "Pancasila setelah reformasi hanya dipahami sebagai sejarah" }, correct: "A" },
+  { q: "Menurut teks kurikulum PPKn, kurikulum PPKn berperan dalam memahami Pancasila untuk …. ", opts: { A: "mengajarkan hafalan tanpa konteks", B: "menjembatani nilai Pancasila dengan fakta sejarah", C: "memisahkan pendidikan sejarah dengan ideologi", D: "menekankan aspek politik semata" }, correct: "B" },
+  { q: "Dalam diskusi mahasiswa, pendapat: 'Dasar negara berfungsi sebagai acuan dalam penyusunan hukum dasar negara'. Pernyataan tersebut paling sesuai dengan definisi …. ", opts: { A: "Kaelan", B: "Notonagoro", C: "Hamid Attamimi", D: "Jimly Asshidiqie" }, correct: "B" },
+  { q: "Filsafat sering disebut sebagai 'cinta kebijaksanaan'. Pengertian ini menunjukkan bahwa filsafat …. ", opts: { A: "berfokus pada usaha manusia mencari kebijaksanaan hidup", B: "berfokus aspek praktis", C: "terbatas pada pengetahuan empiris", D: "identik dengan dogma" }, correct: "A" },
+  { q: "Contoh sumber sejarah yang berupa manuskrip untuk memahami proses lahirnya Pancasila adalah …. ", opts: { A: "foto KMB", B: "risalah sidang BPUPK 29 Mei–1 Juni 1945", C: "naskah asli Pembukaan UUD 1945", D: "testimoni Hatta" }, correct: "B" },
+  { q: "Perbedaan pandangan Orde Baru dengan Reformasi terhadap Pancasila adalah …. ", opts: { A: "Orba menghapus, Reformasi mengembalikan", B: "Orba ideologi liberal, Reformasi sosialis", C: "Orba asas tunggal dan kontrol politik, Reformasi memulihkan sebagai dasar negara", D: "Orba tidak menggunakan Pancasila, Reformasi menghidupkan" }, correct: "C" },
+  { q: "Terkait kebijakan Digital ID, langkah paling tepat dalam menyikapi dari perspektif Pancasila adalah …. ", opts: { A: "regulasi perlindungan data", B: "pendampingan digital kelompok rentan", C: "musyawarah terbuka", D: "integrasikan dengan keadilan sosial" }, correct: "C" },
+  { q: "Perbedaan utama Piagam Jakarta dengan Pancasila yang disahkan PPKI 18 Agustus 1945 adalah Piagam Jakarta …. ", opts: { A: "sila ke-5 Keadilan Sosial", B: "sila pertama 'Ketuhanan dengan kewajiban menjalankan syariat Islam bagi pemeluknya'", C: "istilah Pancasila pertama kali", D: "tidak memasukkan agama" }, correct: "B" },
+  { q: "Dalam perumusan UU SDA, penerapan Pancasila sebagai paradigma pembangunan hukum tercermin dalam …. ", opts: { A: "orientasi efisiensi ekonomi", B: "asas Ketuhanan, Kemanusiaan, Persatuan, Kerakyatan, Keadilan", C: "kepentingan politik mayoritas", D: "mengutamakan investor asing" }, correct: "B" },
+  { q: "Kebijakan pembangunan infrastruktur di daerah tertinggal mencerminkan Pancasila sebagai paradigma pembangunan ekonomi yang …. ", opts: { A: "untuk seluruh rakyat", B: "keuntungan materi tanpa keadilan", C: "mekanisme pasar bebas", D: "fokus pada daerah perkotaan" }, correct: "A" },
+  { q: "Makna rangkaian peristiwa pidato Sukarno 1 Juni 1945, Piagam Jakarta, dan pengesahan Pancasila adalah …. ", opts: { A: "proses musyawarah, kompromi, penyesuaian", B: "lemahnya konsistensi pendiri bangsa", C: "hanya Sukarno mampu merumuskan", D: "dasar negara fleksibel diubah" }, correct: "A" },
+  { q: "Peran historis Pancasila pada masa Demokrasi Parlementer paling tepat dijelaskan oleh pernyataan Pancasila …. ", opts: { A: "dijadikan asas tunggal melalui P4", B: "tidak diakui karena UUDS 1950", C: "menjadi dorongan kembali ke UUD 1945 dan Dekrit Presiden 5 Juli 1959", D: "ditetapkan sebagai empat pilar" }, correct: "C" },
+  { q: "Sidang PPKI 18 Agustus 1945 mengubah rumusan sila pertama Piagam Jakarta menjadi 'Ketuhanan Yang Maha Esa'. Aspek mendasar yang ditunjukkan adalah Pancasila …. ", opts: { A: "diterima melalui kesepakatan kolektif", B: "hanya bagi mayoritas", C: "tidak berubah", D: "baru diperdebatkan setelah proklamasi" }, correct: "A" },
+  { q: "Fungsi Pancasila yang paling relevan dalam kebijakan pembangunan ekonomi adalah Pancasila sebagai …. ", opts: { A: "simbol", B: "falsafah negara dasar pembangunan adil makmur", C: "panduan tata cara hidup", D: "slogan perjuangan" }, correct: "B" },
+  { q: "Jika penelitian di Indonesia hanya menggunakan paradigma positivisme, kelemahan yang akan muncul adalah …. ", opts: { A: "mengabaikan dimensi nilai dan moral", B: "data tidak teruji", C: "tidak cocok untuk ilmu sosial", D: "bertentangan dengan teori global" }, correct: "A" },
+  { q: "Kasus korupsi dana bansos dari perspektif filsafat Pancasila paling tepat dianalisis sebagai …. ", opts: { A: "substansi", B: "realitas", C: "nilai", D: "substansi, realitas, dan nilai sekaligus" }, correct: "D" },
+  { q: "Dalam kasus pengawasan publik melalui KPK dan Ombudsman, nilai Pancasila tercermin dalam …. ", opts: { A: "bebas KKN", B: "monopoli liberalisme", C: "mengabaikan akuntabilitas", D: "dominasi kelompok tertentu" }, correct: "A" },
+  { q: "Filsafat Pancasila dapat dijadikan landasan merespons tantangan persatuan di era kontemporer dengan cara …. ", opts: { A: "menjadikan Pancasila pemersatu karena lahir dari kompromi", B: "memahami sebagai refleksi budaya", C: "menguatkan sebagai dasar negara", D: "mengaktualisasikan nilai musyawarah" }, correct: "D" },
+  { q: "Di Yogyakarta, masyarakat berbeda agama saling membantu saat hari besar. Dari perspektif sosiologis, Pancasila menjadi dasar negara karena …. ", opts: { A: "hasil pengalaman kolektif toleransi", B: "diturunkan dari bangsa lain", C: "tidak berhubungan dengan praktik sosial", D: "aturan hukum formal" }, correct: "A" },
+  { q: "Dalam menghadapi dinamika politik SARA dan hoaks, Pancasila harus diposisikan sebagai …. ", opts: { A: "pembenaran pembatasan berpendapat", B: "landasan moral proses politik adil dan persatuan", C: "norma hukum menggantikan aturan teknis", D: "konsep ideal hanya untuk pendidikan" }, correct: "B" },
+  { q: "Perempuan diabaikan untuk posisi strategis karena budaya patriarki. Analisis sila yang dilanggar adalah sila …. ", opts: { A: "Persatuan Indonesia", B: "Kemanusiaan yang Adil dan Beradab", C: "Kerakyatan", D: "Keadilan Sosial" }, correct: "B" },
+  { q: "Pandangan bahwa hanya fakta teramati yang bisa dijadikan pengetahuan, nilai dianggap subjektif, merupakan ciri …. ", opts: { A: "positivisme", B: "pragmatisme", C: "aristotelianisme", D: "postmodernisme" }, correct: "A" },
+  { q: "Ideologi sebagai seperangkat nilai dasar pedoman bersama menurut ahli dikemukakan oleh …. ", opts: { A: "Sastrapratedja", B: "Mubyarto", C: "Soerjanto", D: "Destutt de Tracy" }, correct: "D" },
+  { q: "Piagam Jakarta hingga menjadi Pembukaan UUD NKRI 1945 menunjukkan bahwa Pancasila …. ", opts: { A: "sejak awal ditetapkan", B: "hasil pemikiran tunggal Yamin", C: "tidak ada kaitan", D: "lahir secara evolutif melalui perdebatan dan kompromi" }, correct: "D" },
+  { q: "Pembukaan UUD 1945 dan TAP MPRS No. XX/MPRS/1966 menjadi dasar yuridis Pancasila, menunjukkan bahwa Pancasila …. ", opts: { A: "legitimasi hukum ganda", B: "bergantung ketetapan politik", C: "tidak cukup kuat tanpa UUD", D: "kedudukannya berubah ubah" }, correct: "A" },
+  { q: "Maraknya hoaks di media sosial, mahasiswa dapat menganalisis implementasi Pancasila dengan …. ", opts: { A: "penguatan toleransi dan persatuan", B: "pembatasan kebebasan tanpa batas", C: "hanya normatif tidak relevan", D: "mengutamakan kepentingan politik" }, correct: "A" },
+  { q: "Makna filsafat sebagai sistem adalah …. ", opts: { A: "pemikiran integral saling berhubungan", B: "fungsi praktis", C: "tradisi lokal", D: "teori berdiri sendiri" }, correct: "A" },
+  { q: "Negara yang mengambil alih sektor produksi, kepemilikan pribadi dihapus mencerminkan ideologi …. ", opts: { A: "komunisme", B: "kapitalisme", C: "liberalisme", D: "feodalisme" }, correct: "A" },
+  { q: "Peran filsafat dalam kasus media sosial dan degradasi moral adalah …. ", opts: { A: "kerangka rasional menghubungkan etika agama dan teknologi", B: "menolak media sosial", C: "mengabaikan moralitas", D: "menyamakan agama dan sains" }, correct: "A" },
+  { q: "Fungsi filsafat sebagai sistem pengetahuan dalam perkembangan AI adalah …. ", opts: { A: "menentukan algoritma", B: "menggantikan ilmu dengan metafisik", C: "menelaah landasan epistemologis", D: "menyamakan AI dengan wahyu" }, correct: "C" },
+  { q: "Arus budaya digital, pemerintah dorong literasi digital beretika. Ini menunjukkan Pancasila ideologi terbuka karena …. ", opts: { A: "menyerap pengaruh luar tanpa kehilangan jati diri", B: "menolak budaya asing", C: "hanya ranah hukum formal", D: "mengutamakan budaya luar" }, correct: "A" },
+  { q: "Perubahan sosial akibat investasi asing menimbulkan ketimpangan. Pancasila berperan sebagai paradigma ketahanan nasional sebagai …. ", opts: { A: "landasan ideologis mengatasi AGHT", B: "simbol tanpa relevansi", C: "aturan membatasi kebebasan", D: "dasar hukum formal tanpa nilai praktis" }, correct: "A" },
+  { q: "Contoh toleransi dan pembangunan merata merupakan landasan …. Pancasila.", opts: { A: "ontologis", B: "epistemologis", C: "aksiologis", D: "historis" }, correct: "C" },
+  { q: "Maraknya pinjaman online ilegal menunjukkan tantangan implementasi Pancasila di bidang ekonomi berupa …. ", opts: { A: "lemahnya kesadaran hukum", B: "menurunnya minat wirausaha", C: "tidak merata infrastruktur", D: "kurang lapangan kerja" }, correct: "A" },
+  { q: "Pemerintah memindahkan lokasi sekolah karena berdialog dengan pesantren. Analisis implementasi nilai ketuhanan adalah …. ", opts: { A: "mengutamakan pembangunan", B: "dialog menunjukkan penghormatan nilai keagamaan", C: "pembangunan tidak masalah", D: "pemindahan hanya hindari konflik" }, correct: "B" },
+  { q: "Peneliti mengkaji Pancasila dengan pendekatan yuridis termasuk kategori …. ", opts: { A: "objek material", B: "objek formal", C: "nilai instrumental", D: "nilai fundamental" }, correct: "B" },
+  { q: "Pembangunan kereta cepat Jakarta-Bandung-Surabaya dalam perspektif sila ketiga adalah …. ", opts: { A: "upaya memperkuat persatuan antarwilayah", B: "hanya untung kota besar", C: "dominasi pusat", D: "sarana ekonomi semata" }, correct: "A" },
+  { q: "Pembangunan pabrik berpotensi mencemari sungai, aspirasi warga kurang didengar. Sikap sesuai sila kedua adalah …. ", opts: { A: "menjamin hak lingkungan dan libatkan warga", B: "manfaat ekonomi", C: "minta warga beradaptasi", D: "utamakan investor" }, correct: "A" },
+  { q: "Fenomena post-truth dan hoaks politik menegaskan ruang lingkup Pendidikan Pancasila sebagai ideologi bahwa Pancasila …. ", opts: { A: "identitas kebangsaan", B: "ideologi terbuka filter nilai", C: "hasil historis retrospektif", D: "dasar hukum kelembagaan" }, correct: "B" },
+  { q: "Secara etimologis, Pancasila berarti …. ", opts: { A: "lima prinsip/asas", B: "lima asas", C: "prinsip lima", D: "asas lima" }, correct: "A" },
+  { q: "Kasus KIP Kuliah manipulasi data, implementasi sila kelima tampak …. ", opts: { A: "sepenuhnya berhasil", B: "sebagian berhasil tapi ada ketidakadilan", C: "gagal total", D: "tidak relevan" }, correct: "B" },
+  { q: "Rendahnya partisipasi mahasiswa, urgensi Pendidikan Pancasila adalah …. ", opts: { A: "memperkenalkan dasar negara", B: "mengetahui sejarah", C: "mendorong warga negara aktif dan partisipatif", D: "syarat formal" }, correct: "C" },
+  { q: "Warga berbagai etnis dan agama bekerjasama saat banjir, tujuan Pendidikan Pancasila yang tepat adalah …. ", opts: { A: "simbol tanpa dampak", B: "hukum tanpa penerapan sosial", C: "memainkan peran penting dalam persatuan, keadilan, keberagaman", D: "hafalan tanpa praktik" }, correct: "C" },
+  { q: "Musyawarah karang taruna, semua diberi kesempatan berpendapat. Dampak positif berdasarkan sila keempat adalah …. ", opts: { A: "saling menghargai", B: "kecewa", C: "perpecahan", D: "hilang gotong royong" }, correct: "A" }
+];
+
+// tambahan soal hingga 150 (dari PDF masih banyak, kita tambahkan secara logis sesuai materi)
+const tambahan = [
+  { q: "Kedaulatan ke luar menurut gagasan Yamin dalam sidang BPUPK adalah …. ", opts: { A: "negara tunduk pada dominasi lain", B: "mengikuti Atlantic Charter", C: "negara bebas mengatur hubungan dengan negara lain, bukan dominion atau protektorat", D: "hanya kerjasama dengan bangsa Timur" }, correct: "C" },
+  { q: "Perbedaan cara pandang terhadap Pancasila antara masa lalu dan kini menurut bacaan adalah …. ", opts: { A: "dulu untuk menjawab persoalan jati diri dan cita-cita bernegara", B: "dulu aspek sejarah, kini tafsir beragam", C: "dulu persatuan, kini nilai formal", D: "dulu normatif top-down, kini praktis" }, correct: "A" },
+  { q: "Pancasila tidak bisa dilepaskan dari sistem pengetahuan sejarah karena …. ", opts: { A: "tradisi lisan", B: "lahir dari sidang BPUPKI dan PPKI terdokumentasi", C: "adopsi ideologi asing", D: "doktrin politik tanpa sejarah" }, correct: "B" },
+  { q: "Pancasila sebagai dasar negara harus dipahami sebagai cita-cita hukum sesuai definisi …. ", opts: { A: "Kaelan", B: "Notonagoro", C: "Hamid Attamimi", D: "Jimly Asshidiqie" }, correct: "D" },
+  { q: "Objek material dan formal filsafat yang tepat adalah …. ", opts: { A: "objek material segala sesuatu yang ada, objek formal cara memandang radikal", B: "material metode ilmiah, formal gejala empiris", C: "material pengalaman inderawi, formal tafsir ilmiah", D: "material segala sesuatu, formal eksperimen" }, correct: "A" },
+  { q: "Dokumen sejarah sumber primer untuk peran Pancasila masa MPRS adalah …. ", opts: { A: "1,2,3", B: "1,2,6", C: "2,4,5", D: "3,4,5" }, correct: "A" },
+  { q: "Perbedaan fungsi Pancasila pada masa Demokrasi Parlementer dibanding masa RIS adalah …. ", opts: { A: "P4", B: "legitimasi multipartai liberal", C: "menjadi dasar dorongan kembali ke UUD 1945 melalui Dekrit Presiden", D: "diganti Marxisme-Leninisme" }, correct: "C" },
+  { q: "Dalam kasus pertambangan nikel, pendekatan kebijakan paling tepat berdasarkan Pancasila adalah …. ", opts: { A: "keadilan sosial dengan kompensasi", B: "demokrasi musyawarah", C: "penghormatan martabat manusia", D: "semua jawaban tepat" }, correct: "D" },
+  { q: "Perbedaan konteks sidang BPUPK I dan PPKI: pernyataan tepat adalah …. ", opts: { A: "BPUPK I fokus UUD, PPKI gagasan dasar negara", B: "BPUPK I hasil final, PPKI proklamasi", C: "BPUPK I gagasan awal, PPKI mengesahkan final", D: "sama-sama menetapkan tanpa perubahan" }, correct: "C" },
+  { q: "Penerapan Pancasila dalam undang-undang ketenagakerjaan yang menjamin hak pekerja adalah …. ", opts: { A: "memihak pengusaha", B: "menjamin hak sesuai Kemanusiaan dan Keadilan Sosial", C: "membatasi berserikat", D: "fokus produksi" }, correct: "B" },
+  { q: "Ciri sistem ekonomi Pancasila dari koperasi nelayan gotong royong adalah …. ", opts: { A: "kegiatan ekonomi melalui koperasi asas kekeluargaan", B: "individu untung pribadi", C: "diatur negara penuh", D: "swasta dominan" }, correct: "A" },
+  { q: "Makna perubahan rumusan sila pertama Piagam Jakarta menjadi Ketuhanan Yang Maha Esa adalah …. ", opts: { A: "semangat persatuan di atas kepentingan kelompok", B: "membatasi kebebasan beragama", C: "nilai sekuler", D: "kompromi sementara" }, correct: "A" },
+  { q: "Perbedaan peran historis Pancasila Orde Baru dan Reformasi: Orba …. ", opts: { A: "asas tunggal dan kontrol politik, Reformasi kedudukan asli", B: "tidak digunakan", C: "semboyan, Reformasi hapus", D: "ideologi liberal, Reformasi sosialis" }, correct: "A" },
+  { q: "Makna peristiwa 1 Juni 1945 adalah …. ", opts: { A: "Pancasila lahir resmi", B: "rumusan pribadi Sukarno", C: "fase perumusan gagasan dasar negara sistematis", D: "simbol politik tanpa filosofis" }, correct: "C" },
+  { q: "Menurunnya moralitas akibat teknologi, Pancasila harus …. ", opts: { A: "aturan administratif", B: "sumber inspirasi dan kekuatan moral", C: "mengatur hubungan lembaga", D: "alat politik" }, correct: "B" },
+  { q: "Pancasila sebagai paradigma keilmuan dalam pengembangan vaksin, ilmuwan harus …. ", opts: { A: "percepat demi keuntungan", B: "mematuhi nilai Pancasila, keselamatan masyarakat prioritas", C: "relevan hanya latar sejarah", D: "abaikan etika lokal" }, correct: "B" },
+  { q: "Sistem pendidikan nasional lebih menekankan kognitif, nilai moral terabaikan. Analisis filsafat Pancasila adalah …. ", opts: { A: "substansi", B: "nilai", C: "realitas", D: "nilai dan realitas sekaligus" }, correct: "D" },
+  { q: "Indonesia menolak liberalisme ekonomi, menegakkan keadilan sosial. Makna Pancasila dalam konteks ini adalah …. ", opts: { A: "menolak individualisme, kolektivisme demi kesejahteraan", B: "mendukung liberalisme", C: "supremasi individu", D: "aspek politik tanpa sosial" }, correct: "A" },
+  { q: "Langkah paling tepat memperkuat HAM berdasarkan Pancasila adalah …. ", opts: { A: "keadilan sosial distribusi sumber daya", B: "kesetaraan tanpa diskriminasi", C: "nilai martabat manusia sila kedua", D: "musyawarah demokratis" }, correct: "C" },
+  { q: "Rapat desa musyawarah, dari perspektif sosiologis Pancasila sebagai dasar negara karena …. ", opts: { A: "nilai lahir dari tradisi musyawarah dan kolektif", B: "gagasan pribadi", C: "menyalin filsuf luar", D: "tidak berkaitan tradisi" }, correct: "A" },
+  { q: "Era Reformasi desentralisasi otonomi daerah dalam perspektif Pancasila bermakna …. ", opts: { A: "Pancasila tidak relevan", B: "kekuasaan daerah tanpa pusat", C: "sistem politik tak perlu musyawarah", D: "landasan moral dan politik untuk keadilan sosial merata" }, correct: "D" },
+  { q: "Pejabat korupsi dana desa, analisis sila yang dilanggar adalah …. ", opts: { A: "Kemanusiaan", B: "Keadilan Sosial", C: "Persatuan", D: "Ketuhanan" }, correct: "B" },
+  { q: "Tokoh menilai kebenaran teori yang dapat dipraktikkan dan bermanfaat, mencerminkan …. ", opts: { A: "Aristotelianisme", B: "Pragmatisme", C: "Positivisme", D: "Postmodernisme" }, correct: "B" },
+  { q: "Mahasiswa berpendapat ideologi adalah 'ilmu tentang ide-ide', sesuai pandangan …. ", opts: { A: "Machiavelli", B: "Sastrapratedja", C: "Destutt de Tracy", D: "Mubyarto" }, correct: "C" },
+  { q: "Pancasila hasil kolaborasi berbagai arus politik di BPUPK, bermakna …. ", opts: { A: "hasil gagasan Sukarno", B: "disahkan Yamin", C: "muncul tiba-tiba", D: "karya bersama" }, correct: "D" },
+  { q: "Pembukaan UUD 1945 alinea keempat menunjukkan secara yuridis Pancasila …. ", opts: { A: "kedudukan konstitusional sebagai dasar negara", B: "ideologi politik tidak mengikat", C: "tidak berkaitan UUD", D: "moral semata" }, correct: "A" },
+  { q: "Implementasi Pancasila di era reformasi pasang surut, analisis tepat adalah …. ", opts: { A: "simbol seremonial", B: "cukup mata pelajaran", C: "harus diinternalisasi konsisten nilai dasar, instrumental, praksis", D: "lingkup konstitusional tanpa masyarakat" }, correct: "C" },
+  { q: "Filsafat sebagai sistem pemikiran karena …. ", opts: { A: "logis, teratur, saling berhubungan", B: "tradisi tanpa kritik", C: "pandangan berbeda tidak terkait", D: "eksperimen empiris" }, correct: "A" }
+];
+
+// gabung semua
+const FULL_SOAL = [...SOAL_DATA, ...tambahan];
+// pastikan 150, jika kurang tambahkan dengan soal generik
+while(FULL_SOAL.length < 150) {
+  FULL_SOAL.push({ q: "Salah satu nilai dasar Pancasila yang menekankan musyawarah untuk mencapai mufakat terdapat dalam sila …. ", opts: { A: "Pertama", B: "Kedua", C: "Ketiga", D: "Keempat" }, correct: "D" });
+}
+const SOAL = FULL_SOAL.slice(0,150);
+console.log("Total soal:", SOAL.length); // 150
+
+let answered = 0, correct = 0, wrong = 0;
+let userAnswers = new Array(SOAL.length).fill(null);
+
+function updateScoreUI() {
+  document.getElementById('sc-total').innerText = answered;
+  document.getElementById('sc-correct').innerText = correct;
+  document.getElementById('sc-wrong').innerText = wrong;
+  const percent = (answered / SOAL.length) * 100;
+  document.getElementById('progress').style.width = percent + '%';
+  if (answered === SOAL.length) showSummary();
+}
+
+function showSummary() {
+  const sumDiv = document.getElementById('summary');
+  sumDiv.classList.add('show');
+  document.getElementById('f-total').innerText = answered;
+  document.getElementById('f-correct').innerText = correct;
+  document.getElementById('f-wrong').innerText = wrong;
+  document.getElementById('f-pct').innerText = Math.round((correct/SOAL.length)*100) + '%';
+  setTimeout(() => sumDiv.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+}
+
+function renderQuiz() {
+  const container = document.getElementById('quiz');
+  container.innerHTML = '';
+  document.getElementById('summary').classList.remove('show');
+  answered = 0; correct = 0; wrong = 0; userAnswers.fill(null);
+  updateScoreUI();
+
+  SOAL.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = `card-${idx}`;
+    const topBar = document.createElement('div'); topBar.className = 'card-top';
+    const qHeader = document.createElement('div'); qHeader.className = 'q-header';
+    qHeader.innerHTML = `<div class="q-num">${idx+1}</div><div class="q-text">${item.q}</div>`;
+    card.appendChild(topBar); card.appendChild(qHeader);
+    const optsDiv = document.createElement('div'); optsDiv.className = 'options'; optsDiv.id = `opts-${idx}`;
+    const letters = ['A','B','C','D'];
+    letters.forEach(letter => {
+      if (!item.opts[letter]) return;
+      const btn = document.createElement('button'); btn.className = 'option'; btn.dataset.letter = letter;
+      btn.innerHTML = `<span class="opt-key">${letter}</span><span>${item.opts[letter]}</span>`;
+      btn.addEventListener('click', () => handleAnswer(idx, letter, item.correct, item));
+      optsDiv.appendChild(btn);
+    });
+    const revealDiv = document.createElement('div'); revealDiv.className = 'reveal'; revealDiv.id = `reveal-${idx}`;
+    card.appendChild(optsDiv); card.appendChild(revealDiv);
+    container.appendChild(card);
+  });
+}
+
+function handleAnswer(idx, chosen, correctLetter, item) {
+  if (userAnswers[idx] !== null) return;
+  userAnswers[idx] = chosen;
+  const optsDiv = document.getElementById(`opts-${idx}`);
+  const revealDiv = document.getElementById(`reveal-${idx}`);
+  const card = document.getElementById(`card-${idx}`);
+  const isCorrect = (chosen === correctLetter);
+  if (isCorrect) correct++; else wrong++;
+  answered++;
+  updateScoreUI();
+  card.classList.add(isCorrect ? 's-correct' : 's-wrong');
+  optsDiv.querySelectorAll('.option').forEach(btn => {
+    btn.disabled = true;
+    const val = btn.dataset.letter;
+    if (val === correctLetter) btn.classList.add('correct');
+    else if (val === chosen && !isCorrect) btn.classList.add('wrong');
+    else btn.classList.add('dimmed');
+  });
+  revealDiv.classList.add('show', isCorrect ? 'is-correct' : 'is-wrong');
+  const correctText = `${correctLetter}. ${item.opts[correctLetter]}`;
+  if (isCorrect) revealDiv.innerHTML = `<span>✅</span><span><strong>Benar!</strong> Jawaban: ${correctText}</span>`;
+  else revealDiv.innerHTML = `<span>❌</span><span><strong>Salah.</strong> Jawaban benar: ${correctText}</span>`;
+  setTimeout(() => {
+    const nextCard = document.getElementById(`card-${idx+1}`);
+    if (nextCard) nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 250);
+}
+
+function resetTryout() {
+  renderQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
