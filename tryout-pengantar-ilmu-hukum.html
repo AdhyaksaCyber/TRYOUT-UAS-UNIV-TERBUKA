@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tryout Pengantar Ilmu Hukum</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --paper: #fffdf7;
+    --ink: #1a1208;
+    --ink-light: #5c4a2a;
+    --accent: #8b1a1a;
+    --accent-light: #c0392b;
+    --gold: #c8922a;
+    --green: #1a6b3a;
+    --correct-bg: #e8f5ec;
+    --wrong-bg: #faeaea;
+    --option-hover: #f0ebe0;
+    --border: #d4c9a8;
+    --shadow: rgba(26,18,8,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    background-image: 
+      repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(200,185,150,0.15) 28px);
+  }
+
+  .header {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 4px solid var(--gold);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-left h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.02em;
+    color: var(--bg);
+  }
+  
+  .header-left p {
+    font-size: 0.78rem;
+    color: #c8b898;
+    font-style: italic;
+    margin-top: 2px;
+  }
+
+  .scoreboard {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .score-pill {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(200,185,150,0.3);
+    border-radius: 6px;
+    padding: 6px 14px;
+    text-align: center;
+    min-width: 70px;
+  }
+
+  .score-pill .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .score-pill .lbl {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #c8b898;
+    margin-top: 2px;
+  }
+
+  .score-pill.total { color: #f0e8d0; }
+  .score-pill.correct { color: #6edd99; }
+  .score-pill.wrong { color: #ff8080; }
+
+  .progress-bar {
+    height: 3px;
+    background: rgba(200,185,150,0.2);
+    position: sticky;
+    top: 88px;
+    z-index: 99;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  .question-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    margin-bottom: 36px;
+    box-shadow: 0 2px 12px var(--shadow);
+    overflow: hidden;
+    transition: opacity 0.3s;
+  }
+
+  .question-header {
+    padding: 18px 28px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .q-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--accent);
+    font-weight: 700;
+    min-width: 32px;
+    padding-top: 1px;
+  }
+
+  .q-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--ink);
+    font-weight: 400;
+  }
+
+  .options {
+    padding: 16px 28px 20px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.9rem;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  .option:hover:not(:disabled) {
+    background: var(--option-hover);
+    border-color: var(--gold);
+    transform: translateX(2px);
+  }
+
+  .option .opt-letter {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--ink-light);
+    min-width: 18px;
+    font-size: 0.9rem;
+  }
+
+  .option:disabled { cursor: default; }
+
+  /* After answer states */
+  .option.correct {
+    background: var(--correct-bg) !important;
+    border-color: var(--green) !important;
+    color: var(--green);
+    transform: none !important;
+  }
+  
+  .option.correct .opt-letter { color: var(--green); }
+
+  .option.wrong {
+    background: var(--wrong-bg) !important;
+    border-color: var(--accent-light) !important;
+    color: var(--accent-light);
+  }
+  
+  .option.wrong .opt-letter { color: var(--accent-light); }
+
+  .option.dimmed {
+    opacity: 0.45;
+  }
+
+  /* Answer reveal */
+  .answer-reveal {
+    margin: 0 28px 20px;
+    padding: 12px 16px;
+    border-radius: 3px;
+    font-size: 0.88rem;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    border-left: 3px solid;
+  }
+
+  .answer-reveal.show { display: flex; }
+
+  .answer-reveal.is-correct {
+    background: #e8f5ec;
+    border-color: var(--green);
+    color: #145a32;
+  }
+
+  .answer-reveal.is-wrong {
+    background: #faeaea;
+    border-color: var(--accent-light);
+    color: var(--accent);
+  }
+
+  .answer-reveal .icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .answer-reveal .reveal-text {
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .answer-reveal strong {
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Status badge on card */
+  .card-status {
+    height: 4px;
+    width: 100%;
+  }
+  .card-status.s-correct { background: var(--green); }
+  .card-status.s-wrong { background: var(--accent-light); }
+
+  /* Final summary */
+  .summary {
+    display: none;
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 4px;
+    padding: 40px;
+    text-align: center;
+    margin-top: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .summary.show { display: block; }
+
+  .summary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--accent), var(--gold));
+  }
+
+  .summary h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 8px;
+    color: var(--bg);
+  }
+
+  .summary .subtitle {
+    color: #c8b898;
+    font-style: italic;
+    margin-bottom: 36px;
+    font-size: 0.9rem;
+  }
+
+  .summary-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+
+  .stat-box {
+    padding: 20px 28px;
+    border: 1px solid rgba(200,185,150,0.25);
+    border-radius: 4px;
+    min-width: 120px;
+  }
+
+  .stat-box .big {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-box .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #c8b898;
+  }
+
+  .stat-box.total .big { color: #f0e8d0; }
+  .stat-box.correct .big { color: #6edd99; }
+  .stat-box.wrong .big { color: #ff8080; }
+
+  .score-pct {
+    font-size: 1.1rem;
+    color: #c8b898;
+    margin-bottom: 28px;
+  }
+
+  .score-pct span {
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+  }
+
+  .btn-reset {
+    background: var(--gold);
+    color: var(--ink);
+    border: none;
+    padding: 12px 32px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+
+  .btn-reset:hover {
+    background: #e8a83a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(200,146,42,0.3);
+  }
+
+  @media (max-width: 600px) {
+    .header { flex-direction: column; gap: 16px; padding: 20px; }
+    .scoreboard { justify-content: center; }
+    .container { padding: 24px 16px 60px; }
+    .question-header, .options { padding-left: 18px; padding-right: 18px; }
+    .summary-stats { gap: 16px; }
+    .stat-box .big { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <h1>Tryout Pengantar Ilmu Hukum</h1>
+    <p>FSIH4101 &mdash; 150 Soal Pilihan Ganda</p>
+  </div>
+  <div class="scoreboard">
+    <div class="score-pill total">
+      <div class="num" id="sc-total">0</div>
+      <div class="lbl">Dijawab</div>
+    </div>
+    <div class="score-pill correct">
+      <div class="num" id="sc-correct">0</div>
+      <div class="lbl">Benar</div>
+    </div>
+    <div class="score-pill wrong">
+      <div class="num" id="sc-wrong">0</div>
+      <div class="lbl">Salah</div>
+    </div>
+  </div>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progress"></div>
+</div>
+
+<div class="container" id="quiz-container"></div>
+
+<script>
+const QUIZ = [{"q": "Pajak didefinisikan sebagai iuran kas kepada negara berdasarkan undang-undang (yang  dapat dipaksakan) yang tidak dipungut mendapat jasa yang langsung dapat ditunjukan  dan digunakan untuk membayar pengeluaran umum. Pernyataan tersebut dikemukakan  oleh ....", "opts": {"A": "Rochmat Soemitro", "B": "Sumardja", "C": "Adji Samekto", "D": "Soemahamidjadja"}, "ans": "A"}, {"q": "lstilah  rechts sociale  dikenal dengan  ....", "opts": {"A": "perbuatan manusia", "B": "subjek aturan", "C": "objek perjanjian", "D": "masyarakat hukum"}, "ans": "D"}, {"q": "Titik fokus dari dogmatik hukum menurut ensiklopedia ilmu hukum dalam arti sempit  yaitu ....", "opts": {"A": "cabang ilmu", "B": "hukum positif", "C": "sistem hukum", "D": "pengantar ilmu hukum"}, "ans": "B"}, {"q": "Hukum atau tata tertib itu dapat berwujud  ....", "opts": {"A": "kumpulan kaidah-kaidah, baik tertulis maupun tidak tertulis", "B": "menghormati orang yang lebih tua", "C": "berpakaian sesuai dengan situasi", "D": "tidak mengambil hak orang lain"}, "ans": "A"}, {"q": "Perwakilan sukarela adalah suatu perbuatan, dimana seseorang secara sukarela  menyediakan dirinya dengan maksud mengurus kepentingan orang lain, dengan  perhitungan dan risiko orang. Hal tersebut menurut pendapat  ....", "opts": {"A": "Lawrence m. Friedman", "B": "Ridwan Halim", "C": "Utrecht", "D": "Setiawan"}, "ans": "C"}, {"q": "Kepentingan-kepentingan manusia bisa saling berbenturan apabila tidak dikendalikan  oleh norma, lahirlah norma agama, kesusilaan dan kesopanan sebagai usaha manusia  untuk menyelaraskan kepentingan-kepentingan itu merupakan pendapat yang  dikemukakan oleh  ....", "opts": {"A": "Van Apeldoorn", "B": "Hans Kelsen", "C": "Van Kan", "D": "Utrech"}, "ans": "A"}, {"q": "Hukum yaitu suatu tatanan bisa disebut hukum, apabila secara eksternal dan dijamin  oleh kemungkinan bahwa paksaan yang ditujukan untuk mematuhi tatanan atau  menindak pelanggaran, akan diterapkan oleh suatu perangkat terdiri dari orang-orang  khusus menyiapkan diri untuk melakukan tugas-tugas tersebut. Aliran hukum sosiologis tersebut merupakan dipelopori salah satu tokoh, yaitu ....", "opts": {"A": "Eugene Ehrlich", "B": "Emile Durkheim", "C": "Max Weber", "D": "Karl llwellyn"}, "ans": "C"}, {"q": "Norma hukum dapat dibedakan antara yang bersifat umurn dan abstrak dengan yang  bersifat ....", "opts": {"A": "umum dan khusus", "B": "khusus dan konkret", "C": "umum dan individual", "D": "konret dan individual"}, "ans": "B"}, {"q": "Berikut implementasi norma kesopanan yang sering dijumpai, yaitu ....", "opts": {"A": "menaati peraturan yang ada di lingkungan", "B": "tidak kebut-kebutan di jalan raya", "C": "saling tegur sapa dengan orang yang dikenal", "D": "memanggil nama teman dengan nama orang tuanya"}, "ans": "B"}, {"q": "Yang merupakan tokoh aliran hukum alam, yaitu  ....", "opts": {"A": "John Austin", "B": "Sovereignty", "C": "Plato", "D": "Hans Kelsen"}, "ans": "C"}, {"q": "Sebutan lain dari adat istiadat yaitu ....", "opts": {"A": "cara", "B": "usage", "C": "customs", "D": "folkways"}, "ans": "C"}, {"q": "Hukum perdata adalah hukum antar perorangan yang mengatur hak dan kewajiban  perorangan yang satu terhadap yang lain di dalam hubungan keluarga dan di dalam  pergaulan masyarakat. Hukum perdata adalah suatu rangkaian hukum antara orang- orang atau badan hukum yang satu sama lain tentang hak dan kewajiban merupakan  definisi hukum perdata menurut  ....", "opts": {"A": "Subekti", "B": "Vollmar", "C": "Soediman Kartohadiprodjo", "D": "Sudikno Mertokusumo"}, "ans": "A"}, {"q": "Perjanjian suatu perbuatan dengan mana satu orang atau lebih mengikatkan dirinya  terhadap satu orang lain atau lebih. Hal ini diatur dalam ketentuan KUH perdata Pasal", "opts": {"A": "1233", "B": "1313", "C": "1320", "D": "1333"}, "ans": "B"}, {"q": "Masyarakat secara urnum terdiri atas  gemeinschaft  dan  gesselschaft  atau biasa disebut  dengan sebutan masyarakat ....", "opts": {"A": "paguyuban dan keluarga", "B": "paguyuban dan patembayan", "C": "keluarga dan patembayan", "D": "patembayan dan masyarakat"}, "ans": "B"}, {"q": "Berikut adalah contoh norma kesusilaan yang sering dijumpai dalam kehidupan sehari- hari yaitu  ....", "opts": {"A": "meminjam barang milik orang lain dan tidak dikembalikan", "B": "melaksankan perintah agama", "C": "menaati aturan hukum", "D": "tidak mengambil hak orang lain"}, "ans": "D"}, {"q": "Fungsi yang menopang dan mendorong fungsi pembaharuan untuk mengajak umat  beragama bekerja produktif dan inovatif bukan hanya bagi diri sendiri tetapi juga orang  lain. Hal tersebut merupakan contoh dari ....", "opts": {"A": "fungsi pemupuk rasa solidaritas", "B": "fungsi kontrol sosial", "C": "fungsi kreatif", "D": "fungsi pembaharuan"}, "ans": "C"}, {"q": "Hukum pidana  (criminal law, strafrecht),  yaitu  ....", "opts": {"A": "sekelompok orang yang berdiam dalam suatu wilayah tertentu", "B": "keseluruhan aturan-aturan hukum yang mengatur tindakan-tindakan pemaksa yang  khusus yang diancam kepada siapa yang tidak mentaati aturan-aturan hukum dari  lapangan-lapangan yang lain", "C": "segala sesuatu yang berguna bagi subjek hukum dan dapat menjadi pokok suatu  hubungan hukum yang dilakukan oleh para subjek hukum", "D": "kumpulan kaidah-kaidah, baik tertulis maupun tidak tertulis"}, "ans": "B"}, {"q": "Ahli yang mengemukakan harus adanya Mahkamah Konstitusi ( Constitutional Court) dalam suatu negara yaitu ....", "opts": {"A": "Logemann", "B": "Apeldorn", "C": "Moh. Kusnardi", "D": "Hans kelsen"}, "ans": "D"}, {"q": "Berikut yang menjadi bagian dari 3 unsur sistem hukum, yaitu  ....", "opts": {"A": "budaya", "B": "adat", "C": "dinamis", "D": "kultur"}, "ans": "A"}, {"q": "Hukum dibedakan berdasarkan ....", "opts": {"A": "sifatnya", "B": "bentuknya", "C": "prakteknya", "D": "isinya"}, "ans": "D"}, {"q": "Hukum adat adalah sistem hukum yang dikenal dalam lingkungan kehidupan sosial di  indonesia dan negara-negara asia lainnya seperti  ....", "opts": {"A": "Amerika, Singapura", "B": "Jepang, India, dan Tiongkok", "C": "Saudi Arabia, Palestina", "D": "Bangkok, Taiwan"}, "ans": "B"}, {"q": "Berikut merupakan hukum tertulis yang tidak dikodifikasikan yaitu ....", "opts": {"A": "Kitab Undang-Undang Hukum Pidana (KUHP)", "B": "Kitab Undang-Undang Hukum Perdata (KUH Perdata)", "C": "Undang-Undang Narkotika", "D": "Kitab Undang-Undang Hukum Dagang (KUHD)"}, "ans": "C"}, {"q": "Yurisprudensi merupakan salah satu sumber hukum paling penting dalam sistem hukum  di samping  ....", "opts": {"A": "agama", "B": "peraturan perundang-undangan", "C": "kebiasaan", "D": "kodrat"}, "ans": "B"}, {"q": "Yang tidak termasuk ciri-ciri usulan tatanan hukum nasional indonesia menurut Arief  Sidharta yaitu  ....", "opts": {"A": "berwawasan kebangsaan dan berwawasan nusantara", "B": "mampu mengakomodasi  kesadaran hukum kelompok etnis kedaerahan dan  keyakinan keagamaan", "C": "sejauh mungkin berbentuk tertulis dan terunifikasi", "D": "kumpulan kaidah-kaidah, baik tertulis maupun tidak tertulis"}, "ans": "D"}, {"q": "lnterprestasi menurut sejarah undang-undang. Setiap ketentuan perundang-undangan  mempunyai makna sendiri. Karena itu, untuk mengetahui makna atau kalimat dalam  satu undang-undang dapat menafsirkan dengan jalan meneliti sejarah kelahiran undang- undang atau pasal tertentu dari undang-undang. Merupakan penafsiran ....", "opts": {"A": "sahih", "B": "bahasa", "C": "gramatikal", "D": "historis"}, "ans": "D"}, {"q": "Perjanjian yang masih memungkinkan menerima peserta negara lain, walaupun traktat  tersebut telah berlaku dan negara lain itu tidak ikut serta dalam pembentukannya  merupakan traktat yang bersifat ....", "opts": {"A": "tertutup", "B": "terbuka", "C": "dinamis", "D": "statis"}, "ans": "B"}, {"q": "Penemu teori kepentingan  (belangen theorie)  yaitu  ....", "opts": {"A": "Mochtar Kusumaatmaja", "B": "Hans Kelsen", "C": "Rudolf Von Jhering", "D": "Utrecht"}, "ans": "C"}, {"q": "Kata lain dari perbuatan melawan hukum yaitu  ....", "opts": {"A": "seinwissenschaft", "B": "sollenwissenschaft", "C": "onrechtmatige daad", "D": "rechtsbetrekking"}, "ans": "C"}, {"q": "Hukum yang berlaku dalam suatu negara yaitu  ....", "opts": {"A": "hukum nasional", "B": "hukum agama", "C": "hukum pidana", "D": "hukum perdata"}, "ans": "A"}, {"q": "Definisi dari fiksi hukum yaitu ....", "opts": {"A": "sesuatu yang khayal atau rekaan (bahwa yang ada dianggap tidak ada, yang tidak  ada dianggap ada) yang digunakan di dalam ilmu hukum dalam bentuk kata-kata", "B": "keseluruhan aturan-aturan hukum yang mengatur tindakan-tindakan pemaksa yang  khusus yang diancam kepada siapa yang tidak mentaati aturan-aturan hukum dari  lapangan-lapangan yang lain", "C": "segala sesuatu yang berguna bagi subjek hukum dan dapat menjadi pokok suatu  hubungan hukum yang dilakukan oleh para subjek hukum", "D": "kumpulan kaidah-kaidah, baik tertulis maupun tidak tertulis"}, "ans": "A"}, {"q": "Hukum internasional yaitu  ....", "opts": {"A": "hukum materiil", "B": "hukum yang mengatur hubungan antara orang dan tanah dengan orang lain", "C": "hukum yang mengatur hubungan hukum antar negara", "D": "hukum yang berlaku dalam suatu negara"}, "ans": "C"}, {"q": "Penjelasan ketentuan undang-undang dengan berpedoman pada undang-undang yang  belum mempunyai kekuatan hukum. Merupakan penafsiran hukum dari metode  penafsiran  ....", "opts": {"A": "komparatif", "B": "gramatikal", "C": "futuristis", "D": "historis"}, "ans": "C"}, {"q": "Tujuan dari metode penyempitan/pengkonkretan hukum  (rechtsverfijnings) yaitu  ....", "opts": {"A": "keseluruhan aturan-aturan hukum yang mengatur tindakan-tindakan pemaksa yang  khusus yang diancam kepada siapa yang tidak mentaati aturan-aturan hukum dari  lapangan-lapangan yang lain", "B": "segala sesuatu yang berguna bagi subjek hukum dan dapat menjadi pokok suatu  hubungan hukum yang dilakukan oleh para subjek hukum", "C": "kumpulan kaidah-kaidah, baik tertulis maupun tidak tertulis", "D": "mengkonkretkan/menyempitkan suatu aturan hukum yang terlalu abstrak, pasif serta  sangat umum, agar dapat diterapkan terhadap suatu peristiwa tertentu"}, "ans": "D"}, {"q": "Dasar pertimbangan  pendapat  yang  menyatakan  bahwa  hukum  pajak  harus  ditempatkan sejajar dengan hukum administrasi negara  (HAN)  tersebut adalah . . . .", "opts": {"A": "tugas hukum pajak bersifat lain dari pada hukum administrasi negara pada  umumnya", "B": "hukum pajak dapat secara langsung digunakan sebagai sarana politik perekonomian", "C": "hukum pajak memiliki tata tertib dan istilah-istilah yang khas untuk bidang  pekerjaannya", "D": "hukum pajak dapat secara langsung digunakan sebagai dasar punggutan pajak"}, "ans": "C"}, {"q": "Kewenangan bagi pejabat publik untuk mengambil keputusan dalam pelaksanaan  tugasnya sehari-hari pada situasi dan kondisi tertentu disebut sebagai  ....", "opts": {"A": "regeling", "B": "aturan", "C": "ketetapan", "D": "diskresi"}, "ans": "D"}, {"q": "Gustav Radbruch menganut asas  ....", "opts": {"A": "kehati-hatian", "B": "pacta sunt servanda", "C": "prioritas", "D": "kasuistis"}, "ans": "C"}, {"q": "Di bawah ini merupakan paham terkait definisi hukum, yaitu  ....", "opts": {"A": "pembangunan", "B": "pendidikan", "C": "pertanian", "D": "antropologis"}, "ans": "D"}, {"q": "Unsur pokok dari hukum pidana ialah  ....", "opts": {"A": "asas", "B": "dasar hukum", "C": "norma", "D": "doktrin"}, "ans": "C"}, {"q": "Klasifikasi dari sifat sistem penggolongan sosial, sistem yang memungkinkan seseorang  pindah atau naik ke golongan sosial atasnya. Contohnya pedagang kecil yang giat  berusaha dengan keras dapat menjadi pengusaha atau konglomerat. Dari pernyataan  diatas merupakan klasifikasi dari sifat sistem penggolongan lapisan  ....", "opts": {"A": "sistem lapisan terbuka", "B": "sistem lapisan tertutup", "C": "sistem lapisan campuran", "D": "sistem lapisan terbuka dan tertutup"}, "ans": "A"}, {"q": "Hukum acara Mahkamah Konstitusi adalah ....", "opts": {"A": "hukum formil yang berfungsi untuk menegakkan hukum materiilnya", "B": "hukum tentang dasar-dasar dan prinsip-prinsip umum dari pada administrasi negara.", "C": "hukum tata pemerintahan", "D": "hukum tentang organisasi dari administrasi negara"}, "ans": "A"}, {"q": "Di bawah ini yang bukan prinsip-prinsip hukum acara pidana ialah prinsip ....", "opts": {"A": "legalitas", "B": "unifikasi", "C": "kehati-hatian", "D": "saling koordinasi"}, "ans": "D"}, {"q": "lnterpretasi ini biasanya dilakukan dalam suatu analisis masalah yang menyangkut  berbagai disiplin ilmu hukum. Dalam menafsirkan digunakan logika penafsiran lebih dari  satu cabang ilmu hukum. Conteh kasus interpretasi yaitu  ....", "opts": {"A": "\"korupsi\" hakim dapat menafsirkan ketentuan dari berbagai sudut", "B": "pencurian", "C": "kekerasan dalam rumah tangga", "D": "perkelahian tanding"}, "ans": "A"}, {"q": "Seperangkat kaidah hukum yang diadakan untuk mengatur serta menyelesaikan  berbagai persoalan yang timbul dalam aktivitas antar manusia, khususnya dalam bidang  perdagangan merupakan pengertian hukum bisnis menurut  ....", "opts": {"A": "Munir Fuady", "B": "Johannes Ibrahim", "C": "Sunaryati Hartono", "D": "Ridwan Khairandy"}, "ans": "A"}, {"q": "Hukum agraria adalah satu kelompok berbagai bidang hukum yang masing-masing  mengatur hak-hak penguasaan atas sumber daya alam tertentu. Penyataan tersebut  menurut ....", "opts": {"A": "Budi Harsono", "B": "Bachsan Mustafa", "C": "Utrecht", "D": "R. Tijitrosoedibio"}, "ans": "A"}, {"q": "Mencakup dan membicarakan segala hal yang berhubungan dengan hukum yang  bertujuan untuk memperoleh pengetahuan tentang segala hal dan semua seluk-beluk  mengenai hukum, adalah ilmu hukum dalam arti  ....", "opts": {"A": "sempit", "B": "sedang", "C": "luas", "D": "sangat luas"}, "ans": "C"}, {"q": "Peraturan yang mengatur tentang ketenagakerjaan ialah Undang-Undang No ....", "opts": {"A": "11 tahun 2008", "B": "23 tahun 2014", "C": "2 tahun 2022", "D": "5 tahun 1999"}, "ans": "C"}, {"q": "Berikut yang tidak menjadi landasan PIH guna mendukung mata kuliah lain sehingga  dapat membantu memudahkan dan melancarkan studi mata kuliah hukum yang bukan  bersifat pengantar lagi yaitu  ....", "opts": {"A": "mempelajari dasar-dasar hukum, termasuk PIH dalam arti sempit, dan Pengantar  Hukum Indonesia (PHI)", "B": "filsafat hukum dalam arti mempelajari hakikat ilmu hukum", "C": "mempelajari ilmu hukum secara keseluruhan dalam garis besar", "D": "memperkenalkan pengertian-pengertian dan asas-asas hukum"}, "ans": "B"}, {"q": "Definisi pengantar ilmu hukum menurut Achmad Sanusi, yaitu ....", "opts": {"A": "PIH hanya berfungsi sebagai  basic leervak  atau mata kuliah dasar sebagai  pendukung pada mata kuliah lainnya.", "B": "pengantar ilmu hukum adalah suatu ilmu pengetahuan yang secara umum menelaah  hukum, mencakup hal hal yang berhubungan dengan hukum di mana objeknya  hukum itu sendiri", "C": "hukum adalah seperangkat peraturan-peraturan yang tersusun dengan baik dan  teratur dan bersifat mengikat hakim dan masyarakat.", "D": "hukum sebagai sosial kontrol masyarakat dalam berprilaku"}, "ans": "B"}, {"q": "Hukum administrasi negara ada yang bentuknya tertulis, dan tidak tertulis. Sehubungan  dengan adanya administrasi  tertulis,  yang tertuang dalam  ....", "opts": {"A": "aturan umum", "B": "hukum indonesia", "C": "kebiasaan masyarakat", "D": "peraturan perundang-undangan"}, "ans": "D"}, {"q": "Pada awal mulanya, Palang Merah lnternasional merupakan organisasi dalam ruang  lingkup nasional yang didirikan di negara ....", "opts": {"A": "Jepang", "B": "Cina", "C": "Indonesia", "D": "Swiss"}, "ans": "D"}, {"q": "Conteh dari asas  ius curia novit  yaitu ....", "opts": {"A": "melalui persidangan yang terbuka untuk umum, publik juga dapat menilai dan pada  akhirnya menerima putusan hakim", "B": "pengadilan tidak boleh menolak untuk memeriksa, mengadili dan memutus suatu  perkara yang diajukan dengan dalih bahwa hukum tidak ada atau kurang jelas,  sebaliknya hakim harus memeriksa dan mengadilinya", "C": "independensi dan imparsialitas tersebut memiliki tiga dimensi, yaitu dimensi  fungsional, struktural atau kelembagaan, dan personal", "D": "jika pengadilan berjalan dengan rumit dan kompleks, berbelit-belit, serta  membutuhkan biaya yang mahal, maka hanya sekelompok orang tertentu yang  memiliki kemampuan berperkara di pengadilan, dan hanya orang-orang inilah yang  pada akhirnya dapat menikmati keadilan"}, "ans": "B"}, {"q": "Maruarar Siahaan, salah satu hakim konstitusi periode pertama, mengemukakan 6  (enam) asas dalam peradilan mahkamah konstitusi. Berikut yang merupakan bukan dari  bagian asas dalam peradilan mahkamah konstitusi yaitu ....", "opts": {"A": "ius curia novit", "B": "persidangan terbuka untuk umum", "C": "independen dan imparsial", "D": "asas sederhana"}, "ans": "A"}, {"q": "Menurut Roscoe Pound hukum bertujuan untuk merekayasa masyarakat artinya hukum  sebagai alat perubahan sosial (as  a tool of social engineering).  Inti dari pendapat  Roscoe Pound bahwa hukum bertujuan untuk ....", "opts": {"A": "ilmu hukum itu netral", "B": "sebagai sarana atau alat untuk mengubah masyarakat ke arah yang lebih baik, baik  secara pribadi maupun dalam hidup masyarakat", "C": "mementingkan isinya dan mempelajari pengertian dan asas hukum yang khusus", "D": "sumber hukum dalam arti filosofis"}, "ans": "B"}, {"q": "Keadilan yang memberikan jatah kepada setiap orang sama banyaknya tanpa harus  mengingat jasa-jasa perseorangan. Keadilan ini merupakan asas persamaan, dan asas  ini melandasi hubungan antar warga masyarakat terutama yang bersifat perdagangan", "opts": {"A": "distributif", "B": "kreatif", "C": "komutatif", "D": "vindikatif"}, "ans": "C"}, {"q": "Kata lain dari \"cara\" yaitu  ....", "opts": {"A": "usage", "B": "folkways", "C": "mores", "D": "custom"}, "ans": "D"}, {"q": "Sjachran Basah mengemukakan panca fungsi hukum dalam kehidupan masyarakat  yang terdiri atas  ....", "opts": {"A": "preventif, integratif, stabilitatif, perfektif, korektif", "B": "direktif, integratif, stabilitatif, perfektif, korektif", "C": "normatif, integratif, stabilitatif, perfektif, korektif", "D": "preventif, refresif, stabilitatif, perfektif, korektif"}, "ans": "A"}, {"q": "Berikut yang mempelopori aliran sosiologis yaitu  ....", "opts": {"A": "Jeremy Bentham", "B": "Plato", "C": "Max Weber", "D": "Aritoteles"}, "ans": "C"}, {"q": "Hukum formal itu terbagi menjadi dua, yaitu: 1) formal - formal: benar-benar mengikuti  isi dan 2) formal - materiil: hanya sebagai prosedur. Pembagian hukum formal tersebut  menurut pendapat ....", "opts": {"A": "Sudikno Mertokusumo", "B": "Sukamto", "C": "Subekti", "D": "Dedi Soemardi"}, "ans": "A"}, {"q": "Di bawah ini yang termasuk dalam wujud norma kesopanan adalah  ....", "opts": {"A": "kebiasaan", "B": "sejarah", "C": "tradisi", "D": "perkembangan zaman"}, "ans": "A"}, {"q": "Menurut Friedman bahwa dalam sejarah perkembangan hukum alam, ternyata telah  menjalankan dan melayani bermacam-macam fungsi. Dalam hal ini, sejarah  perkembangan hukum alam menurut Friedman yaitu  ....", "opts": {"A": "principia secundaria", "B": "ajaran hukum alam di Yunani", "C": "hukum alam memberikan keabsahan bagi hukum internasional untuk ditegakkan", "D": "hukum alam memberikan keabsahan bagi hukum dagang"}, "ans": "B"}, {"q": "\"noch suchen die juristen eine definition zu ihrem begriffe von rechf'  definisi hukum  ditulis oleh ....", "opts": {"A": "John Austin", "B": "Immanuel Kant", "C": "Utrecht", "D": "J. Apeldoorn"}, "ans": "B"}, {"q": "Hukum perdata dalam arti yang luas meliputi semua hukum \"privat materiil\" merupakan  pendapat menurut  ....", "opts": {"A": "Subekti", "B": "Vollmar", "C": "Soediman Kartohadiprodjo", "D": "Sudikno Mertokusumo"}, "ans": "B"}, {"q": "Dalam KUH Perdata ditentukan beberapa macam-macam perwalian, berikut ini yang  tidak termasuk dalam macam-macam perwalian dalam KUH Perdata, yaitu ....", "opts": {"A": "perwalian oleh suami istri yang hidup terlama", "B": "perwalian dengan surat wasiat atau akta", "C": "perwalian oleh hakim", "D": "perwalian oleh ibu"}, "ans": "D"}, {"q": "Fungsi hukum sebagai sarana untuk mewujudkan keadilan sosial lahir batin merupakan  fungsi hukum menurut  ....", "opts": {"A": "Mochtar Kusumaatmadja", "B": "Marwan Mas", "C": "Soedjono Dirdjosisworo", "D": "Mac Iver"}, "ans": "A"}, {"q": "Berikut adalah contoh norma kesusilaan yang sering dijumpai dalam kehidupan sehari- hari yaitu  ....", "opts": {"A": "meminjam barang milik orang lain dan tidak dikembalikan", "B": "melaksankan perintah agama", "C": "menaati aturan hukum", "D": "tidak mengambil hak orang lain"}, "ans": "D"}, {"q": "Asal usuI norma atau kaidah hukum pada pokoknya dapat dibedakan atas ....", "opts": {"A": "dua macam", "B": "tiga macam", "C": "empat macam", "D": "lima macam"}, "ans": "A"}, {"q": "Hukum yang dalam keadaan apapun harus dilaksanakan oleh pencari hukum dan  fungsionaris. la tidak membolehkan penyimpangan, merupakan sifat hukum  ....", "opts": {"A": "kaidah", "B": "sanksi", "C": "mengatur", "D": "memaksa"}, "ans": "D"}, {"q": "Hukum tata negara adalah hukum tentang organisasi negara dan mencakup hukum  administrasi negara yang merupakan ketentuan-ketentuan khusus, di samping hukum  perdata yang berlaku secara umum. Hal tersebut berdasarkan pendapat  ....", "opts": {"A": "Utrecht", "B": "Sudikno Mertokusumo", "C": "Sukamto", "D": "Dedi Soemardi"}, "ans": "A"}, {"q": "Hukum positif adalah kenyataan hukum yang dikenal. Pengertian tersebut merupakan  pendapat dari  ....", "opts": {"A": "Soerjono Soekanto", "B": "Sudikno", "C": "Logemann", "D": "Subekti"}, "ans": "C"}, {"q": "Yurisprudensi merupakan hukum positif yang berlaku secara umum yang lahir atau  berasal dari  ....", "opts": {"A": "agama", "B": "peraturan perundang-undangan", "C": "putusan hakim", "D": "kebiasaan"}, "ans": "C"}, {"q": "Yang temasuk bagian dari ciri-ciri utama sistem juga dikemukakan oleh Carl J. Friedrich  yaitu  ....", "opts": {"A": "memiliki sifat terbuka", "B": "kemampuan untuk mengatur dirinya sendiri", "C": "sub sistem-sub sistem tersebut saling ketergantungan", "D": "kemampuan untuk dengan sendirinya menyesuaikan diri dengan lingkungannya"}, "ans": "B"}, {"q": "Sumber hukum yang dilihat dari terjadinya hukum positif merupakan fakta yang  menimbulkan hukum yang berlaku yang mengikat hakim dan penduduk, yaitu sumber  hukum dalam arti ....", "opts": {"A": "formil", "B": "filosofis", "C": "sosiologi", "D": "historis"}, "ans": "A"}, {"q": "Berikut ini termasuk asas berlakunya suatu undang-undang, yaitu  asas  ....", "opts": {"A": "lex posterior derogat legi priori", "B": "kepastian hukum", "C": "pertumbuhan", "D": "manfaat"}, "ans": "A"}, {"q": "Politik hukum adalah suatu kebijaksanaan atau disebut dengan bahasa asing  policy  dari  penguasa negara Republik Indonesia mengenai hukum yang berlaku di negara  Indonesia. Merupakan pendapat ahli mengenai politik hukum, yaitu  ....", "opts": {"A": "Bellefroid", "B": "E. Utrecht", "C": "Achmad Ali", "D": "Hartono Hadisoeprapto"}, "ans": "B"}, {"q": "Penafsiran sistematis  (dogmatis/logis),  juga disebut penafsiran  ....", "opts": {"A": "historis", "B": "logis", "C": "empiris", "D": "filosofis"}, "ans": "B"}, {"q": "Asas  konsensualisme  dapat dijelaskan dan diatur dalam ....", "opts": {"A": "pasal 1338 ayat (1) KUH perdata. Semua persetujuan yang menurut hukum atau  secara sah sesuai dengan pasal 1320 KUH Perdata jelas mengikat sebagai undang- undang bagi para pihak yang membuatnya", "B": "suatu perjanjian cukup ada kata sepakat dari mereka yang membuat perjanjian itu  tanpa diikuti dengan perbuatan hukum lain kecuali perjanjian yang bersifat formal  dan diatur dalam pasal-pasal KUHPerdata", "C": "ketentuan pasal  1338 KUHPerdata. Para pihak  membuat/tidak membuat perjanjian diberi kebebasan untuk", "D": "seseorang  akan  melakukan  dan/atau  membuat  peqan11an hanya  untuk  kepentingannya saja. Terdapat pada pasal 1315 dan pasal 1340 KUHPerdata"}, "ans": "B"}, {"q": "Beberapa sebab hilangnya kewajiban, namun yang tidak termasuk dalam sebab  hilangnya kewajiban yaitu ....", "opts": {"A": "meninggalnya  seseorang  yang  mempunyai  kewajiban  tanpa  ada  yang  menggantikannya", "B": "masa berlakunya telah habis dan tidak dapat diperpanjang kembali", "C": "kewajiban tersebut telah dipenuhi oleh yang bersangkutan", "D": "orang yang mempunyai kewajiban ternyata saudara"}, "ans": "D"}, {"q": "Fungsi hukum perdata, yaitu untuk mengatur  antar individu dalam kehidupan  bermasyarakat. Berdasarkan definisi di atas merupakan fungsi hukum perdata, adalah", "opts": {"A": "fungsi yang umum", "B": "fungsi yang khusus", "C": "fungsi yang publik", "D": "fungsi yang privat"}, "ans": "A"}, {"q": "Hukum intertemporal atau hukum transitoir atau hukum peralihan disebut juga dengan  hukum antar  ....", "opts": {"A": "tempat", "B": "waktu", "C": "golongan", "D": "agama"}, "ans": "B"}, {"q": "Aliran ini penyeragaman hukum dengan jalan kodifikasi dengan menuangkan semua  hukum secara lengkap dan sistematis dalam kitab undang-undang. Hukum kebiasaan  sebagai sumber hukum mulai ditinggalkan. Aliran tersebut merupakan tentang ajaran  sumber hukum yaitu aliran  ....", "opts": {"A": "legisme", "B": "historis", "C": "interessenjurisprudenz", "D": "freirechtbewegung"}, "ans": "A"}, {"q": "Hal ini yang tidak termasuk sumber hukum administrasi dalam arti formil yaitu  ....", "opts": {"A": "undang-undang", "B": "Pancasila", "C": "yurisprudensi", "D": "praktek administrasi negara"}, "ans": "B"}, {"q": "Penafsiran dengan mengingat maksud dan tujuan undang-undang itu. Apabila undang- undang itu ditetapkan berdasarkan tujuan masyarakat. Merupakan dari metode  penafsiran  ....", "opts": {"A": "sosiologis", "B": "antropologis", "C": "futuristis", "D": "gramatikal"}, "ans": "A"}, {"q": "Cara menafsirkan undang-undang yang didasarkan pada perlawanan pengertian antara  soal yang dihadapi dan soal yang diatur dalam suatu pasal undang-undang, yaitu  penafsiran secara ....", "opts": {"A": "a cantratrio", "B": "futuristis", "C": "historis", "D": "analogis"}, "ans": "A"}, {"q": "Sederet aturan dan peraturan hukum yang dibuat dengan tujuan memberikan sebuah  pedoman dalam usaha mencari kebenaran dan keadilan bila terjadi tindak pidana yang  melanggar hukum atau terhadap ketentuan hukum yang bersifat materiil. Definisi ini  dikemukakan oleh ....", "opts": {"A": "Mochtar Kusuma Atmaja", "B": "Prof. Dr. WirjonoProdjodikoro, S.H.", "C": "S.M. Amin", "D": "Dr. Bambang Poernomo, S.H."}, "ans": "D"}, {"q": "Hukum administrasi negara ruang lingkupnya luas. Di bawah ini yang merupakan  cakupannya ialah  ....", "opts": {"A": "pebuatan warganegara", "B": "kebutuhan masyarakat", "C": "kebutuhan pemerintah", "D": "akibat-akibat hukum dari perbuatan atau kewenangan pemerintah"}, "ans": "D"}, {"q": "Hukum tidak bisa dipisahkan dari masyarakat, dikarenakan hukum itu membutuhkan  masyarakat dan masyarakat membutuhkan hukum  ....", "opts": {"A": "Palisi", "B": "Jaksa", "C": "Advokat", "D": "Masyarakat"}, "ans": "D"}, {"q": "Faktor ekstern adalah hal-hal dan kondisi-kondisi yang ada di luar hukum. Kemudian  kesulitan dalam memahami simbol atau lambang hukum disebabkan oleh banyaknya  bahasa-bahasa di dunia. Dari pernyataan tersebut merupakan definisi dari faktor ....", "opts": {"A": "belum adanya kesepakatan para ilmuwan bahasa", "B": "faktor bahasa", "C": "hukum positif", "D": "sistem hukum"}, "ans": "B"}, {"q": "Menurut Simons, hukum pidana itu dapat dibagi menjadi hukum pidana dalam arti  ....", "opts": {"A": "hukum umum dan hukum khusus", "B": "hukum sipil dan hukum militer", "C": "hukum materiil dan hukum formil", "D": "hukum subjektif dan hukum objektif"}, "ans": "C"}, {"q": "llmu yang mengatakan bagaimanakah orang harus berbuat sesuatu, mencapai hasil  tertentu. Misalnya adalah ilmu pertanian, ilmu teknik, ilmu kedokteran dan sebagainya,  pengklasifikasian ilmu menurut subjeknya adalah  ....", "opts": {"A": "normatif", "B": "positif", "C": "negatif", "D": "ilmu hukum"}, "ans": "A"}, {"q": "Di bawah ini yang merupakan istilah lain dari hukum acara mahkamah konstitusi adalah", "opts": {"A": "hukum mahkamah konstitusi", "B": "hukum acara peradilan tata negara", "C": "constitutional court", "D": "hukum acara peradilan pejabat negara"}, "ans": "B"}, {"q": "Hukum acara perdata disebut sebagai hukum perdata ....", "opts": {"A": "internasional", "B": "Indonesia", "C": "materiil", "D": "formil"}, "ans": "D"}, {"q": "lstilah lain dari ilmu normatif yaitu ....", "opts": {"A": "seinwissenschaft", "B": "sollenwissenschaft", "C": "normwissenschaft", "D": "volkgeist"}, "ans": "B"}, {"q": "Suatu perangkat atau kaidah hukum termasuk upaya penegakannya yang mengatur  mengenai tata cara pelaksanaan utusan atau kegiatan dagang, industri atau keuangan  yang dihubungkan dengan produksi atau pertukaran barang atau jasa dengan  menempatkan uang dari pelaku usaha dalam risiko tertentu dengan usaha tertentu  dengan motif untuk mendapatkan keuntungan, merupakan definisi dari  ....", "opts": {"A": "bisnis", "B": "kegiatan bisnis", "C": "ilmu bisnis", "D": "hukum bisnis"}, "ans": "D"}, {"q": "Di bawah ini yang bukan merupakan asas-asas hukum agraria adalah asas  ....", "opts": {"A": "nasionalisme", "B": "hukum adat yang disaneer", "C": "fungsi sosial", "D": "kebebasan berkontrak"}, "ans": "D"}, {"q": "Surojo Wignjodipuro mengatakan bahwa hukum itu adalah ....", "opts": {"A": "ilmu sosial", "B": "ilmu terapan", "C": "ilmu materil", "D": "ilmu normatif"}, "ans": "D"}, {"q": "Segala hal yang berhubungan dengan tenaga kerja pada waktu sebelum, selama, dan  sesudah masa kerja merupakan pengertian dari istilah ....", "opts": {"A": "kerja", "B": "tenaga kerja", "C": "ketenagakerjaan", "D": "tenaga"}, "ans": "C"}, {"q": "Perbedaan ilmu hukum dengan cabang-cabang ilmu hukum yaitu, bahwa ilmu hukum  mementingkan bidang ruang yaitu menyelidiki pengertian dasar dan asas hukum secara  keseluruhan. Cabang ilmu hukum yaitu ....", "opts": {"A": "bertujuan mendapatkan peraturan-peraturan hukum yang lebih baik.", "B": "mementingkan isinya dan mempelajari pengertian dan asas hukum yang khusus", "C": "ilmu hukum itu netral", "D": "sumber hukum dalam arti filosofis"}, "ans": "B"}, {"q": "Berikut termasuk arti pada hukum menurut Otje Salman yaitu ....", "opts": {"A": "kontrol sosial", "B": "aturan mayarakat", "C": "kaidah", "D": "larangan"}, "ans": "A"}, {"q": "Undang-undang No. 11 tahun 2008 sering disingkat menjadi undang-undang ....", "opts": {"A": "Telekomunikasi", "B": "IT", "C": "Telkom", "D": "ITE"}, "ans": "D"}, {"q": "Keseluruhan kaidah-kaidah dan asas-asas hukum yang mengatur hubungan atau  persoalan yang melintasi batas-batas negara, antara negara dengan negara dan negara  dengan subjek hukum lain bukan negara atau subyek hukum bukan negara satu sama  lain merupakan definisi hukum internasional menurut ....", "opts": {"A": "Oppenheim", "B": "J.g. Starke", "C": "Montevideo", "D": "Mochtar Kusumaatmadja"}, "ans": "A"}, {"q": "Pajak ialah peralihan kekayaan dari pihak rakyat kepada kas negara untuk membiayai  pengeluaran rutin dan 'surplusnya' digunakan untuk  public saving  yang merupakan  sumber utama untuk membiayai  public invesment  merupakan definisi pajak menurut  ....", "opts": {"A": "Rochmat Soemitro", "B": "Soeparman Soehamidjaja", "C": "Leroy Beaullieu", "D": "N.J. Feldmann"}, "ans": "C"}, {"q": "Kata \"arsip\" dalam bahasa Belanda yaitu ....", "opts": {"A": "archief", "B": "archer", "C": "archive", "D": "ta archia"}, "ans": "A"}, {"q": "Volkgeist  merupakan pandangan dari ....", "opts": {"A": "Von Savigny", "B": "Cicero", "C": "Von Vollenhoven", "D": "Von Vollendam"}, "ans": "A"}, {"q": "Masyarakat menurut Selo Sumardjan adalah orang-orang yang hidup bersama dan  ....", "opts": {"A": "menghasilkan keturunan", "B": "sendiri-sendiri", "C": "menghasilkan kebudayaan", "D": "menampilkan realita"}, "ans": "C"}, {"q": "Subjek hukum atau  persoon  adalah ....", "opts": {"A": "suatu pendukung hak", "B": "sekelompok orang yang berdiam dalam suatu wilayah tertentu", "C": "segala sesuatu yang berguna bagi subjek hukum dan dapat menjadi pokok suatu  hubungan hukum yang dilakukan oleh para subjek hukum", "D": "kumpulan kaidah-kaidah, baik tertulis maupun tidak tertulis"}, "ans": "A"}, {"q": "Menurut Taneka dalam bukunya menyebutkan bahwa corak hukum adat merupakan  refleksi cara berpikir suatu masyarakat merupakan refleksi cara pandang suatu  kesatuan kehidupan bersama yang menjadi corak  ....", "opts": {"A": "kehidupan bersama", "B": "agama", "C": "budaya", "D": "seni"}, "ans": "C"}, {"q": "Menurut Mertokusumo bahwa saat ini terdapat enam metode penafsiran hukum. Salah  satunya adalah metode penafsiran hukum yang menetapkan makna undang-undang  berdasarkan tujuan kemasyarakatan. Hal tersebut merupakan bagian dari penafsiran  hukum  ....", "opts": {"A": "gramatikal", "B": "sosiologis atau teleologis", "C": "historis", "D": "komparatif"}, "ans": "B"}, {"q": "Hal ini termasuk norma menurut Gustav Radbruch, yaitu  ....", "opts": {"A": "hukum", "B": "agama", "C": "alam", "D": "keturunan"}, "ans": "A"}, {"q": "Berikut contoh dari pelaksanaan norma kesopanan yang sering dijumpai dalam  kehidupan sehari-hari, yaitu  ....", "opts": {"A": "tidak kebut kebutan di jalan raya", "B": "menaati peraturan yang ada di sekolah", "C": "memangil nama dengan orang yang lain yang lebih tua", "D": "saling bertegur sapa ketika bertemu dengan orang yang dikenal"}, "ans": "D"}, {"q": "Berikut adalah fungsi hukum alam menurut Friedman, yaitu ....", "opts": {"A": "sebagai instrumen utama pada saat hukum perdata Romawi Kuno ditransmisikan  menjadi sistem internasional", "B": "sebagai pengatur kehidupan masyarakat", "C": "memberikan efek jera bagi yang melanggar", "D": "menimbulkan sanksi"}, "ans": "A"}, {"q": "Pengendalian sosial menurut Koentjaraningrat yaitu ada  ....", "opts": {"A": "lima", "B": "empat", "C": "tiga", "D": "dua"}, "ans": "C"}, {"q": "Hukum perdata materiil sering juga disebut  ....", "opts": {"A": "hukum publik", "B": "hukum umum", "C": "hukum khusus", "D": "hukum sipil"}, "ans": "D"}, {"q": "Di bawah ini yang merupakan asas-asas dalam perjanjian ialah asas ....", "opts": {"A": "kemajuan", "B": "manfaat", "C": "putusan hakim", "D": "kepastian hukum"}, "ans": "D"}, {"q": "Berikut merupakan contoh dari norma agama Islam yaitu  ....", "opts": {"A": "kewajiban melaksanakan rukun islam dan rukun iman", "B": "kewajiban menjalankan sepuluh perintah Allah", "C": "kepercayaan terhadap reinkarnasi, yaitu adanya kelahiran kembali bagi manusia  yang telah meninggal sesuai dengan karmanya, sesuai dengan kehidupannya di  masa lampau", "D": "mengatur hubungan manusia dengan Tuhan"}, "ans": "A"}, {"q": "Yang temasuk contoh norma kesusilaan yaitu  ....", "opts": {"A": "tidak merusak fasilitas umum", "B": "tidak kebut kebutan di jalan raya", "C": "menaati peraturan yang ada di sekolah", "D": "menghormati orang yang lebih tua"}, "ans": "D"}, {"q": "Penganut aliran utilitas ialah  ....", "opts": {"A": "Aristoteles", "B": "Jeremy Bentham", "C": "Meek Mill", "D": "Gustav Radbruch"}, "ans": "B"}, {"q": "Hukum antar waktu juga disebut dengan istilah lain yaitu hukum ....", "opts": {"A": "etika pergaulan", "B": "tradisi", "C": "perkembangan zaman", "D": "intertemporal atau hukum transitoir atau hukum peralihan"}, "ans": "D"}, {"q": "Hukum tata negara mengkaji seputar norma hukum yang mengatur hubungan antara  subjek hukum orang atau subjek hukum bukan orang dengan  ....", "opts": {"A": "bukan subjek hukum", "B": "badan hukum negara", "C": "subjek hukum orang", "D": "subjek hukum bukan orang"}, "ans": "B"}, {"q": "Pengantar ilmu hukum adalah sebagai dasar bagi setiap orang yang akan mempelajari  hukum secara luas beserta berbagai hal yang melingkupinya, pengantar hukum  indonesia untuk mengantarkan setiap orang yang akan mempelajari hukum yang  sedang berlaku atau hukum positif indonesia. Berikut perbedaan dan hubungan antara  pengantar ilmu hukum dengan pengantar hukum indonesia adalah sebagai  ....", "opts": {"A": "objek kajian", "B": "fungsi", "C": "manfaat", "D": "tujuan"}, "ans": "A"}, {"q": "Berikut yang termasuk dalam aliran-aliran yang muncul setelah kodifikasi hukum yaitu", "opts": {"A": "dogmatif", "B": "tertutup", "C": "freie rechtslehre", "D": "terbuka"}, "ans": "C"}, {"q": "Sistem hukum adalah kumpulan asas-asas yang terpadu, yang merupakan landasan  untuk terciptanya tertib hukum, merupakan pengertian sistem hukum dari seorang ahli,  yaitu ....", "opts": {"A": "Bellefroid", "B": "Mariam Daruus Badrulzaman", "C": "Wilillam A Shored", "D": "Carl J. Friedrich"}, "ans": "A"}, {"q": "Berikut merupakan termasuk asas tentang berlakunya suatu undang-undang, yaitu  ....", "opts": {"A": "asas tidak berlaku surut", "B": "kebiasaan", "C": "agama", "D": "kodrat"}, "ans": "A"}, {"q": "Berikut yang termasuk bagian dari unsur-unsur kodifikasi hukum yaitu ....", "opts": {"A": "sistematis", "B": "mudah", "C": "dinamis", "D": "statis"}, "ans": "A"}, {"q": "Politik hukum merupakan kebijakan dasar yang menentukan arah, bentuk, maupun isi  hukum yang akan dibentuk. Merupakan pendapat ahli mengenai politik hukum, yaitu  ....", "opts": {"A": "Padmo Wahjono", "B": "Soedarto", "C": "Mahhfud MD", "D": "Teuku Muhamad Radhie"}, "ans": "A"}, {"q": "Mencari dan menetapkan pengertian atas dalil-dalil yang tercantum dalam undang- undang sesuai dengan yang dikehendaki dan yang dimaksud oleh pembuat undang- undang. Merupakan metode dari penemuan hukum, yaitu metode  ....", "opts": {"A": "interprestasi", "B": "konstruksi hukum", "C": "hermeneutika hukum", "D": "penafsiran historis"}, "ans": "A"}, {"q": "Yang merupakan termasuk kajian hukum ketenagakerjaan yaitu hukum  ....", "opts": {"A": "ketenagakerjaan", "B": "perburuhan Indonesia", "C": "sengketa perburuhan", "D": "perburuhan kolektif ( collective labour law)"}, "ans": "D"}, {"q": "Dalam hal kepentingan yang tidak selaras dapat menimbulkan ....", "opts": {"A": "keberagaman", "B": "perbedaan", "C": "konflik", "D": "kebhinekaan"}, "ans": "C"}, {"q": "Di bawah ini yang temasuk perbuatan subjek hukum yaitu  ....", "opts": {"A": "perbuatan", "B": "kehendak", "C": "lunas", "D": "kematian"}, "ans": "A"}, {"q": "Menurut formalnya hukum dapat terbagi menjadi ....", "opts": {"A": "4", "B": "5", "C": "6", "D": "7"}, "ans": "B"}, {"q": "Dibawah ini yang merupakan ciri-ciri aliran historis yaitu ....", "opts": {"A": "peraturan dibuat untuk kepentingan bangsa", "B": "hukum tumbuh dari kesadaran bangsa di suatu tempat dan waktu tertentu", "C": "undang-undang menjadi sumber hukum utama", "D": "hukum dari putusan hakim"}, "ans": "B"}, {"q": "Hukum yang tidak disusun secara sistematis, lengkap dan masih terpisah-pisah  sehingga sering memerlukan peraturan pelaksana dalam penerapannya, merupakan  hukum tertulis yang ....", "opts": {"A": "kognitif", "B": "dikodifikasikan", "C": "tidak dikodifikasikan", "D": "dikognitif"}, "ans": "C"}, {"q": "Penjelasan atau definisi dari kata penafsiran restriktif yaitu ....", "opts": {"A": "penafsiran dengan mengingat maksud dan tujuan undang-undang itu. apabila  undang-undang itu ditetapkan berdasarkan tujuan masyarakatkan", "B": "penjelasan atau penafsiran yang bersifat membatasi", "C": "penafsiran dengan memperluas arti kata-kata dalam peraturan itu sehingga sesuatu  peristiwa dapat dimaksudkannya", "D": "penafsiran memiliki sesuai tindakannya dengan sistem hukum yang berlaku"}, "ans": "B"}, {"q": "Tafsiran pada sesuatu peraturan hukum dengan memberi ibarat (kias) pada kata-kata  tersebut sesuai dengan asas hukumnya, sehingga sesuatu yang sebenarnya tidak  dimasukkan lalu dianggap sesuai dengan bunyi peraturan tersebut. Merupakan  penafsiran dalam bentuk, yaitu penafsiran . . . .", "opts": {"A": "gramatikal", "B": "futuristis", "C": "historis", "D": "analogis"}, "ans": "D"}, {"q": "Di bawah ini yang merupakan istilah lain dari hukum materiil yaitu  ....", "opts": {"A": "formil", "B": "material", "C": "substantif", "D": "ajektif"}, "ans": "C"}, {"q": "Hukum administrasi negara ada yang bentuknya tertulis, dan tidak tertulis. Pengertian  administrasi tertulis, yaitu ....", "opts": {"A": "tertuang dalam berbagai peraturan perundang-undangan", "B": "tertuang dalam norma masyarakat", "C": "termasuk hukum khusus", "D": "dapat dimasukkan dalam hukum sipil"}, "ans": "A"}, {"q": "Mempelajari hukum dengan metode sosiologis memusatkan perhatiannya pada  pengamatan mengenai  ....", "opts": {"A": "sosiologi hukum", "B": "efektivitas dari hukum", "C": "sejarah hukum", "D": "perbandingan hukum"}, "ans": "B"}, {"q": "Titik fokus dari dogmatik hukum menurut ensiklopedia ilmu hukum dalam arti sempit  yaitu ....", "opts": {"A": "cabang ilmu", "B": "hukum positif", "C": "sistem hukum", "D": "pengantar ilmu hukum"}, "ans": "B"}, {"q": "Suatu penderitaan  yang oleh undang-undang pidana telah dikaitkan dengan  pelanggaran terhadap suatu norma, yang dengan suatu putusan hakim telah dijatuhkan  bagi seseorang yang bersalah merupakan pengertian pidana menurut  ....", "opts": {"A": "Moelyatno", "B": "Simons", "C": "Van hamel", "D": "W.l.g. Lemaire"}, "ans": "A"}, {"q": "Berikut yang merupakan definisi dari mempelajari hukum dengan metode normatif yaitu  hukum sebagai  ....", "opts": {"A": "suatu sistem peraturan-peraturan yang abstrak", "B": "alat yang mengatur masyarakat", "C": "seperangkat peraturan-peraturan yang tersusun dengan baik, teratur dan bersifat  mengikat", "D": "sosial kontrol masyarakat dalam berperilaku"}, "ans": "A"}, {"q": "Di bawah ini yang merupakan ruang lingkup tugas dan wewenang peradilan agama  adalah  ....", "opts": {"A": "menguji suatu undang-undang", "B": "memberikan itsbat kesaksian", "C": "menuntut kepada hakim", "D": "menyelesaikan perkara pencurian"}, "ans": "B"}, {"q": "Unsur  esensalia,  unsur  naturalia,  unsur  aksidentalia.  Hal tersebut merupakan bagian  unsur dari ....", "opts": {"A": "perjanjian", "B": "perkawinan", "C": "perdagangan", "D": "perikatan"}, "ans": "A"}, {"q": "Metode realis senantiasa menguji hukum yang harus mewujudkan nilai tertentu. Salah  satu nilai yang diperjuangkan yaitu  ....", "opts": {"A": "kebersamaan", "B": "keadilan", "C": "kebaikan", "D": "kepedulian"}, "ans": "B"}, {"q": "Kegiatan menghasilkan barang yang nilainya lebih berguna dari nilai asalnya.  Pernyataan tersebut adalah pengertian dari bisnis  ....", "opts": {"A": "kegiatan jasa", "B": "kegiatan industri", "C": "usaha perdagangan", "D": "proses ekonomi"}, "ans": "D"}, {"q": "Di bawah ini yang bukan merupakan ruang lingkup hukum agraria adalah  ....", "opts": {"A": "kendaraan", "B": "rumah", "C": "perjanjian", "D": "ruang angkasa"}, "ans": "A"}, {"q": "Berikut yang menjadi persamaan dari PIH dan PHI yaitu  ....", "opts": {"A": "pengantar hukum indonesia adalah dasar dari pengantar ilmu hukum", "B": "sebelum mempelajari pengantar ilmu hukum berarti harus sudah mempelajari  pengantar hukum indonesia", "C": "sebelum mempelajari pengantar hukum indonesia berarti harus mempelajari  pengantar ilmu hukum", "D": "sama-sama merupakan mata kuliah dasar untuk mempelajari hukum"}, "ans": "D"}, {"q": "Peraturan yang mengatur tentang ketenagakerjaan ialah Undang-Undang No ....", "opts": {"A": "11 tahun 2008", "B": "23 tahun 2014", "C": "2 tahun 2022", "D": "5 tahun 1999"}, "ans": "C"}, {"q": "Berikut yang cabang-cabang ilmu lainnya yang merupakan ilmu pembantu bagi ilmu  hukum yaitu  ....", "opts": {"A": "hukum pidana", "B": "hukum tatanegara", "C": "sosiologi hukum", "D": "pengantar hukum"}, "ans": "C"}, {"q": "\"Jurisprudence is  a  science of law, the statement and systematic arrangement of rules  followed by the courts and the principles involved in these  rules.\"  Hal tersebut  merupakan perumusan yurisprudensi yang lebih sederhana yaitu menurut  ....", "opts": {"A": "Utrecht", "B": "Sudikno Mertokusumo", "C": "Sukamto", "D": "Gray"}, "ans": "D"}, {"q": "Di bawah ini yang merupakan ruang lingkup dari  cyber law  yaitu ....", "opts": {"A": "hak cipta ( Copyright)", "B": "pemerasan", "C": "jual beli", "D": "pencurian"}, "ans": "A"}, {"q": "Association of South East Asian Nation  (ASEAN) termasuk ke dalam organisasi  internasional tujuan ....", "opts": {"A": "global", "B": "pasifik", "C": "terbat", "D": "regional"}, "ans": "D"}];
+
+let answered = 0, correct = 0, wrong = 0;
+
+function updateScoreboard() {
+  document.getElementById('sc-total').textContent = answered;
+  document.getElementById('sc-correct').textContent = correct;
+  document.getElementById('sc-wrong').textContent = wrong;
+  const pct = Math.round(answered / QUIZ.length * 100);
+  document.getElementById('progress').style.width = pct + '%';
+  if (answered === QUIZ.length) showSummary();
+}
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  answered = 0; correct = 0; wrong = 0;
+  updateScoreboard();
+
+  QUIZ.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'card-' + idx;
+
+    const statusBar = document.createElement('div');
+    statusBar.className = 'card-status';
+    statusBar.id = 'status-' + idx;
+
+    const header = document.createElement('div');
+    header.className = 'question-header';
+    header.innerHTML = `
+      <span class="q-num">${idx + 1}.</span>
+      <span class="q-text">${item.q}</span>
+    `;
+
+    const optionsDiv = document.createElement('div');
+    optionsDiv.className = 'options';
+    optionsDiv.id = 'opts-' + idx;
+
+    ['A','B','C','D'].forEach(letter => {
+      if (!item.opts[letter]) return;
+      const btn = document.createElement('button');
+      btn.className = 'option';
+      btn.dataset.letter = letter;
+      btn.innerHTML = `<span class="opt-letter">${letter}</span><span>${item.opts[letter]}</span>`;
+      btn.addEventListener('click', () => handleAnswer(idx, letter, item.ans));
+      optionsDiv.appendChild(btn);
+    });
+
+    const reveal = document.createElement('div');
+    reveal.className = 'answer-reveal';
+    reveal.id = 'reveal-' + idx;
+
+    card.appendChild(statusBar);
+    card.appendChild(header);
+    card.appendChild(optionsDiv);
+    card.appendChild(reveal);
+    container.appendChild(card);
+  });
+
+  document.getElementById('summary').style.display = 'none';
+  document.getElementById('summary').classList.remove('show');
+}
+
+function handleAnswer(idx, chosen, correct_ans) {
+  const optsDiv = document.getElementById('opts-' + idx);
+  const reveal = document.getElementById('reveal-' + idx);
+  const statusBar = document.getElementById('status-' + idx);
+  const btns = optsDiv.querySelectorAll('.option');
+  
+  // Disable all
+  btns.forEach(btn => {
+    btn.disabled = true;
+    const letter = btn.dataset.letter;
+    if (letter === correct_ans) {
+      btn.classList.add('correct');
+    } else if (letter === chosen && chosen !== correct_ans) {
+      btn.classList.add('wrong');
+    } else {
+      btn.classList.add('dimmed');
+    }
+  });
+
+  const isCorrect = chosen === correct_ans;
+  
+  // Status bar
+  statusBar.classList.add(isCorrect ? 's-correct' : 's-wrong');
+
+  // Reveal message
+  reveal.classList.add('show');
+  if (isCorrect) {
+    reveal.classList.add('is-correct');
+    reveal.innerHTML = `<span class="icon">✓</span><span class="reveal-text"><strong>Benar!</strong> Jawaban yang tepat adalah <strong>${correct_ans}. ${QUIZ[idx].opts[correct_ans]}</strong></span>`;
+    correct++;
+  } else {
+    reveal.classList.add('is-wrong');
+    reveal.innerHTML = `<span class="icon">✗</span><span class="reveal-text"><strong>Salah.</strong> Jawaban yang benar adalah <strong>${correct_ans}. ${QUIZ[idx].opts[correct_ans]}</strong></span>`;
+    wrong++;
+  }
+
+  answered++;
+  updateScoreboard();
+
+  // Scroll to next unanswered
+  setTimeout(() => {
+    const nextIdx = idx + 1;
+    if (nextIdx < QUIZ.length) {
+      const nextCard = document.getElementById('card-' + nextIdx);
+      if (nextCard) {
+        const y = nextCard.getBoundingClientRect().top + window.scrollY - 120;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }
+  }, 400);
+}
+
+function showSummary() {
+  const summary = document.getElementById('summary');
+  summary.classList.add('show');
+  summary.style.display = 'block';
+  document.getElementById('final-total').textContent = answered;
+  document.getElementById('final-correct').textContent = correct;
+  document.getElementById('final-wrong').textContent = wrong;
+  const pct = Math.round(correct / QUIZ.length * 100);
+  document.getElementById('final-pct').textContent = pct + '%';
+  
+  setTimeout(() => {
+    summary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 300);
+}
+
+// Build quiz on load
+buildQuiz();
+</script>
+
+<div id="summary" class="summary" style="display:none">
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <h2>Hasil Tryout</h2>
+    <p class="subtitle">Pengantar Ilmu Hukum &mdash; FSIH4101</p>
+    <div class="summary-stats">
+      <div class="stat-box total">
+        <div class="big" id="final-total">0</div>
+        <div class="label">Total Soal</div>
+      </div>
+      <div class="stat-box correct">
+        <div class="big" id="final-correct">0</div>
+        <div class="label">Benar</div>
+      </div>
+      <div class="stat-box wrong">
+        <div class="big" id="final-wrong">0</div>
+        <div class="label">Salah</div>
+      </div>
+    </div>
+    <p class="score-pct">Nilai Akhir: <span id="final-pct">0%</span></p>
+    <button class="btn-reset" onclick="buildQuiz(); window.scrollTo({top:0,behavior:'smooth'})">Ulangi Tryout</button>
+  </div>
+</div>
+
+</body>
+</html>
