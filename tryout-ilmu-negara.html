@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tryout Ilmu Negara</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef2f7;
+    --paper: #f8faff;
+    --ink: #0d1b2e;
+    --ink-light: #3a5070;
+    --accent: #1a3a6b;
+    --accent2: #1565c0;
+    --gold: #b8860b;
+    --green: #1a6b3a;
+    --red: #b71c1c;
+    --correct-bg: #e8f5ec;
+    --wrong-bg: #faeaea;
+    --option-hover: #e8eef8;
+    --border: #c5d3e8;
+    --shadow: rgba(13,27,46,0.1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    background-image: radial-gradient(circle at 20% 50%, rgba(21,101,192,0.04) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, rgba(26,58,107,0.04) 0%, transparent 40%);
+  }
+  .header {
+    background: var(--accent);
+    color: #e8eef8;
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--gold);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(13,27,46,0.25);
+  }
+  .header-left h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.02em;
+  }
+  .header-left p {
+    font-size: 0.76rem;
+    color: #8aacd4;
+    font-style: italic;
+    margin-top: 3px;
+  }
+  .scoreboard { display: flex; gap: 16px; align-items: center; }
+  .score-pill {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(138,172,212,0.3);
+    border-radius: 6px;
+    padding: 6px 14px;
+    text-align: center;
+    min-width: 68px;
+  }
+  .score-pill .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .score-pill .lbl {
+    font-size: 0.63rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8aacd4;
+    margin-top: 2px;
+  }
+  .score-pill.total .num { color: #e8eef8; }
+  .score-pill.correct .num { color: #6edd99; }
+  .score-pill.wrong .num { color: #ff8080; }
+  .progress-bar { height: 3px; background: rgba(138,172,212,0.2); position: sticky; top: 84px; z-index: 99; }
+  .progress-fill { height: 100%; background: var(--gold); transition: width 0.4s ease; width: 0%; }
+  .container { max-width: 840px; margin: 0 auto; padding: 44px 24px 80px; }
+  .question-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    margin-bottom: 32px;
+    box-shadow: 0 1px 8px var(--shadow);
+    overflow: hidden;
+  }
+  .card-status { height: 4px; width: 100%; }
+  .card-status.s-correct { background: var(--green); }
+  .card-status.s-wrong { background: var(--red); }
+  .question-header {
+    padding: 18px 28px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .q-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--accent2);
+    font-weight: 700;
+    min-width: 30px;
+    padding-top: 1px;
+    flex-shrink: 0;
+  }
+  .q-text { font-size: 0.93rem; line-height: 1.75; color: var(--ink); }
+  .type-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: #e3ecf9;
+    color: var(--accent);
+    border: 1px solid #c5d3e8;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 2px;
+  }
+  .type-badge.multi { background: #fff3e0; color: #e65100; border-color: #ffcc80; }
+  .options { padding: 14px 28px 18px; display: flex; flex-direction: column; gap: 7px; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 9px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.88rem;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .option:hover:not(:disabled) {
+    background: var(--option-hover);
+    border-color: var(--accent2);
+    transform: translateX(2px);
+  }
+  .option .opt-letter {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--ink-light);
+    min-width: 20px;
+    font-size: 0.88rem;
+    flex-shrink: 0;
+  }
+  .option:disabled { cursor: default; }
+  .option.correct {
+    background: var(--correct-bg) !important;
+    border-color: var(--green) !important;
+    color: var(--green);
+    transform: none !important;
+  }
+  .option.correct .opt-letter { color: var(--green); }
+  .option.wrong {
+    background: var(--wrong-bg) !important;
+    border-color: var(--red) !important;
+    color: var(--red);
+  }
+  .option.wrong .opt-letter { color: var(--red); }
+  .option.dimmed { opacity: 0.4; }
+  /* Multi-select styles */
+  .option.selected {
+    background: #e3ecf9 !important;
+    border-color: var(--accent2) !important;
+    color: var(--accent);
+  }
+  .option.selected .opt-letter { color: var(--accent2); }
+  .submit-btn {
+    margin: 0 28px 18px;
+    padding: 9px 24px;
+    background: var(--accent2);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: all 0.2s;
+    display: none;
+  }
+  .submit-btn:hover { background: #1976d2; transform: translateY(-1px); }
+  .answer-reveal {
+    margin: 0 28px 18px;
+    padding: 11px 16px;
+    border-radius: 3px;
+    font-size: 0.87rem;
+    display: none;
+    align-items: flex-start;
+    gap: 10px;
+    border-left: 3px solid;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: flex; }
+  .answer-reveal.is-correct { background: #e8f5ec; border-color: var(--green); color: #145a32; }
+  .answer-reveal.is-wrong { background: #faeaea; border-color: var(--red); color: #7f1515; }
+  .answer-reveal .icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+  /* Summary */
+  .summary {
+    display: none;
+    background: var(--accent);
+    color: #e8eef8;
+    border-radius: 4px;
+    padding: 44px 40px;
+    text-align: center;
+    margin-top: 44px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(13,27,46,0.2);
+  }
+  .summary.show { display: block; }
+  .summary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), #e8b84b, var(--gold));
+  }
+  .summary h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 6px;
+  }
+  .summary .subtitle { color: #8aacd4; font-style: italic; margin-bottom: 32px; font-size: 0.88rem; }
+  .summary-stats { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-bottom: 28px; }
+  .stat-box { padding: 18px 26px; border: 1px solid rgba(138,172,212,0.25); border-radius: 4px; min-width: 110px; }
+  .stat-box .big { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+  .stat-box .label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: #8aacd4; }
+  .stat-box.total .big { color: #e8eef8; }
+  .stat-box.correct .big { color: #6edd99; }
+  .stat-box.wrong .big { color: #ff8080; }
+  .score-pct { font-size: 1rem; color: #8aacd4; margin-bottom: 28px; }
+  .score-pct span { color: var(--gold); font-family: 'Playfair Display', serif; font-size: 1.5rem; }
+  .btn-reset {
+    background: var(--gold);
+    color: var(--ink);
+    border: none;
+    padding: 11px 30px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: all 0.2s;
+  }
+  .btn-reset:hover { background: #daa520; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(184,134,11,0.4); }
+  @media (max-width: 600px) {
+    .header { flex-direction: column; gap: 14px; padding: 18px; }
+    .scoreboard { justify-content: center; }
+    .container { padding: 24px 14px 60px; }
+    .question-header, .options { padding-left: 16px; padding-right: 16px; }
+    .submit-btn, .answer-reveal { margin-left: 16px; margin-right: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <h1>Tryout Ilmu Negara</h1>
+    <p>FSIH4103 &mdash; 135 Soal &bull; Pilihan Ganda &amp; Multi-Jawaban</p>
+  </div>
+  <div class="scoreboard">
+    <div class="score-pill total"><div class="num" id="sc-total">0</div><div class="lbl">Dijawab</div></div>
+    <div class="score-pill correct"><div class="num" id="sc-correct">0</div><div class="lbl">Benar</div></div>
+    <div class="score-pill wrong"><div class="num" id="sc-wrong">0</div><div class="lbl">Salah</div></div>
+  </div>
+</header>
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+<div class="container" id="quiz-container"></div>
+
+<script>
+const QUIZ = [{"q": "Unsur negara secara sosiologis di antaranya adalah unsur....", "opts": {"1": "bangsa", "2": "ekonomis", "3": "kultural"}, "ans": "1,3", "type": "numbered"}, {"q": "Unsur primer adanya suatu negara adalah....", "opts": {"A": "raja", "B": "wilayah", "C": "rakyat", "D": "pemerintah yang berdaulat"}, "ans": "C", "type": "abcd"}, {"q": "Kekuasaan adalah kemampuan dalam hubungan sosial untuk melakukan ....", "opts": {"A": "tindakan menyerang negara yang lebih lemah", "B": "tindakan yang sudah ditentukan oleh undang-undang", "C": "kemauan sendiri sekalipun mengalami perlawanan", "D": "tindakan melawan hukum/peraturan"}, "ans": "C", "type": "abcd"}, {"q": "Berikut ini adalah konsep mengenai kewenangan, yaitu....", "opts": {"A": "setiap kemampuan untuk mempengaruhi pihak lain", "B": "kekuasaan yang ada pada seseorang yang mempunyai dukungan atau pengakuan dari masyarakat", "C": "otoritas tertinggi untuk membuat suatu hukum", "D": "suatu keyakinan dalam masyarakat bahwa hak dan kekuasaan yang ada pada seseorang adalah wajar dan patut dihormati"}, "ans": "B", "type": "abcd"}, {"q": "Negara yang melaksanakan sistem pemisahan kekuasaan dapat diklasifikasikan menjadi.…", "opts": {"1": "masing-masing organ terpisah satu sama lain dan tidak saling terpengaruhi", "2": "masing-masing organ terkhusus badan eksekutif dengan badan legislatif dapat saling berhubungan dan mempengaruhi satu sama lain", "3": "eksekutif hanya melaksanakan apa yang telah diputuskan oleh legislatif"}, "ans": "1", "type": "numbered"}, {"q": "Terbentuknya suatu negara terjadi ketika suatu wilayah yang tidak bertuan dan tidak dikuasai kemudian dikuasai oleh suku atau kelompok tertentu, disebut dengan .…", "opts": {"A": "pendudukan", "B": "peleburan", "C": "penyerahan", "D": "pencaplokan"}, "ans": "A", "type": "abcd"}, {"q": "Kalimat “Atas berkah rahmat Tuhan Yang Maha Esa” menunjukkan teori.…", "opts": {"A": "ketuhanan", "B": "kenyataan", "C": "pemakhlukan", "D": "kepercayaan"}, "ans": "A", "type": "abcd"}, {"q": "Negara harus melepaskan diri dari campur tangan urusan kepentingan rakyatnya, hal ini dikenal dalam negara hukum....", "opts": {"A": "polisi", "B": "liberal", "C": "formal", "D": "kemakmuran"}, "ans": "B", "type": "abcd"}, {"q": "Negara memiliki sifat mencangkup semua yang terlihat dalam hal.…", "opts": {"A": "membuat semua perundang-undangan yang diberlakukan", "B": "melakukan pemilihan sendiri untuk menempatkan orang pada jabatan tertentu", "C": "tidak melibatkan rakyat dalam keputusan-keputusan penting negara", "D": "memberlakukan semua peraturan perundang-undangan berlaku untuk semua orang"}, "ans": "D", "type": "abcd"}, {"q": "Dalam negara federal wewenang legislatif dibagi menjadi badan legislatif....", "opts": {"A": "antar negara bagian", "B": "pusat dan daerah", "C": "pusat dan negara-negara bagian", "D": "pusat dan otonomi"}, "ans": "C", "type": "abcd"}, {"q": "Doktrin Montesquieu mengenai Trias Politica tercerminkan dalam hal sebagai berikut ....", "opts": {"A": "presiden Amerika dapat dijatuhkan oleh konggres", "B": "presiden Amerika tidak dapat dijatuhkan oleh konggres", "C": "konggres dapat dijatuhkan oleh presiden", "D": "presiden dan konggres sama-sama dapat menjatuhkan satu sama lain"}, "ans": "B", "type": "abcd"}, {"q": "Negara dapat menyatakan bahwa suatu aliran kepercayaan atau aliran politik tertentu dilarang hidup dan disebarluaskan karena bertentangan dengan tujuan masyarakat, dalam hal ini negara bersifat....", "opts": {"A": "memaksa", "B": "monopoli", "C": "semena-mena", "D": "mencakup semua"}, "ans": "B", "type": "abcd"}, {"q": "Ciri dari ajaran teokrasi oleh Thomas Aquinas adalah.…", "opts": {"A": "segala kekuasaan dari alat-alat pemerintahannya didasarkan atas hukum", "B": "pimpinan menjalankan kekuasaan hanyalah berdasarkan kekuasaan Tuhan yang diberikan padanya", "C": "negara dipandang sebagai alat yang dibuat manusia untuk melindungi dirinya dari segala ancaman", "D": "negara sebagai alat untuk membentuk suatu kekuasaan"}, "ans": "B", "type": "abcd"}, {"q": "Negara bertujuan untuk memajukan kesusilaan manusia sebagai perorangan dan makhluk sosial, merupakan ajaran.…", "opts": {"A": "kebahagiaan", "B": "kesusilaan", "C": "teokrasi", "D": "keamanan dan ketertiban"}, "ans": "B", "type": "abcd"}, {"q": "Dalam melihat keabsahan kekuasaan dengan legitimasi sosiologis, dapat dilihat dari aspek....", "opts": {"A": "kesesuaian dengan hukum atau peraturan yang berlaku", "B": "wewenang kekuasaan politik dari segi norma-norma moral", "C": "kekuasaan yang menjadi dasar pembuatannya", "D": "mekanisme motivatif mana yang nyata-nyata membuat masyarakat mau menerima wewenang penguasa"}, "ans": "D", "type": "abcd"}, {"q": "Tujuan dari saling mengawasi antara cabang kekuasaan yang lain adalah ....", "opts": {"A": "ikut campur dalam cabang kekuasaan lain", "B": "menjaga kewenang cabang kekuasaan masing-masing", "C": "mencegah sentralisasi kekuasaan dalam satu tangan atau lembaga", "D": "tidak tumpang tindih dalam menjalankan kewenangan"}, "ans": "C", "type": "abcd"}, {"q": "Sifat wewenang satuan pemerintah dekonsentrasi teritorial adalah....", "opts": {"A": "mandat", "B": "atribusi", "C": "sejajar", "D": "terpisah"}, "ans": "A", "type": "abcd"}, {"q": "Dalam legitimasi materi wewenang mempertanyakan mengenai....", "opts": {"1": "untuk tujuan apa wewenang dipergunakan dengan sah", "2": "apakah hukum harus memiliki ciri dan sifat tertentu", "3": "dasar wewenang seseorang untuk membuat peraturan bagi masyarakat"}, "ans": "1,2", "type": "numbered"}, {"q": "Tugas negara dalam bentuk negara hukum polisi adalah....", "opts": {"A": "turut campur dalam segala urusan warga negara", "B": "menjaga tata tertib saja", "C": "kekuasaan absolut pada penguasa", "D": "membebaskan sepenuhnya kepada warga negara"}, "ans": "A", "type": "abcd"}, {"q": "Dalam teori kedaulatan negara, kekuasaan tertinggi berada di tangan....", "opts": {"A": "pemimpin", "B": "hukum", "C": "wakil rakyat", "D": "negara"}, "ans": "D", "type": "abcd"}, {"q": "Kemauan rakyat adalah dasar dari kekuasaan dan pengakuan adanya kekuasaan, merupakan ciri khas dari negara ....", "opts": {"A": "kerajaan", "B": "monarki", "C": "demokratis", "D": "teokrasi"}, "ans": "C", "type": "abcd"}, {"q": "Negara yang bersusunan tunggal disebut dengan negara....", "opts": {"A": "kesatuan", "B": "desentralisasi", "C": "federal", "D": "serikat"}, "ans": "A", "type": "abcd"}, {"q": "Arti kata nomos dari konsep nomokrasi adalah....", "opts": {"A": "norma", "B": "kekuasaan", "C": "hukum", "D": "peraturan"}, "ans": "C", "type": "abcd"}, {"q": "Peraturan hukum yang dibuat mengikat rakyat sekaligus pembuatnya disebut dengan negara....", "opts": {"A": "liberal", "B": "otonom", "C": "totaliter", "D": "heteronom"}, "ans": "B", "type": "abcd"}, {"q": "Legitimasi disebut juga dengan ....", "opts": {"A": "kekuasaan", "B": "kedaulatan", "C": "pengesahan", "D": "sanksi"}, "ans": "C", "type": "abcd"}, {"q": "Kedaulatan sebagai objek dalam filsafat politik dan kenegaraan, yang di dalamnya terkandung....", "opts": {"A": "asal terbentuknya suatu negara", "B": "nilai-nilai luhur untuk mensejahterakan rakyat", "C": "bagaimana pengaturan kekuasaan dalam suatu negara", "D": "konsep yang berkaitan dengan kekuasaan tertinggi dalam negara"}, "ans": "D", "type": "abcd"}, {"q": "Bentuk-bentuk negara yang masuk dalam klasifikasi tripartite adalah....", "opts": {"1": "monarki", "2": "aristokrasi", "3": "demokrasi"}, "ans": "1,2,3", "type": "numbered"}, {"q": "Leacock mengklasifikasikan negara ke dalam negara depotis dan....", "opts": {"A": "demokrasi", "B": "republik", "C": "kerajaan terbatas", "D": "parlemen"}, "ans": "A", "type": "abcd"}, {"q": "Pada zaman renaissance , klasifikasi negara didasarkan pada golongan....", "opts": {"1": "monarki", "2": "demokrasi", "3": "republik"}, "ans": "1,3", "type": "numbered"}, {"q": "Sebuah negara federal lahir melalui suatu perjanjian internasional yang ditandatangani oleh negara-negara ....", "opts": {"A": "belum merdeka", "B": "merdeka", "C": "persemakmuran", "D": "sudah bagian dari negara serikat"}, "ans": "B", "type": "abcd"}, {"q": "Konsep negara hukum menurut E. Utrecht dalam arti sempit atau formal disebut sebagai negara hukum....", "opts": {"A": "klasik", "B": "modern", "C": "absolut", "D": "imperium"}, "ans": "A", "type": "abcd"}, {"q": "Dalam negara heteronom, peraturan yang dibuat mengikat....", "opts": {"A": "rakyat saja dan tidak mengikat penguasa yang membuat", "B": "penguasa yang membuat peraturan", "C": "rakyat sekaligus pembuatnya", "D": "golongan tertentu"}, "ans": "C", "type": "abcd"}, {"q": "Berikut ini adalah pernyataan yang benar mengenai perbedaan konfederasi dan federasi menurut Jellinek adalah....", "opts": {"1": "konfederasi pada hakikatnya adalah negara", "2": "kedaulatan federasi terletak pada federasi bukan pada negara-negara", "3": "kedaulatan konfederasi terletak pada masing-masing negara anggota peserta konfederasi"}, "ans": "2,3,1", "type": "numbered"}, {"q": "Ilmu Negara dan Hukum Tata Negara menyelidiki kerangka yuridis negara, sedangkan ilmu politik menyelidiki….", "opts": {"A": "teori negara", "B": "sejarah negara", "C": "tatanan negara", "D": "sosiologi negara"}, "ans": "D", "type": "abcd"}, {"q": "Menurut Logemann, negara sebagai organisasi kewibawaan. Kewibawaan negara ini terbukti dalam hal .…", "opts": {"A": "tidak ada bangsa lain yang memerintahnya", "B": "segala perintah dipatuhi dan ditaati oleh rakyatnya", "C": "mengendalikan persoalan bersama masyarakat", "D": "pemerintah pusat sebagai pengatur segala urusan"}, "ans": "B", "type": "abcd"}, {"q": "Dalam teori kedaulatan raja, maka raja bertindak sebagai ....", "opts": {"1": "penyelenggara negara", "2": "pemegang kekuasaan tertinggi", "3": "penyalur aspirasi rakyat"}, "ans": "1,2", "type": "numbered"}, {"q": "Objek yang dipelajari dalam Hukum Tata Negara dalam kaitannya dengan Ilmu Negara adalah....", "opts": {"A": "negara", "B": "hakikat negara", "C": "sifat hakikat negara", "D": "bentuk negara"}, "ans": "A", "type": "abcd"}, {"q": "Kontrol yurisdiksionil yang sempurna dan lengkap harus meliputi kontrol....", "opts": {"1": "atas sah tidaknya tindakan-tindakan badan eksekutif untuk mencegah timbulnya pelanggaran terhadap undang-undang", "2": "agar undang-undang dan peraturan-peraturan hukum lainnya tidak menyimpang dari undang- undang dasar", "3": "agar tidak terjadi tumpang tindih kewenangan antara legislatif dan eksekutif"}, "ans": "1,2", "type": "numbered"}, {"q": "Istilah ‘pembagian’ dalam kalimat “Negara Kesatuan Republik Indonesia dibagi atas daerah-daerah provinsi,...” mengandung makna yaitu ....", "opts": {"A": "pembagian kekuasaan", "B": "pembagian wilayah", "C": "pemisahan absolut", "D": "bentuk negara kesatuan"}, "ans": "B", "type": "abcd"}, {"q": "Ilmu pengetahuan mengenai negara yang penyelidikannya ditekankan pada segi yuridis dari negara itu, merupakan pengertian dari ....", "opts": {"A": "ilmu negara dalam arti sempit", "B": "ilmu pengetahuan hukum", "C": "hukum tata negara", "D": "hukum pemerintahan"}, "ans": "C", "type": "abcd"}, {"q": "Logemann mengemukakan bahwa negara adalah organisasi kemasyarakatan yang bertujuan dengan kekuasaannya mengatur serta menyelenggarakan suatu ….", "opts": {"A": "perkumpulan", "B": "masyarakat", "C": "kegiatan", "D": "koalisi"}, "ans": "B", "type": "abcd"}, {"q": "Doktrin Trias Politica memegang peranan penting terutama di daerah....", "opts": {"A": "Inggris", "B": "Eropa Barat", "C": "Amerika dan negara bagiannya", "D": "Timur Tengah"}, "ans": "C", "type": "abcd"}, {"q": "Yang dimaksud asal mula negara yang dipelajari dalam ilmu negara adalah....", "opts": {"A": "asal mula suatu negara yang konkret", "B": "asal mula terbentuknya sesuatu yang dinamakan negara", "C": "hakikat suatu negara terbentuk", "D": "hakikat dan histori dari suatu negara"}, "ans": "B", "type": "abcd"}, {"q": "Ilmu negara sebagai ilmu yang menyelidiki dan/atau atau membicarakan mengenai negara, terlihat dari .…", "opts": {"A": "subjek yang digunakan", "B": "pelaku yang melaksanakan", "C": "isi dalam materinya", "D": "istilah yang digunakan ‘ilmu negara’"}, "ans": "D", "type": "abcd"}, {"q": "Dalam praktik yudikatif juga melakukan kekuasaan eksekutif, yaitu....", "opts": {"A": "memutus sengketa", "B": "memberi izin kawin", "C": "memutus perceraian", "D": "judicial review"}, "ans": "B", "type": "abcd"}, {"q": "Unsur subjek hukum dari negara adalah .…", "opts": {"A": "wilayah", "B": "pemerintah yang berdaulat", "C": "rakyat", "D": "undang-undang"}, "ans": "C", "type": "abcd"}, {"q": "Unsur-unsur negara secara yuridis diantaranya darat, laut, udara yang merupakan ....", "opts": {"A": "subjek hukum", "B": "wilayah hukum", "C": "kekayaan bumi", "D": "angkatan bersenjata"}, "ans": "B", "type": "abcd"}, {"q": "Asal mula negara yang terjadi karena penggabungan dua negara atau lebih disebut dengan.…", "opts": {"A": "pendudukan", "B": "peleburan", "C": "penyerahan", "D": "pencaplokan"}, "ans": "B", "type": "abcd"}, {"q": "Dalam negara teokrasi, sumber dari kekuasaan negara adalah berasal dari ....", "opts": {"A": "Tuhan", "B": "raja", "C": "undang-undang", "D": "kedaulatan rakyat"}, "ans": "A", "type": "abcd"}, {"q": "Bentuk negara yang wewenang legislatif tertinggi dipusatkan dalam satu badan legislatif nasional atau pusat adalah negara....", "opts": {"A": "federasi", "B": "federal", "C": "kesatuan", "D": "bersusunan jamak"}, "ans": "C", "type": "abcd"}, {"q": "Terjadinya negara secara primer membahas tentang terjadinya negara.…", "opts": {"A": "dengan cara pendudukan wilayah yang tidak bertuan dan tidak dikuasai", "B": "dari penyerahan kepada negara lain berdasarkan perjanjian tertentu", "C": "dihubungkan dengan negara yang telah ada sebelumnya", "D": "tidak dihubungkan dengan negara yang telah ada sebelumnya"}, "ans": "D", "type": "abcd"}, {"q": "Asal mula negara dalam teori perjanjian adalah disebabkan oleh....", "opts": {"A": "kehendak Tuhan", "B": "adanya kelompok manusia menaklukkan daerah dan kelompok manusia lainnya", "C": "orang bebas merdeka terlepas satu sama lain tanpa ikatan kenegaraan", "D": "sudah terbentuk unsur-unsur negara (daerah, rakyat, pemerintah yang berdaulat)"}, "ans": "C", "type": "abcd"}, {"q": "Penentu suatu kebijakan negara adalah para tuan tanah sebagai pemilik wilayah negara, dikenal dengan pemerintahan....", "opts": {"A": "kapitalis", "B": "feodal", "C": "sosialis", "D": "ekonomi rakyat primitif"}, "ans": "B", "type": "abcd"}, {"q": "Menurut Plato negara timbul karena adanya kebutuhan dan keinginan menusia yang beragam yang menyebabkan....", "opts": {"A": "manusia mencapai kebaikan tertinggi sebagai anggota dari negara", "B": "melaksanakan hukum yang memuat keadilan bagi masyarakat umum", "C": "bersaing demi mencapai kebutuhannya", "D": "manusia harus bekerja sama untuk memenuhi kebutuhan mereka"}, "ans": "D", "type": "abcd"}, {"q": "Yang bertugas untuk mengawasi segi-segi administrasi kekuasaan kehakiman adalah....", "opts": {"A": "Mahkamah Agung", "B": "Mahkamah Konstitusi", "C": "Komisi Yudisial", "D": "Badan Pemeriksa Keuangan"}, "ans": "C", "type": "abcd"}, {"q": "Pembagian ke dalam negara federal dan negara bagian dilakukan pada kompetensi....", "opts": {"1": "legislatif", "2": "yudikatif", "3": "administratif"}, "ans": "1,2,3", "type": "numbered"}, {"q": "Unsur memaksa oleh negara dapat dilihat dalam ketentuan.…", "opts": {"A": "pernikahan", "B": "kepercayaan", "C": "pajak", "D": "kewarganegaraan"}, "ans": "C", "type": "abcd"}, {"q": "Tujuan negara dalam ajaran kekuasaan adalah membentuk kekuasaan, sehingga untuk membuat negara kuasa dan berkuasa penuh harus....", "opts": {"A": "dipimpin oleh raja yang absolut", "B": "rakyat dan pemerintah bekerja sama untuk mewujudkannya", "C": "menjajah dan menindas bangsa lain", "D": "membuat rakyatnya lemah dan miskin"}, "ans": "D", "type": "abcd"}, {"q": "Dalam teori ikatan golongan, hakikat negara dipandang sebagai.…", "opts": {"A": "organisasi yang hidup dan mempunyai kehidupan sendiri", "B": "gabungan kelompok untuk mencapai tujuan bersama", "C": "suatu institusi sosial yang tumbuh dalam masyarakat", "D": "suatu sistem hukum, dimana ketertiban negara adalah ketertiban masyarakat"}, "ans": "B", "type": "abcd"}, {"q": "Pemerintahan dalam negara aristokrasi dipegang oleh ....", "opts": {"A": "satu orang saja", "B": "cendekiawan", "C": "sekelompok orang", "D": "seluruh warga"}, "ans": "C", "type": "abcd"}, {"q": "Negara yang tersusun dari beberapa negara yang semula berdiri sendiri-sendiri kemudian bersatu dalam ikatan kerja sama namun masih mempunyai wewenang terhadap urusan masing-masing disebut dengan negara....", "opts": {"A": "federal", "B": "kesatuan", "C": "absolut", "D": "liberal"}, "ans": "A", "type": "abcd"}, {"q": "Satuan pemerintahan teritorial dekonsentrasi adalah....", "opts": {"A": "mandiri", "B": "pelimpahan", "C": "penggantian", "D": "sejajar"}, "ans": "B", "type": "abcd"}, {"q": "Pernyataan yang benar mengenai perbedaan dari bentuk negara dengan bentuk pemerintahan adalah negara dilihat dari ....", "opts": {"A": "isinya", "B": "strukturnya", "C": "sistem hukumnya", "D": "secara keseluruhan tanpa melihat isinya dan sebagainya"}, "ans": "B", "type": "abcd"}, {"q": "Menurut Kranenburg, apabila peraturan organ pusat itu tidak dapat mengikat langsung penduduk wilayah anggotanya maka gabungan kenegaraan itu adalah....", "opts": {"A": "konfederasi", "B": "federasi", "C": "kesatuan", "D": "republik"}, "ans": "A", "type": "abcd"}, {"q": "Legitimasi subjek wewenang mempertanyakan hal yang menjadi dasar wewenang seseorang atau sekelompok orang untuk ....", "opts": {"A": "berkuasa dan memimpin sebuah negara", "B": "membuat undang-undang", "C": "memaksakan kehendak kepada rakyat", "D": "menaklukkan negara lain"}, "ans": "B", "type": "abcd"}, {"q": "Kata “legal” dalam legalitas memiliki arti sebagai ....", "opts": {"A": "resmi", "B": "pidana", "C": "melanggar", "D": "sesuai dengan hukum"}, "ans": "D", "type": "abcd"}, {"q": "Dalam teori pembagian kekuasaan oleh Aristoteles, memiliki arti bahwa....", "opts": {"A": "suatu tugas hanya diberikan kepada salah satu cabang kekuasaan", "B": "setiap tugas dikerjakan bersama-sama", "C": "tidak menutup kemungkinan satu tugas diberikan kepada lebih dari satu cabang kekuasaan", "D": "cabang kekuasaan lain boleh ikut campur pada tugas kekuasaan lainnya tanpa kewenangan"}, "ans": "C", "type": "abcd"}, {"q": "Negara yang ideal adalah negara yang bebas dari pemimpin negara yang rakus dan otoriter, tempat keadilan dijunjung tinggi, disebut dengan negara....", "opts": {"A": "merdeka", "B": "hukum", "C": "madani", "D": "demokrasi"}, "ans": "C", "type": "abcd"}, {"q": "Pemerintahan dalam negara tirani dipegang oleh....", "opts": {"A": "satu orang saja yang tujuannya untuk kepentingan rakyat", "B": "sekelompok cendekiawan untuk kepentingan rakyat", "C": "seluruh warga untuk kepentingan bersama", "D": "satu orang saja yang tujuannya untuk kepentingan sendiri"}, "ans": "D", "type": "abcd"}, {"q": "Dalam sejarah, daulat dipergunakan untuk pengertian....", "opts": {"A": "negara", "B": "rezim politik", "C": "kekuasaan", "D": "kemandirian"}, "ans": "C", "type": "abcd"}, {"q": "Hukum ada karena kodratnya yaitu berasal dari akal budi, manusiawi, berlaku secara universal, adalah pengertian dari teori....", "opts": {"A": "hukum alam", "B": "teokrasi primitif", "C": "teokrasi modern", "D": "demokrasi"}, "ans": "A", "type": "abcd"}, {"q": "Bentuk negara identik dengan bentuk pemerintahan, hal ini terlihat dalam pernyataan berikut yaitu....", "opts": {"A": "sudut pandangnya dalam melihat negara", "B": "dalam mengklasifikasikan bentuk negara", "C": "pemerintah sebagai alat negara yang menyelenggarakan kekuasaan negara", "D": "keseluruhannya sama hanya berbeda istilah"}, "ans": "B", "type": "abcd"}, {"q": "Persamaan dari dekonsentrasi maupun otonomi adalah....", "opts": {"A": "memiliki wewenang mandiri", "B": "sifat wewenangnya delegasi/mandat", "C": "tidak berdasarkan atribusi", "D": "hanya menyelenggarakan pemerintahan dibidang administrasi negara"}, "ans": "D", "type": "abcd"}, {"q": "Menurut Aristoteles, negara yang baik adalah negara yang diperintah dengan ....", "opts": {"A": "presiden", "B": "raja", "C": "diktator", "D": "konstitusi"}, "ans": "D", "type": "abcd"}, {"q": "Ciri dari negara hukum yang menerapkan rule of law adalah....", "opts": {"1": "supremasi hukum", "2": "persamaan di hadapan hukum", "3": "jaminan atas hak pribadi"}, "ans": "1,2,3", "type": "numbered"}, {"q": "Yang mempengaruhi pembagian tugas terperinci di negara federal adalah ....", "opts": {"A": "pemimpin dari negara federal", "B": "pemimpin dari negara bagian", "C": "dana kekuasaan", "D": "ancaman negara lain"}, "ans": "C", "type": "abcd"}, {"q": "Ciri dari bentuk negara liberal adalah....", "opts": {"A": "segala sesuatu diatur oleh negara", "B": "penguasa membuat peraturan juga ikut terikat dari peraturan yang dibuatnya", "C": "penguasa hanya ikut campur pada hal yang bersifat pokok saja", "D": "kesamaan antara penguasa dan warga negaranya"}, "ans": "C", "type": "abcd"}, {"q": "Perserikatan negara menurut Hans Kelsen adalah....", "opts": {"A": "persatuan dari negara-negara bagian yang serumpun", "B": "kesatuan negara yang bertetanggaan dalam satu wilayah", "C": "suatu masyarakat yang terorganisasi yang disebut konfederasi negara-negara", "D": "suatu sekutu dalam rangka menjalankan kepentingan negara"}, "ans": "C", "type": "abcd"}, {"q": "Ilmu Politik membahas keadaan dalam kenyataan yang menekankan faktor konkret atau disebut bersifat....", "opts": {"A": "teoritis", "B": "praktis", "C": "yuridis", "D": "sosiologis"}, "ans": "B", "type": "abcd"}, {"q": "Ajaran Augustinus yang bersifat teokrasi menganggap kedudukan paling tinggi adalah....", "opts": {"A": "negara", "B": "raja", "C": "gereja", "D": "kepentingan anggota"}, "ans": "C", "type": "abcd"}, {"q": "Mac Iver menyanggah dalam pembagian kekuasaan karena....", "opts": {"A": "tidak mungkin dilakukan sesuai dengan teorinya", "B": "tidak mungkin terjadi pemisahan secara mutlak", "C": "tidak sesuai untuk semua bentuk negara", "D": "masing-masing pembagian tidak ada kaitannya"}, "ans": "B", "type": "abcd"}, {"q": "Ilmu Negara membahas hal-hal yang bersifat….", "opts": {"A": "khusus", "B": "universal", "C": "spesifik", "D": "konkret"}, "ans": "B", "type": "abcd"}, {"q": "Berikut ini merupakan bentuk pelaksanaan check and balances yaitu kontrol yuridiksional yang diawasi dan dilindungi oleh....", "opts": {"A": "presiden", "B": "pengadilan", "C": "BPK", "D": "KPK"}, "ans": "B", "type": "abcd"}, {"q": "Dalam perubahan Amandemen UUD 1945 terjadi pergeseran kekuasaan legislatif yaitu....", "opts": {"A": "presiden ke DPR", "B": "DPR ke presiden", "C": "DPR ke pemerintah", "D": "DPR bersama-sama dengan presiden"}, "ans": "A", "type": "abcd"}, {"q": "Besondere Staatslehre merupakan ilmu kenegaraan dalam arti....", "opts": {"A": "sempit", "B": "khusus", "C": "umum", "D": "luas"}, "ans": "B", "type": "abcd"}, {"q": "Pengertian negara menurut Aristoteles adalah suatu persekutuan yang bertujuan untuk mencapai kehidupan yang sebaik-baiknya. Persekutuan yang dimaksud terdiri dari....", "opts": {"A": "manusia individu", "B": "keluarga dan desa", "C": "negara", "D": "negara-negara bagian"}, "ans": "B", "type": "abcd"}, {"q": "Kewenangan presiden untuk mengesahkan atau tidak mengesahkan RUU tersebut dapat dipahami dalam pengertian hak....", "opts": {"A": "veto", "B": "grasi", "C": "amnesti", "D": "rehabilitasi"}, "ans": "A", "type": "abcd"}, {"q": "Hukum Tata Negara dan Hukum Pemerintahan memiliki objek yang sama dengan Ilmu Negara, yaitu ....", "opts": {"A": "negara", "B": "pemerintahan", "C": "hukum", "D": "konstitusi"}, "ans": "A", "type": "abcd"}, {"q": "C.S.T. Kansil mengartikan Ilmu Negara sebagai ilmu pengetahuan yang mempelajari....", "opts": {"A": "asas-asas pokok dan pengertian tentang negara", "B": "sifat dan hakikat negara", "C": "asal mula, ciri-ciri serta seluruh persoalan tentang negara", "D": "asas-asas pokok dan pengertian tentang negara dan hukum tata negara"}, "ans": "A", "type": "abcd"}, {"q": "Kekuasan eksekutif dilakukan oleh....", "opts": {"A": "anggota DPR", "B": "Presiden dan Menteri", "C": "Lembaga Peradilan", "D": "Mahkamah Agung"}, "ans": "B", "type": "abcd"}, {"q": "Hakikat negara menurut Augustinus adalah atas kehendak….", "opts": {"A": "Tuhan", "B": "rakyat", "C": "pemimpin", "D": "keputusan bersama"}, "ans": "A", "type": "abcd"}, {"q": "Berikut ini bukan merupakan syarat mutlak dalam pembentukan suatu negara, yaitu….", "opts": {"A": "wilayah", "B": "rakyat", "C": "pemerintah yang berdaulat", "D": "pengakuan dari negara lain"}, "ans": "D", "type": "abcd"}, {"q": "Suatu negara yang berdiri di suatu wilayah yang dikuasai oleh bangsa lain tanpa reaksi yang berarti disebut dengan istilah....", "opts": {"A": "pendudukan", "B": "peleburan", "C": "penyerahan", "D": "pencaplokan"}, "ans": "A", "type": "abcd"}, {"q": "Kekuasaan mempunyai peranan penting bagi manusia, yang baik buruknya diukur dengan....", "opts": {"A": "pemimpin atau penguasa suatu daerah", "B": "kemakmuran dari negara dan masyarakatnya", "C": "penilaian dari masyarakat dunia", "D": "kegunaannya untuk suatu tujuan yang telah ditentukan"}, "ans": "D", "type": "abcd"}, {"q": "Negara yang fungsi atau kekuasaan negara itu dipusatkan pada satu organ merupakan ciri dari negara yang menerapkan sistem ....", "opts": {"A": "imperium", "B": "absolut", "C": "serikat", "D": "kesatuan"}, "ans": "B", "type": "abcd"}, {"q": "Pengakuan terhadap muncul atau terbentuknya negara baru yang masih bersifat sementara karena masih diteliti prosesnya dalam prosedur hukum disebut dengan pengakuan....", "opts": {"A": "de facto", "B": "de jure", "C": "Pemerintahan de facto", "D": "Pemerintahan de jure"}, "ans": "A,C", "type": "abcd"}, {"q": "Pengakuan yang seluas-luasnya dan bersifat tetap terhadap munculnya atau yang seluas-luasnya dan bersifat tetap terhadap terbentuknya suatu negara berdasarkan yuridis/hukum, adalah pengakuan….", "opts": {"A": "de facto", "B": "de jure", "C": "atas pemerintahan de facto", "D": "atas pemerintahan de jure"}, "ans": "B,D", "type": "abcd"}, {"q": "Berikut ini merupakan klasifikasi bentuk negara berdasarkan persekutuan, yaitu....", "opts": {"A": "kesukuan, polis, negeri, nasional", "B": "primitif, feodal, kapitalis, sosialis", "C": "kesatuan, imperium, serikat", "D": "monarki, diktator, teokrasi, kepemimpinan jamak"}, "ans": "A", "type": "abcd"}, {"q": "Hakikat negara menurut Aristoteles adalah suatu organisme, yaitu keutuhan yang memiliki dasar-dasar hidup sendiri. Oleh karena itu negara.…", "opts": {"A": "mengalami keadaan timbul, pasang, surut, hingga mati", "B": "bentuknya berubah-ubah, sehingga perubahannya membentuk siklus seperti lingkaran", "C": "kebutuhan untuk kerjasama untuk memenuhi kebutuhan mereka", "D": "suatu tertib hukum ataupun suatu tertib masyarakat yang bersifat memaksa"}, "ans": "A", "type": "abcd"}, {"q": "Norma daerah dalam negara federal berlaku untuk....", "opts": {"A": "seluruh teritorialnya", "B": "beberapa negara bagian", "C": "teritorial pusat", "D": "bagian-bagian teritorial pembuatnya"}, "ans": "D", "type": "abcd"}, {"q": "Dalam hal badan legislatif di negara federal terdiri dari legislatif....", "opts": {"A": "pusat saja", "B": "negara bagian", "C": "lokal", "D": "pusat dan legislatif negara bagian"}, "ans": "D", "type": "abcd"}, {"q": "Teori yang memandang negara sebagai suatu sistem hukum semata-mata, dimana ketertiban negara tiada lain merupakan ketertiban masyarakat, adalah teori….", "opts": {"A": "sosiologis", "B": "organis", "C": "ikatan golongan", "D": "hukum murni"}, "ans": "D", "type": "abcd"}, {"q": "Negara yang timbul karena kelompok manusia menundukkan daerah dan kelompok manusia lainnya, merupakan teori ….", "opts": {"A": "kenyataan", "B": "perjanjian", "C": "penaklukan", "D": "ketuhanan"}, "ans": "C", "type": "abcd"}, {"q": "Negara dipandang sebagai suatu institusi sosial yang tumbuh dalam masyarakat karena diperlukan untuk mengurus, mengatur, dan menyelenggarakan kepentingan masyarakat, merupakan hakikat negara ditinjau dari teori....", "opts": {"A": "sosiologis", "B": "organis", "C": "hukum murni", "D": "ikatan golongan"}, "ans": "A", "type": "abcd"}, {"q": "Suatu tindakan yang disesuaikan dengan hukum yang berlaku, disebut dengan....", "opts": {"A": "peraturan", "B": "legalitas", "C": "kebijakan", "D": "pengesahan"}, "ans": "B", "type": "abcd"}, {"q": "Untuk membentuk suatu  negara federal diperlukan....", "opts": {"1": "perasaan sebangsa antara kesatuan-kesatuan politik yang hendak membentuk federasi", "2": "keinginan pada kesatuan-kesatuan politik yang hendak mengadakan federasi untuk mengadakan ikatan", "3": "persamaan latar belakang, sosial, dan budaya antara kesatuan-kesatuan politik yang hendak membentuk federasi"}, "ans": "1,2,3", "type": "numbered"}, {"q": "Pemerintah juga ikut berkecimpung dalam konflik-konflik pajak, maka pemerintah juga ikut andil dalam hal....", "opts": {"A": "eksekutif", "B": "legislatif", "C": "yudikatif", "D": "pemisahan kekuasaan"}, "ans": "C", "type": "abcd"}, {"q": "Legitimasi yang tidak berdasar pada kehendak rakyat atau pada suatu kecakapan empiris khusus penguasa disebut dengan legitimasi....", "opts": {"A": "religius", "B": "eliter", "C": "demokratis", "D": "etis"}, "ans": "A", "type": "abcd"}, {"q": "Yang merupakan ciri dari negara hukum materiil adalah....", "opts": {"A": "tindakan penguasa harus berdasar pada legalitas", "B": "negara tidak campur tangan dalam urusan kepentingan rakyat", "C": "negara aktif dalam kegiatan masyarakat", "D": "negara sebagai penjaga tata tertib dan keamanan"}, "ans": "C", "type": "abcd"}, {"q": "Teori kedaulatan yang paling tua adalah teori kedaulatan....", "opts": {"A": "Tuhan", "B": "raja", "C": "negara", "D": "hukum"}, "ans": "A", "type": "abcd"}, {"q": "Suatu kekuasaan menjadi sah dengan adanya....", "opts": {"A": "negara baru", "B": "pengakuan", "C": "unsur negara", "D": "pemimpin atau penguasa"}, "ans": "B", "type": "abcd"}, {"q": "Negara kesatuan dibedakan dalam dua bentuk, yaitu....", "opts": {"A": "pusat dan daerah", "B": "negara induk dan negara bagian", "C": "sentralisasi dan desentralisasi", "D": "daratan dan kepulauan"}, "ans": "C", "type": "abcd"}, {"q": "Sifat dasar dari negara federal adalah....", "opts": {"A": "tidak ada pemisahan kekuasaan maupun pemerintahan", "B": "bersifat totaliter dari pemerintah federal kepada negara bagian federal", "C": "pembagian kekuasaan antara pemerintah federal dan negara bagian federal", "D": "pemerintah federal tidak memiliki otoritas atas negara bagian federal"}, "ans": "C", "type": "abcd"}, {"q": "Pemerintahan dalam negara oligarki dipegang oleh....", "opts": {"A": "satu orang saja", "B": "cendekiawan", "C": "sekelompok orang", "D": "seluruh warga"}, "ans": "C", "type": "abcd"}, {"q": "Konsep kedaulatan Jean Bodin menganggap bahwa negara harus independen dan memiliki kekuasaan tertinggi. Oleh karena itu disebut dengan kedaulatan....", "opts": {"A": "negara", "B": "Tuhan", "C": "raja", "D": "hukum"}, "ans": "A", "type": "abcd"}, {"q": "Perjanjian yang sebenarnya menurut John Locke yaitu perjanjian....", "opts": {"A": "individu dengan individu lainnya untuk membentuk negara", "B": "individu yang menyerahkan hak-hak kodrat yang dimiliki kepada negara", "C": "perjanjian masyarakat yang sifatnya langsung", "D": "masyarakat yang diperintah dengan penguasa yang diserahi kekuasaan untuk memerintah"}, "ans": "D", "type": "abcd"}, {"q": "Bentuk negara yang sudah tidak dapat dipertahankan lagi untuk masa sekarang adalah ....", "opts": {"A": "klasik tradisional", "B": "kerajaan", "C": "republik", "D": "serikat"}, "ans": "A", "type": "abcd"}, {"q": "hubungan....", "opts": {"A": "penguasa dan rakyat", "B": "penguasa dan undang-undang", "C": "rakyat dan undang-undang", "D": "penguasa, rakyat, dan undang-undang"}, "ans": "A", "type": "abcd"}, {"q": "Kemauan negara yang berbentuk abstrak, sehingga dalam perwujudan konkretnya dituangkan dalam....", "opts": {"1": "hukum", "2": "undang-undang", "3": "pemerintahan"}, "ans": "1,2", "type": "numbered"}, {"q": "Konsep rule of law bertumpu pada sistem hukum....", "opts": {"A": "common law", "B": "socialist legality", "C": "civil law", "D": "democracy"}, "ans": "A", "type": "abcd"}, {"q": "Wolfgang Friedman membagi negara hukum menjadi negara hukum....", "opts": {"A": "formal dan materiil", "B": "formal dan klasik", "C": "totaliter dan sewenang-wenang", "D": "totaliter dan demokratis"}, "ans": "A", "type": "abcd"}, {"q": "Prinsip dari negara hukum menurut", "opts": {"A": "penguasa sebagai pembuat hukum", "B": "penerapan demokrasi dan pemilihan umum", "C": "menggunakan undang-undang sebagai alat pemaksa", "D": "untuk membatasi perluasan dan penggunaan kekuasaan negara secara totaliter dan sewenang-wenang"}, "ans": "D", "type": "abcd"}, {"q": "Objek penyelidikan dalam Ilmu Negara adalah ....", "opts": {"1": "asal mula", "2": "sifat hakikat", "3": "sifat-sifat khusus"}, "ans": "1,2", "type": "numbered"}, {"q": "Menurut Aristoteles suatu negara masih terikat pada wilayah kecil yang disebut dengan ....", "opts": {"A": "keluarga", "B": "desa", "C": "polis", "D": "serikat"}, "ans": "C", "type": "abcd"}, {"q": "Salah satu unsur terbentuknya negara secara klasik adalah terdapat sekelompok orang yang berasal dari keturunan, kepercayaan, dan kulit yang berlainan dan berkumpul sebagai ....", "opts": {"A": "negara", "B": "wilayah", "C": "rakyat", "D": "pemerintahan"}, "ans": "C", "type": "abcd"}, {"q": "Kekuasaan negara yang terdiri dari tiga macam kekuasaan yaitu legislatif, eksekutif, dan yudikatif disebut dengan doktrin....", "opts": {"A": "trias politica", "B": "separation of power", "C": "division of power", "D": "conseil constitutionnel"}, "ans": "A", "type": "abcd"}, {"q": "berbeda dengan ilmu negara, ilmu politik cenderung mementingkan sifat-sifat negara dari segi ....", "opts": {"A": "normatif", "B": "umum", "C": "dinamis", "D": "statis"}, "ans": "C", "type": "abcd"}, {"q": "Klasifikasi bentuk negara berdasarkan perkembangan sejarah dan penjenisan negara modern yang timbul sebagai hasil atau akibat dari perkembangan politik zaman modern, dalam bentuk historis terdiri dari .…", "opts": {"1": "federasi negara-negara zaman kuno", "2": "sistem provinsi Romawi", "3": "negara-negara dengan sistem feodal"}, "ans": "1,2,3", "type": "numbered"}, {"q": "Dalam klasifikasi negara berdasarkan kriteria konstitusi oleh Mac Iver, yang termasuk dalam negara dengan pemerintahan oligarki adalah  ....", "opts": {"1": "monarki", "2": "republik", "3": "kepemimpinan jamak"}, "ans": "1,2,3", "type": "numbered"}, {"q": "Yang merupakan ilmu pengetahuan dalam staatswissenschaften adalah.…", "opts": {"A": "Ilmu Negara", "B": "Hukum Tata Negara", "C": "Hukum Administrasi Negara", "D": "Hukum Pidana"}, "ans": "A", "type": "abcd"}, {"q": "Menurut Hans Kelsen, negara adalah suatu susunan pergaulan hidup bersama dengan.…", "opts": {"A": "tata paksa", "B": "kesepakatan bersama", "C": "kewenangan pimpinan", "D": "negara"}, "ans": "A", "type": "abcd"}, {"q": "Ciri-ciri dari negara hukum socialist legality, adalah ....", "opts": {"1": "supremasi hukum", "2": "perwujudan sosialisme", "3": "hukum adalah alat di bawah sosialisme"}, "ans": "2,3", "type": "numbered"}, {"q": "Objek dalam ilmu negara itu sendiri adalah….", "opts": {"A": "orang", "B": "masyarakat", "C": "negara", "D": "pejabat negara"}, "ans": "C", "type": "abcd"}, {"q": "Ilmu Negara adalah ilmu yang menyelidiki pengertian pokok dan sendi-sendi pokok dari negara dan hukum negara pada umumnya, maksud dari “sendi” adalah ….", "opts": {"A": "asas", "B": "cara", "C": "aturan", "D": "pengetahuan"}, "ans": "A", "type": "abcd"}, {"q": "Dalam sistem kenegaraan menurut John A.R. Marriot, harus memenuhi hal pokok, yaitu....", "opts": {"1": "sifat undang-undang", "2": "susunan pemerintahan", "3": "sistem pemerintahannya"}, "ans": "1,2,3", "type": "numbered"}];
+let answered = 0, correct = 0, wrong = 0;
+
+function updateScore() {
+  document.getElementById('sc-total').textContent = answered;
+  document.getElementById('sc-correct').textContent = correct;
+  document.getElementById('sc-wrong').textContent = wrong;
+  document.getElementById('progress').style.width = Math.round(answered/QUIZ.length*100)+'%';
+  if (answered === QUIZ.length) showSummary();
+}
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  answered = 0; correct = 0; wrong = 0;
+  updateScore();
+
+  QUIZ.forEach((item, idx) => {
+    const isMulti = item.type === 'numbered';
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'card-' + idx;
+
+    const statusBar = document.createElement('div');
+    statusBar.className = 'card-status';
+    statusBar.id = 'status-' + idx;
+
+    const header = document.createElement('div');
+    header.className = 'question-header';
+    const badge = isMulti 
+      ? `<span class="type-badge multi">Multi-Jawaban</span>`
+      : `<span class="type-badge">Pilihan Ganda</span>`;
+    header.innerHTML = `<span class="q-num">${idx+1}.</span><span class="q-text">${item.q}</span>${badge}`;
+
+    const optsDiv = document.createElement('div');
+    optsDiv.className = 'options';
+    optsDiv.id = 'opts-' + idx;
+
+    const letters = isMulti ? ['1','2','3','4'] : ['A','B','C','D'];
+    letters.forEach(letter => {
+      if (!item.opts[letter]) return;
+      const btn = document.createElement('button');
+      btn.className = 'option';
+      btn.dataset.letter = letter;
+      const label = isMulti ? letter+')' : letter+'.';
+      btn.innerHTML = `<span class="opt-letter">${label}</span><span>${item.opts[letter]}</span>`;
+      if (isMulti) {
+        btn.addEventListener('click', () => toggleMulti(idx, letter, btn));
+      } else {
+        btn.addEventListener('click', () => handleSingle(idx, letter, item.ans));
+      }
+      optsDiv.appendChild(btn);
+    });
+
+    const reveal = document.createElement('div');
+    reveal.className = 'answer-reveal';
+    reveal.id = 'reveal-' + idx;
+
+    card.appendChild(statusBar);
+    card.appendChild(header);
+    card.appendChild(optsDiv);
+
+    if (isMulti) {
+      const submitBtn = document.createElement('button');
+      submitBtn.className = 'submit-btn';
+      submitBtn.id = 'submit-' + idx;
+      submitBtn.textContent = 'Konfirmasi Jawaban';
+      submitBtn.style.display = 'none';
+      submitBtn.addEventListener('click', () => submitMulti(idx, item.ans, item.opts));
+      card.appendChild(submitBtn);
+    }
+
+    card.appendChild(reveal);
+    container.appendChild(card);
+  });
+
+  const sum = document.getElementById('summary');
+  sum.style.display = 'none';
+  sum.classList.remove('show');
+}
+
+function handleSingle(idx, chosen, correctAns) {
+  const optsDiv = document.getElementById('opts-' + idx);
+  const reveal = document.getElementById('reveal-' + idx);
+  const statusBar = document.getElementById('status-' + idx);
+  const btns = optsDiv.querySelectorAll('.option');
+  const isCorrect = chosen === correctAns;
+
+  btns.forEach(btn => {
+    btn.disabled = true;
+    const l = btn.dataset.letter;
+    if (l === correctAns) btn.classList.add('correct');
+    else if (l === chosen && !isCorrect) btn.classList.add('wrong');
+    else btn.classList.add('dimmed');
+  });
+
+  statusBar.classList.add(isCorrect ? 's-correct' : 's-wrong');
+  reveal.classList.add('show', isCorrect ? 'is-correct' : 'is-wrong');
+  const correctText = QUIZ[idx].opts[correctAns] || '';
+  if (isCorrect) {
+    reveal.innerHTML = `<span class="icon">✓</span><span><strong>Benar!</strong> Jawaban tepat: <strong>${correctAns}. ${correctText}</strong></span>`;
+    correct++;
+  } else {
+    reveal.innerHTML = `<span class="icon">✗</span><span><strong>Salah.</strong> Jawaban benar: <strong>${correctAns}. ${correctText}</strong></span>`;
+    wrong++;
+  }
+
+  answered++;
+  updateScore();
+  scrollNext(idx);
+}
+
+// Multi-select state
+const multiSelected = {};
+
+function toggleMulti(idx, letter, btn) {
+  if (!multiSelected[idx]) multiSelected[idx] = new Set();
+  const sel = multiSelected[idx];
+  if (sel.has(letter)) { sel.delete(letter); btn.classList.remove('selected'); }
+  else { sel.add(letter); btn.classList.add('selected'); }
+  
+  const submitBtn = document.getElementById('submit-' + idx);
+  submitBtn.style.display = sel.size > 0 ? 'block' : 'none';
+}
+
+function submitMulti(idx, correctAns, opts) {
+  const sel = multiSelected[idx] || new Set();
+  const correctSet = new Set(correctAns.split(','));
+  const optsDiv = document.getElementById('opts-' + idx);
+  const reveal = document.getElementById('reveal-' + idx);
+  const statusBar = document.getElementById('status-' + idx);
+  const submitBtn = document.getElementById('submit-' + idx);
+
+  submitBtn.style.display = 'none';
+
+  const btns = optsDiv.querySelectorAll('.option');
+  btns.forEach(btn => {
+    btn.disabled = true;
+    const l = btn.dataset.letter;
+    if (correctSet.has(l)) btn.classList.add('correct');
+    else if (sel.has(l) && !correctSet.has(l)) btn.classList.add('wrong');
+    else btn.classList.add('dimmed');
+    btn.classList.remove('selected');
+  });
+
+  const isCorrect = [...sel].sort().join(',') === [...correctSet].sort().join(',');
+  statusBar.classList.add(isCorrect ? 's-correct' : 's-wrong');
+  reveal.classList.add('show', isCorrect ? 'is-correct' : 'is-wrong');
+
+  const correctLabels = [...correctSet].map(k => k+') '+opts[k]).join(' &amp; ');
+  if (isCorrect) {
+    reveal.innerHTML = `<span class="icon">✓</span><span><strong>Benar!</strong> Jawaban tepat: <strong>${correctLabels}</strong></span>`;
+    correct++;
+  } else {
+    reveal.innerHTML = `<span class="icon">✗</span><span><strong>Salah.</strong> Jawaban benar: <strong>${correctLabels}</strong></span>`;
+    wrong++;
+  }
+
+  answered++;
+  updateScore();
+  scrollNext(idx);
+}
+
+function scrollNext(idx) {
+  setTimeout(() => {
+    const next = document.getElementById('card-' + (idx+1));
+    if (next) window.scrollTo({ top: next.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
+  }, 400);
+}
+
+function showSummary() {
+  const sum = document.getElementById('summary');
+  sum.classList.add('show');
+  sum.style.display = 'block';
+  document.getElementById('final-total').textContent = answered;
+  document.getElementById('final-correct').textContent = correct;
+  document.getElementById('final-wrong').textContent = wrong;
+  document.getElementById('final-pct').textContent = Math.round(correct/QUIZ.length*100)+'%';
+  setTimeout(() => sum.scrollIntoView({ behavior:'smooth', block:'center' }), 300);
+}
+
+buildQuiz();
+</script>
+
+<div id="summary" class="summary" style="display:none">
+  <div style="max-width:700px;margin:0 auto;">
+    <h2>Hasil Tryout</h2>
+    <p class="subtitle">Ilmu Negara &mdash; FSIH4103</p>
+    <div class="summary-stats">
+      <div class="stat-box total"><div class="big" id="final-total">0</div><div class="label">Total Soal</div></div>
+      <div class="stat-box correct"><div class="big" id="final-correct">0</div><div class="label">Benar</div></div>
+      <div class="stat-box wrong"><div class="big" id="final-wrong">0</div><div class="label">Salah</div></div>
+    </div>
+    <p class="score-pct">Nilai Akhir: <span id="final-pct">0%</span></p>
+    <button class="btn-reset" onclick="Object.keys(multiSelected).forEach(k=>delete multiSelected[k]); buildQuiz(); window.scrollTo({top:0,behavior:'smooth'})">Ulangi Tryout</button>
+  </div>
+</div>
+
+</body>
+</html>
