@@ -3,416 +3,1829 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tryout Sistem Hukum Indonesia (150 Soal)</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Tryout Ilmu Hukum</title>
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap');
+
+  :root {
+    --navy: #1a2744;
+    --navy-light: #243158;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --bg: #f5f2ec;
+    --white: #ffffff;
+    --green: #2e7d52;
+    --red: #b5302a;
+    --text: #2c2c2c;
+    --muted: #6b6b6b;
+    --border: #ddd8cc;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
   }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(145deg, #f0f4f8 0%, #e6edf4 100%);
-    color: #1e2f3e;
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
     min-height: 100vh;
   }
-  .header {
-    background: rgba(255,255,255,0.96);
-    backdrop-filter: blur(8px);
-    border-bottom: 3px solid #1a4d5f;
-    padding: 16px 32px;
+
+  /* HEADER */
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 0;
     position: sticky;
     top: 0;
     z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 18px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
     gap: 16px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
   }
-  .title-block h1 {
+  .header-title h1 {
+    font-family: 'Playfair Display', serif;
     font-size: 1.5rem;
-    background: linear-gradient(135deg, #1a4d5f, #2c7a9e);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    letter-spacing: -0.02em;
+    color: white;
   }
-  .title-block p {
-    color: #5b6f82;
-    font-size: 0.75rem;
-    margin-top: 4px;
+  .header-title p {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.55);
+    font-style: italic;
+    margin-top: 2px;
+    letter-spacing: 0.03em;
   }
   .scoreboard {
     display: flex;
-    gap: 14px;
-  }
-  .pill {
-    background: white;
-    border-radius: 60px;
-    padding: 6px 20px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    border: 1px solid #d4dee8;
-  }
-  .pill .num {
-    font-size: 1.6rem;
-    font-weight: 800;
-    line-height: 1.2;
-  }
-  .pill .lbl {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: #6f8faa;
-  }
-  .pill.total .num { color: #1a4d5f; }
-  .pill.correct .num { color: #2a7a4b; }
-  .pill.wrong .num { color: #c94f3a; }
-  .progress-bar {
-    height: 5px;
-    background: #d8e2ec;
-    position: sticky;
-    top: 86px;
-    z-index: 99;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #1a4d5f, #4c9abf);
-    width: 0%;
-    transition: width 0.3s;
-  }
-  .container {
-    max-width: 920px;
-    margin: 32px auto;
-    padding: 0 20px 70px;
-  }
-  .card {
-    background: white;
-    border-radius: 28px;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.05);
-    margin-bottom: 24px;
-    overflow: hidden;
-    border: 1px solid #e2edf2;
-    transition: all 0.2s;
-  }
-  .card.s-correct { border-left: 6px solid #2a7a4b; background: #f4fbf7; }
-  .card.s-wrong { border-left: 6px solid #c94f3a; background: #fff7f5; }
-  .card-top { height: 5px; background: #e6edf4; }
-  .card.s-correct .card-top { background: #2a7a4b; }
-  .card.s-wrong .card-top { background: #c94f3a; }
-  .q-header {
-    padding: 20px 24px 8px;
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-  }
-  .q-num {
-    font-weight: 700;
-    background: #eef3fc;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 40px;
-    color: #1a4d5f;
-    flex-shrink: 0;
-  }
-  .q-text {
-    font-size: 0.96rem;
-    font-weight: 500;
-    line-height: 1.45;
-    color: #1f3448;
-  }
-  .options {
-    padding: 12px 24px 20px;
-    display: flex;
-    flex-direction: column;
     gap: 10px;
   }
-  .option {
+  .score-box {
+    text-align: center;
+    min-width: 72px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .score-box .val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: block;
+    line-height: 1;
+  }
+  .score-box .lbl {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.6;
+    display: block;
+    margin-top: 3px;
+  }
+  .score-box.answered .val { color: var(--gold-light); }
+  .score-box.correct .val  { color: #6ee7a0; }
+  .score-box.wrong .val    { color: #f87171; }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.1);
+    height: 3px;
+  }
+  .progress-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  /* FILTER */
+  .filter-bar {
+    background: var(--navy-light);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .filter-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 10px 24px;
     display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 14px;
-    padding: 10px 18px;
-    background: #fefefe;
-    border: 1px solid #e0e8ef;
-    border-radius: 60px;
+  }
+  .filter-label { font-size: 0.75rem; color: rgba(255,255,255,0.45); letter-spacing: 0.08em; margin-right: 4px; }
+  .filter-btn {
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.75rem;
+    padding: 4px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: transparent;
+    color: rgba(255,255,255,0.65);
     cursor: pointer;
     transition: all 0.2s;
-    font-family: inherit;
-    font-size: 0.88rem;
-    color: #2c3e4e;
   }
-  .option:hover:not(:disabled) {
-    background: #eef4fa;
-    border-color: #1a4d5f;
-    transform: translateX(5px);
-  }
-  .opt-key {
-    font-weight: 700;
-    background: #eef2f7;
-    width: 28px;
-    height: 28px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 30px;
-    color: #1a4d5f;
-  }
-  .option.correct {
-    background: #e1f3e8;
-    border-color: #2a7a4b;
-  }
-  .option.correct .opt-key { background: #2a7a4b; color: white; }
-  .option.wrong {
-    background: #ffe4de;
-    border-color: #c94f3a;
-  }
-  .option.wrong .opt-key { background: #c94f3a; color: white; }
-  .option.dimmed { opacity: 0.45; background: #f8fafd; }
-  .reveal {
-    margin: 0 24px 24px;
-    padding: 12px 20px;
-    border-radius: 24px;
-    font-size: 0.85rem;
-    display: none;
-    gap: 12px;
-    align-items: center;
-    background: #f8fafc;
-    border-left: 4px solid;
-  }
-  .reveal.show { display: flex; }
-  .reveal.is-correct { background: #e2f0e8; border-color: #2a7a4b; color: #1b5e3a; }
-  .reveal.is-wrong { background: #ffe9e4; border-color: #c94f3a; color: #a53724; }
-  .summary {
-    display: none;
-    background: white;
-    border-radius: 48px;
-    padding: 40px 32px;
-    text-align: center;
-    margin-top: 40px;
-    box-shadow: 0 20px 35px rgba(0,0,0,0.05);
-    border: 1px solid #d4e0e8;
-  }
-  .summary.show { display: block; }
-  .summary h2 { color: #1a4d5f; font-size: 2rem; }
-  .stats {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    margin: 28px 0;
-    flex-wrap: wrap;
-  }
-  .stat {
-    background: #f8fafc;
-    padding: 18px 28px;
-    border-radius: 32px;
-    min-width: 110px;
-  }
-  .stat .big { font-size: 2.4rem; font-weight: 800; color: #1a4d5f; }
-  .btn-reset {
-    background: #1a4d5f;
-    border: none;
-    padding: 12px 32px;
-    font-size: 1rem;
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
     font-weight: 600;
-    border-radius: 60px;
-    color: white;
-    cursor: pointer;
-    transition: 0.2s;
   }
-  .btn-reset:hover { background: #0f3a48; transform: scale(1.02); }
-  @media (max-width: 640px) {
-    .header { flex-direction: column; align-items: flex-start; }
-    .q-header { padding: 16px; }
-    .options { padding: 8px 16px 16px; }
+  .reset-btn {
+    margin-left: auto;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.72rem;
+    padding: 4px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,100,100,0.4);
+    background: transparent;
+    color: rgba(255,150,150,0.8);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .reset-btn:hover { background: rgba(255,80,80,0.15); border-color: rgba(255,100,100,0.7); color: #f87171; }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: box-shadow 0.2s;
+  }
+  .question-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.12); }
+  .question-card.answered-correct { border-color: #a7f3c0; }
+  .question-card.answered-wrong   { border-color: #fca5a5; }
+
+  .question-head {
+    padding: 18px 22px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .q-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--navy);
+    min-width: 30px;
+    line-height: 1.5;
+  }
+  .q-text {
+    font-size: 0.925rem;
+    line-height: 1.65;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-badge {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 12px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    white-space: nowrap;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  /* OPTIONS */
+  .options {
+    padding: 0 22px 18px 66px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .option-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.875rem;
+    color: var(--text);
+    line-height: 1.5;
+    transition: all 0.18s;
+    width: 100%;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--navy);
+    background: #f0f0f8;
+  }
+  .option-btn:disabled { cursor: default; }
+  .option-letter {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--navy);
+    min-width: 22px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.18s;
+    flex-shrink: 0;
+  }
+
+  /* RESULT STATES */
+  .option-btn.correct-answer {
+    background: #f0faf5;
+    border-color: var(--green);
+    color: var(--green);
+    font-weight: 600;
+  }
+  .option-btn.correct-answer .option-letter {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+  .option-btn.wrong-answer {
+    background: #fff5f5;
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .option-btn.wrong-answer .option-letter {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+  }
+  .option-btn.revealed-correct {
+    background: #f0faf5;
+    border-color: var(--green);
+    color: var(--green);
+    opacity: 0.75;
+  }
+  .option-btn.revealed-correct .option-letter {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+
+  /* HIDDEN */
+  .question-card.hidden { display: none; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* FOOTER COUNT */
+  .footer-info {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--muted);
+    padding: 12px;
+    font-style: italic;
+  }
+
+  @media(max-width: 600px) {
+    .header-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .scoreboard { width: 100%; justify-content: space-between; }
+    .options { padding-left: 22px; }
+    .q-badge { display: none; }
   }
 </style>
 </head>
 <body>
-<header class="header">
-  <div class="title-block">
-    <h1>⚖️ Tryout Sistem Hukum Indonesia</h1>
-    <p>150 Soal Pilihan Ganda | Kunci Jawaban Berdasarkan PDF Resmi</p>
+
+<header>
+  <div class="header-inner">
+    <div class="header-title">
+      <h1>Tryout Ilmu Hukum</h1>
+      <p>226 Soal &bull; Pilihan Ganda</p>
+    </div>
+    <div class="scoreboard">
+      <div class="score-box answered">
+        <span class="val" id="cnt-answered">0</span>
+        <span class="lbl">Dijawab</span>
+      </div>
+      <div class="score-box correct">
+        <span class="val" id="cnt-correct">0</span>
+        <span class="lbl">Benar</span>
+      </div>
+      <div class="score-box wrong">
+        <span class="val" id="cnt-wrong">0</span>
+        <span class="lbl">Salah</span>
+      </div>
+    </div>
   </div>
-  <div class="scoreboard">
-    <div class="pill total"><div class="num" id="sc-total">0</div><div class="lbl">Dijawab</div></div>
-    <div class="pill correct"><div class="num" id="sc-correct">0</div><div class="lbl">Benar</div></div>
-    <div class="pill wrong"><div class="num" id="sc-wrong">0</div><div class="lbl">Salah</div></div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progress-bar"></div>
   </div>
 </header>
-<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-<div class="container" id="quiz"></div>
-<div id="summary" class="summary">
-  <div><h2>📋 Hasil Tryout</h2><p class="sub">Sistem Hukum Indonesia – 150 Soal</p>
-  <div class="stats"><div class="stat total"><div class="big" id="f-total">0</div><div class="slabel">Total</div></div>
-  <div class="stat correct"><div class="big" id="f-correct">0</div><div class="slabel">Benar</div></div>
-  <div class="stat wrong"><div class="big" id="f-wrong">0</div><div class="slabel">Salah</div></div></div>
-  <p class="score-line">🎯 Nilai Akhir: <span id="f-pct">0%</span></p>
-  <button class="btn-reset" onclick="resetTryout()">🔄 Ulangi Tryout</button>
+
+<div class="filter-bar">
+  <div class="filter-inner">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" data-filter="all">Semua</button>
+    <button class="filter-btn" data-filter="unanswered">Belum Dijawab</button>
+    <button class="filter-btn" data-filter="correct">Benar</button>
+    <button class="filter-btn" data-filter="wrong">Salah</button>
+    <button class="reset-btn" id="reset-btn">↺ Reset</button>
   </div>
 </div>
+
+<main>
+  <div id="questions-container"></div>
+  <div class="footer-info" id="footer-info"></div>
+</main>
+
 <script>
-// ======================= 150 SOAL SISTEM HUKUM INDONESIA (dari PDF) =======================
-// Setiap soal memiliki teks, opsi A,B,C,D, dan kunci jawaban (huruf)
-const SOAL_DATA = [
-  { q: "Palang Merah Internasional secara umum diakui sebagai organisasi internasional yang memiliki kedudukan sebagai subjek hukum internasional. Berdasarkan Konvensi Jenewa tahun 1949 pendirian Palang Merah Internasional ditujukan untuk", opts: { A: "Melindungi korban perang", B: "Melindungi harta rampasan", C: "Mencegah terjadinya perang", D: "Memberi upaya perdamaian" }, correct: "C" },
-  { q: "Secara umum suatu perjanjian atau traktat bisa punah atau berakhir karena beberapa sebab, diantaranya adalah", opts: { A: "telah tercapai tujuan perjanjian", B: "adanya kesepakatan melanjutkan perjanjian", C: "ada objeknya yang sah", D: "adanya causa yang halal" }, correct: "A" },
-  { q: "Selain manusia, yang termasuk subjek hukum adalah badan hukum. Ada badan hukum yang menguasai satu lembaga/badan yang bertugas untuk mengurus harta kekayaan yang oleh pemilikinya diserahkan kepada masyarakat untuk digunakan bagi kepentingan umum masyarakat, yang biasanya digunakan untuk keperluan yang ada hubungannya dengan bidang keagamaan. Badan hukum tersebut adalah", opts: { A: "wakaf", B: "yayasan", C: "koperasi", D: "Perseroan Terbatas" }, correct: "D" },
-  { q: "Suatu daerah di dalam daerah mana garis-garis besar, corak dan sifat hukum adat yang berlaku di situ seragam (rechtskring) atau lingkaran hukum. Pakar hukum yang membagi seluruh wilayah Indonesia dalam 19 lingkaran adalah", opts: { A: "Ter Haar", B: "Van Vollenhoven", C: "Hazairin", D: "Sukanto" }, correct: "C" },
-  { q: "Peradilan Agama menurut UU No. 4 Tahun 2004 tentang Kekuasaan Kehakiman, merupakan badan peradilan yang berada dibawah kewenangan", opts: { A: "Mahkamah Agung", B: "Mahkamah Konstitusi", C: "Kementrian Agama", D: "Kementrian Hukum dan HAM" }, correct: "D" },
-  { q: "Menurut Barents, apa hubungan Hukum Tata Negara dengan ilmu Politik, adalah Hukum Tata Negara ibarat sebagai", opts: { A: "daging yang membatui kerangka manusia, dan ilmu Politik ibarat sebagai kerangkanya", B: "otaknya, dan ilmu Politik ibarat sebagai jantungnya", C: "rel pada kereta api, dan ilmu Politik ibarat sebagai gerbongnya", D: "kerangka manusia, dan ilmu Politik ibarat sebagai daging yang membuati kerangka tersebut" }, correct: "D" },
-  { q: "Kelembagaan pemerintah adalah semua lembaga yang eksistensinya tercantum dalam konstitusi negara atau peraturan perundang-undangan yang lebih rendah baik secara", opts: { A: "tersirat maupun tersurat", B: "tertulis maupun tidak tertulis", C: "terperinci maupun menyeluruh", D: "sempti maupun luas" }, correct: "C" },
-  { q: "Salah satu bidang perkara menurut UU No. 3 Tahun 2006 tentang Peradilan Agama yang diselesaikan pada pengadilan agama adalah bidang ekonomi syariah. Bidang ekonomi syariah yang dimaksudkan dalam UU ini adalah meliputi", opts: { A: "seluruh perkara jual beli", B: "sekuritas syari'ah", C: "fatwa dewan syari'ah nasional", D: "ketentuan syari'ah" }, correct: "C" },
-  { q: "Pengertian perkawinan menurut Prof. R. Subiekti, S.H., adalah", opts: { A: "perkawinan adalah hidup bersama dari seorang laki-laki dan perempuan yang memenuhi syarat-syarat tertentu", B: "perkawinan ialah pertaian yang sah antara seorang laki-laki dan seorang perempuan untuk waktu yang lama", C: "nikah adalah akad yang memberikan faedah mengakibatkan kepemilikan untuk bersenang-senang secara sadar bagi seorang pria dan wanita", D: "perkawinan ialah ikatan lahir batin antara seorang pria dengan seorang wanita sebagai suami istri dengan tujuan membentuk keluarga yang bahagia dan kekal berdasarkan Ketuhanan Yang Maha Esa" }, correct: "B" },
-  { q: "Ilmu pemerintahan adalah ilmu yang mengkaji perbuatan pemerintah dalam penyelenggaraan negara yang", opts: { A: "sesuai dengan hukum", B: "berbanding terbalik dengan hukum", C: "berakibat hukum", D: "melawan hukum" }, correct: "C" },
-  { q: "Untuk menjamin kepastian bahwa suatu perjanjian akan dilaksanakan. Dalam masyarakat hukum adat, biasanya diberikan terlebih dulu tanda penjadi, yang disebutkan", opts: { A: "borg", B: "kredit", C: "panjer", D: "ijon" }, correct: "C" },
-  { q: "Unsur-unsur perbuatan pidana menurut Moeliano ada dua yaitu unsur formal dan unsur materiel. Unsur bahwa perbuatan itu harus bersifat berlentangan dengan hukum, yaitu bahwa harus benar-benar dirasakan oleh masyarakat sebagai perbuatan yang tidak patut dilakukan merupakan pengertian dari unsur", opts: { A: "Material", B: "Subjektif", C: "Formal", D: "Objektif" }, correct: "A" },
-  { q: "Menurut Simons, melawan hukum artinya", opts: { A: "Sejalan dengan hukum", B: "Mengsenyampingkan hukum", C: "Menghindari hukum", D: "Bertentangan dengan hukum" }, correct: "D" },
-  { q: "Konsep hukum adat yang dipakai secara internasional adalah", opts: { A: "sistem ijon", B: "asas pemisahan horizontal", C: "asas genealogis", D: "asas teritorial" }, correct: "D" },
-  { q: "Ajaran Al-Quran yang memberi pengetahuan, berisi petunjuk menyerupai sejarah, dan berisi sesuatu yang sulit dijelaskan dalam bahasa biasa. Pendapat tersebut merupakan penjelasan dari", opts: { A: "Ahmad Warson Munawwir", B: "Sayyid Hussen Nasr", C: "Sulaiman bin Yasar", D: "Isabit Bin Qurrah" }, correct: "C" },
-  { q: "Teori hukum yang dianut oleh Negara Saudi Arabia adalah hukum yang bermazhab", opts: { A: "Hanbali", B: "Hanafi", C: "Syiah", D: "Syafi'i" }, correct: "C" },
-  { q: "Suatu hak kebendaan untuk menarik penghasilan dari suatu benda orang lain, seolah-olah benda itu kepunyaannya sendiri, dengan kewajiban menjaga supaya benda tersebut tetap dalam keadaannya semula disebut", opts: { A: "Servituut", B: "Hak postal", C: "Hak erfbacht", D: "Vruchtgebruik" }, correct: "A" },
-  { q: "Pengertian tindak pidana menurut Simons dan Van Hamel disebut monistis karena mengandung", opts: { A: "Criminal act", B: "Criminal responsibility", C: "Actus reus", D: "Delictum" }, correct: "B" },
-  { q: "Menurut Pasal 10 KUHP, hukuman pidana terdiri dari dua bagian, yaitu hukuman pokok dan hukuman tambahan. Salah satu contoh hukuman pokok dibawah ini adalah", opts: { A: "pencabutan hak", B: "pidana tutupan", C: "perampasan barang", D: "putusan hakim" }, correct: "C" },
-  { q: "Golongan Tionghoa memiliki aturan tersendiri mengenai hukum perdata yang terdapat dalam Staatsblad 1917 No. 129. Peraturan tersebut memberilakukan seluruh hukum privat Eropa bagi golongan Tionghoa, kecuali pasal-pasal mengenai", opts: { A: "Burgerlijk Wetboek", B: "Burgerlijk Stand", C: "Wetboek van Strafrecht", D: "Wetboek van Koophandel" }, correct: "C" },
-  { q: "Salah satu penganut teori relatif adalah", opts: { A: "Van Hamel", B: "Karl Binding", C: "Stahl", D: "Herbart" }, correct: "A" },
-  { q: "Di Indonesia, UUD 1945 telah berhasil diamandemen sebanyak 4 kali. Amandemen UUD 1945 dilakukan pada tahun", opts: { A: "1998, 1999, 2000, 2001", B: "2000, 2001, 2002, 2003", C: "1949, 1950, 1959, 1966", D: "1999, 2000, 2001, 2002" }, correct: "D" },
-  { q: "Mahkamah Konstitusi lahir karena adanya perubahan paradigma dari", opts: { A: "supremasi hukum ke supremasi politik", B: "monarki ke demokrasi", C: "supremasi MPR ke checks and balances system", D: "machstaat ke rechtsstaat" }, correct: "A" },
-  { q: "Salah satu sumber hukum pidana abnormal adalah", opts: { A: "coup de etat yang berhasil", B: "perselisihan", C: "konstitusi", D: "yurisprudensi" }, correct: "A" },
-  { q: "Salah satu bentuk tindakan pemerintahan atau kewenangan pejabat negara yang digunakan dalam mengambil keputusan untuk mengatasi masalah berdasarkan pada pertimbangan pribadi dan hati nuraninya dengan memperhatikan batas-batas hukum merupakan pengertian dari", opts: { A: "Dispensasi", B: "Deviasi", C: "Diskresi", D: "Delegasi" }, correct: "C" },
-  { q: "Tokoh yang membedakan antara hukum ekonomi dan hukum bisnis berdasarkan ruang lingkup makro dan mikro adalah", opts: { A: "Amirzal", B: "Achmad Ichsan", C: "Sunaryati Hartono", D: "Ismail Saleh" }, correct: "C" },
-  { q: "Berdasarkan Pasal 1 Ayat (1) UUD NRI Tahun 1945 setelah perubahan, Negara Indonesia adalah Negara", opts: { A: "federal yang berbentuk republik", B: "kesatuan yang berbentuk republik", C: "kesatuan yang berbentuk demokrasi", D: "federal yang berbentuk demokrasi" }, correct: "B" },
-  { q: "Menurut Bagir Manan dan Kuntana Magnar, pembangunan hukum nasional itu dapat dilakukan dengan berbagai cara, yaitu melalui", opts: { A: "hukum tata negara, hukum pidana, dan hukum perdata", B: "hukum acara pidana, hukum acara perdata, dan hukum acara TUN", C: "hukum internasional, hukum adat, dan hukum nasional", D: "peraturan perundang-undangan, yurisprudensi, dan hukum tidak tertulis" }, correct: "A" },
-  { q: "Sifat yang terdapat dalam hukum perjanjian adalah", opts: { A: "Mengikat", B: "Tidak mengikat", C: "Tertutup", D: "Terbuka" }, correct: "C" },
-  { q: "Menurut Utrecht, setiap jabatan adalah suatu lingkungan pekerjaan tetap yang dihubungkan dengan", opts: { A: "Organisasi sosial tertinggi", B: "Perangkat pemerintah", C: "Organisasi politik", D: "Lembaga negara" }, correct: "C" },
-  { q: "Suatu asurasi yang memberikan sejumlah uang seperti yang telah diperjanjikan dengan tidak perlu adanya suatu hubungan antara kerugian yang didorita besarnya jumlah uang tersebut merupakan pengertian dari", opts: { A: "asuransi kerugian", B: "asuransi kepailitan", C: "asuransi jumlah", D: "asuransi campuran" }, correct: "C" },
-  { q: "Selain dibutuhkan oleh warga negara sebagai penerima manfaat, perlindungan hukum juga dibutuhkan oleh", opts: { A: "Badan hukum", B: "Organisasi negara", C: "Pemerintah dalam melaksanakan tugasnya", D: "Organisasi masyarakat" }, correct: "A" },
-  { q: "Berdasarkan ciri-cirinya hukum pidana, badan dan peraturan negara termasuk kedalam", opts: { A: "Pelanggaran", B: "Kejahatan", C: "Kodifikasi", D: "Kepentingan umum" }, correct: "B" },
-  { q: "Yang mengemukakan pendapat bahwa Hukum Perdata Internasional merupakan bagian dari Hukum Internasional, adalah", opts: { A: "Harsanto Nusadi", B: "Van Brekel", C: "Gouw Giok Siong", D: "Hymans" }, correct: "A" },
-  { q: "Teori yang menyebulkan adanya pembatasan antara syarat dengan sebab secara konkrit mengenai perekara tentu saja adalah teori", opts: { A: "Mengindividualisasikan", B: "Kondisio sine kua non", C: "Ekuivalen", D: "Adequate" }, correct: "C" },
-  { q: "Yang pertama kali memakai istilah adat recht yang diterjemahkan menjadi hukum adat, adalah", opts: { A: "Van Vollenhoven", B: "Snouck Hurgronje", C: "Ter Haar", D: "Van Den Berg" }, correct: "D" },
-  { q: "Sistem hukum barat mengenal adanya pembedaan antara zakallike rechten dan persoonlijke rechten. Zakallike rechten adalah suatu hak kebendaan yang sifatnya mutlak dan dapat berlaku bagi siapapun juga. Hukum adat tidak mengenal istilah Zakallijk Recht, yang termasuk zakallijk recht yaitu", opts: { A: "hak atas kepribadian", B: "hak dalam lapangan hukum keluarga", C: "hukum kebendaan", D: "hukum harta kekayaan" }, correct: "A" },
-  { q: "Apabila seseorang yang melakukan tindak pidana dan kemudian dikenakan denda tapi tidak mampu membayar atau tidak mau membayar, maka akan dikenakan hukuman", opts: { A: "Kurungan", B: "Tambahan", C: "Pokok", D: "Penjara" }, correct: "D" },
-  { q: "Sistem hukum yang diberlakukan bagi seluruh bangsa Indonesia, dibuat setelah Indonesia merdeka berdasarkan pada Pancasila dan konstitusi yang berlaku, merupakan pengertian dari", opts: { A: "Politik Adat", B: "Hukum Positif", C: "Sistem Hukum Nasional", D: "Politik Hukum" }, correct: "C" },
-  { q: "Pegawai Negeri Sipil yang diberi wewenang khusus untuk menegakkan hukum di lingkungan pemerintah daerah adalah", opts: { A: "Polisi daerah", B: "Polisi hutan", C: "Pamong praja", D: "Hansip" }, correct: "A" },
-  { q: "Dalam proses berperkara Hukum Acara Perdata, setelah tahapan replik dan duplik dilakukan, maka tahap selanjutnya adalah", opts: { A: "pembuktian", B: "kesimpulan", C: "putusan akhir", D: "putusan sela" }, correct: "C" },
-  { q: "Dari pengertian hukum menurut Mochtar Kusumaatmadja, bahwa minimal sistem hukum itu harus mencakup beberapa unsur. Hal di bawah ini bukan termasuk unsur sistem hukum yang dinyatakan oleh Mochtar Kusumaatmadja yaitu", opts: { A: "kaidah", B: "asas-asas", C: "lembaga", D: "kesadaran hukum" }, correct: "D" },
-  { q: "Salah satu kewenangan Pengadilan Agama adalah memutus perkara di bidang", opts: { A: "Aqidah", B: "Shalat", C: "Akhlak", D: "Shodaqoh" }, correct: "A" },
-  { q: "Menurut Mochtar Kusumaatmadja, pengertian dari ius gentium adalah", opts: { A: "Hukum Nasional", B: "Hukum Belanda", C: "Hukum Bangsa-Bangsa", D: "Hukum Internasional" }, correct: "A" },
-  { q: "Sistem adalah sekumpulan elemen di antara mana terdapat adanya hubungan-hubungan. Kerapkali dalam literatur dapat dikemukakan kata-kata tambahan. Elemen-elemen mana diupayakan kearah pencapaian sasaran-sasaran umum tertentu. Pengertian sistem tersebut dikemukakan oleh", opts: { A: "Sri Soemantri", B: "C. West Churhman", C: "Van der Poel", D: "Soerjono Soekanto" }, correct: "B" }
+const questions = [
+  {
+    id: 1,
+    text: "Tidak ada kekuasaan eksekutif pusat yang dapat memaksa anggota-anggota pergaulan internasional untuk menaati peraturan Hukum Internasional. Hukum Internasional tidak mempunyai sanksi yang tegas dan tidak adanya badan internasional yang mempunyai tugas untuk menegakkan Hukum Internasional. Akan tetapi hakikat Hukum Internasional tak perlu diragukan lagi, dan telah dikemukakan banyak teori. Teori tertua yang mengakui keberadaan hukum internasional adalah ….",
+    options: ["Hukum alam","Mazhab sejarah","Teori Utility","Sociological jurisprudence"],
+    answer: 0
+  },
+  {
+    id: 2,
+    text: "Agar kebiasaan diakui sebagai sumber hukum internasional, maka harus dipenuhi syarat adanya ….",
+    options: ["kebiasaan yang bersifat umum","kebiasaan umum yang diterima sebagai hukum","kebiasaan yang dilakukan berulang-ulang","sanksi"],
+    answer: 1
+  },
+  {
+    id: 3,
+    text: "Guna keperluan hidup bersama-sama dibutuhkan suatu kekayaan duniawi yang dapat dipergunakan oleh suami istri untuk membiayai ongkos kehidupan mereka sehari-hari beserta anak-anaknya. Salah satu harta perkawinan yaitu harta asal. Penjelasan harta asal adalah ....",
+    options: ["barang-barang yang diperoleh suami atau istri secara warisan atau penghibahan dari kerabat/famili masing-masing dan dibawa ke dalam perkawinan","barang-barang yang diperoleh suami atau istri untuk dirinya sendiri serta atas jasa sendiri sebelum perkawinan atau dalam masa perkawinan","barang-barang yang dalam masa perkawinan diperoleh suami dan istri sebagai milik bersama","barang-barang yang dihadiahkan kepada suami-istri bersama pada waktu pernikahan"],
+    answer: 0
+  },
+  {
+    id: 4,
+    text: "Menurut Van Vollenhoven persekutuan hukum mempunyai ciri sebagai berikut….",
+    options: ["tata susunan yang teratur","daerah yang tidak tetap","tidak mempunyai penguasa","tidak mempunyai kekayaan"],
+    answer: 0
+  },
+  {
+    id: 5,
+    text: "Menurut ketentuan Pasal 54, \"Hukum acara yang berlaku pada pengadilan dalam lingkungan peradilan agama adalah hukum acara perdata yang berlaku pada pengadilan dalam lingkungan peradilan umum kecuali yang telah diatur secara khusus dalam Undang-Undang ini\". Kekhususan yang dimaksud dalam pasal tersebut meliputi ….",
+    options: ["Pernikahan dengan warga asing","Penentuan halal dan haram suatu produk perbankan syariah","Cerai dengan alasan zina","Wakaf diatas 1 triliun"],
+    answer: 2
+  },
+  {
+    id: 6,
+    text: "Corak utama dari perkawinan dalam persekutuan yang sifat susunan keluarganya patrilineal, adalah ….",
+    options: ["Eleutherogami","Endogami","Kawin jujur","Exogami"],
+    answer: 2
+  },
+  {
+    id: 7,
+    text: "Menurut Bagir Manan pengertian sistem hukum Indonesia adalah ....",
+    options: ["berbeda dengan hukum positif","merupakan cita-cita hukum nasional","sama dengan hukum positif","merupakan sistem hukum Islam"],
+    answer: 2
+  },
+  {
+    id: 8,
+    text: "Hubungan hukum antara alat perlengkapan negara yang satu dengan alat perlengkapan negara yang lain merupakan salah satu jenis hubungan hukum yang termasuk kedalam….",
+    options: ["Subjek hukum administrasi negara","Objek hukum administrasi negara","Peristiwa hukum administrasi negara","Perbuatan hukum administrasi negara"],
+    answer: 1
+  },
+  {
+    id: 9,
+    text: "Menurut Bagir Manan, hakikat konstitusi adalah….",
+    options: ["Pembatasan kekuasaan","Jiwa bangsa (volkgeist)","Dasar Negara","Falsafah bangsa"],
+    answer: 0
+  },
+  {
+    id: 10,
+    text: "Hukum Internasional menurut Anzilotti dimateri-kan dalam keadaan damai dan Hukum Internasional perang. Materi Hukum Internasional damai antara lain….",
+    options: ["Aturan tentang penentuan batas-batas wilayah suatu Negara","Tata cara diplomasi bersenjata","Tata cara berperang secara damai","Tawanan-tawanan yang luka harus mendapat perawatan semestinya"],
+    answer: 0
+  },
+  {
+    id: 11,
+    text: "Perbuatan yang mana ancaman hukumannya adalah penderitaan dan siksaan merupakan bagian dari materi yang diatur dalam….",
+    options: ["Hukum pidana","Hukum perdata","Hukuman mati","Hukum sebab akibat"],
+    answer: 0
+  },
+  {
+    id: 12,
+    text: "Salah satu keputusan yang tidak dapat diajukan ke PTUN adalah…",
+    options: ["Keputusan yang bersifat konkrit","Keputusan yang bersifat individual","Keputusan pemecatan Aparatur Sipil Negara","Keputusan hasil pemilihan umum"],
+    answer: 3
+  },
+  {
+    id: 13,
+    text: "Polisi atau pejabat pemerintah yang berwenang melakukan serangkaian tindakan menurut UU untuk mencari dan mengumpulkan bukti adalah pengertian dari....",
+    options: ["Penyelidik","Penyidik","PPNS","Satpol PP"],
+    answer: 1
+  },
+  {
+    id: 14,
+    text: "Golongan tionghoa dapat memperluas Hukum Eropa yang berlaku bagi mereka, sehingga mereka mendapat kedudukan yang berbeda dari golongan timur asing. Pembedaan golongan tionghoa mulai dari golongan timur asing dilaksanakan pada tahun ….",
+    options: ["1918","1919","1917","1920"],
+    answer: 1
+  },
+  {
+    id: 15,
+    text: "Menurut teori utilitas tujuan hukum adalah memberikan kemanfaatan bagi banyak orang, tokoh dari teori tersebut adalah....",
+    options: ["Van Apeldoorn","Jeremy Bentham","Aristoteles","Mr. JHP Bellefroid"],
+    answer: 1
+  },
+  {
+    id: 16,
+    text: "Istilah Hukum Tata Negara dalam Bahasa Belanda disebut staatrecht yang terbagi kedalam….",
+    options: ["2 bagian","4 bagian","6 bagian","8 bagian"],
+    answer: 0
+  },
+  {
+    id: 17,
+    text: "Konsep tanah dalam hukum adat yang digunakan secara internasional, adalah ….",
+    options: ["gadai","asas perlekatan vertikal","asas pemisahan horizontal","jual beli"],
+    answer: 2
+  },
+  {
+    id: 18,
+    text: "Berdasarkan perubahan, tugas dan wewenang Presiden menurut UUD 1945 adalah ….",
+    options: ["Menjalankan Undang-Undang","Membubarkan DPR","Bertanggung jawab kepada MPR","Membuat GBHN"],
+    answer: 0
+  },
+  {
+    id: 19,
+    text: "Ruang lingkup hukum dagang adalah….",
+    options: ["Asuransi","Jual beli","Simpan pinjam","Penanaman modal"],
+    answer: 0
+  },
+  {
+    id: 20,
+    text: "Kelembagaan pemerintah adalah semua lembaga yang eksistensinya tercantum dalam konstitusi negara atau peraturan perundang-undangan yang lebih rendah baik secara….",
+    options: ["Tersirat maupun tersurat","Tertulis maupun tidak tertulis","Terperinci maupun menyeluruh","Sempit maupun luas"],
+    answer: 0
+  },
+  {
+    id: 21,
+    text: "Kitab Undang-undang Hukum Pidana terdiri atas tiga buku, dan tiap-tiap buku terdiri dari beberapa titel (bab) dan tiap-tiap titel terdiri dari pasal-pasal serta tiap pasal terdiri dari ayat-ayat. Buku II dalam KUHP terdiri atas ….",
+    options: ["34 titel","33 titel","32 titel","31 titel"],
+    answer: 0
+  },
+  {
+    id: 22,
+    text: "Berdasarkan sumber hukum dalam arti materiil, suatu kaidah hukum harus mengandung beberapa faktor, diantaranya….",
+    options: ["Historis dan filosofis","Sosiologis dan ontologis","Idealis dan kemasyarakatan","Yuridis dan politis"],
+    answer: 0
+  },
+  {
+    id: 23,
+    text: "Hukum Pidana Indonesia berlaku terhadap semua orang yang berada dalam wilayah Indonesia dari Sabang sampai Merauke dan di tempat kerja serta perwakilan Indonesia di luar negeri. Pernyataan tersebut menganut asas ….",
+    options: ["Ektrateritorial","Legalitas","Territorial","Nasional Aktif"],
+    answer: 2
+  },
+  {
+    id: 24,
+    text: "Suatu Negara yang berdaulat tidak dapat menjalankan yurisdiksinya terhadap Negara berdaulat lainnya. Pernyataan diatas merupakan pengertian dari ....",
+    options: ["Prinsip resiprositas","par in parem non habet imperium","Pacta Sunt Servanda","Prinsip imunitas"],
+    answer: 1
+  },
+  {
+    id: 25,
+    text: "Asas yang dianut dalam penyelenggaraan pemerintahan daerah di Indonesia adalah ….",
+    options: ["Asas sentralisasi","Asas pembagian kekuasaan","Asas otonomi","Asas demokrasi"],
+    answer: 2
+  },
+  {
+    id: 26,
+    text: "Landasan hukum berlakunya hukum adat adalah ….",
+    options: ["Pasal 18B ayat (2) UUD NRI Tahun 1945, Undang-undang No. 5 Tahun 1960","Batang tubuh dan Pembukaan UUD1945","Konstitusi RIS","Pasal 28 UUD 1945"],
+    answer: 0
+  },
+  {
+    id: 27,
+    text: "Penyelenggaraan kegiatan dalam urusan tanah, penyelenggaraan tata tertib sosial dan tata tertib hukum, juga usaha yang tergolong dalam penyelenggaraan hukum untuk mengembalikan tata tertib sosial dan tata tertib hukum, serta keseimbangan dalam masyarakat adat merupakan bagian dari kewenangan yang dimiliki oleh….",
+    options: ["Mamak Kepala Waris","Masyarakat Adat","Kepala Adat","Lembaga Hukum Adat"],
+    answer: 2
+  },
+  {
+    id: 28,
+    text: "Secara terminologis, sunnah dapat diartikan sebagai ….",
+    options: ["hukum atau ketentuan-ketentuan Allah mengenai alam semesta, yang di dalam dunia ilmu pengetahuan disebut \"hukum alam\" atau natural law","cara, adat-istiadat (kebiasaan), dan perjalanan hidup (sirah) yang tidak dibedakan antara yang baik dan yang buruk","anjuran jika dikerjakan mendapat pahala kebaikan kalau tidak dilakukan tidak berdosa atau tidak apa-apa","sesuatu yang berasal dari Nabi SAW yang berupa perkataan, perbuatan, penetapan, sifat, dan perjalanan hidup beliau baik pada waktu sebelum diutus menjadi Nabi maupun sesudahnya"],
+    answer: 3
+  },
+  {
+    id: 29,
+    text: "Hukum Islam menurut Drs. H. Saidu Syahar, S.H. adalah….",
+    options: ["koleksi daya upaya fuqaha dalam menerapkan syariah islam sesuai dengan kebutuhan masyarakat","aturan-aturan yang diterapkan oleh Allah agar digunakan oleh manusia dalam hubunganya dengan Tuhannya, dengan saudaranya sesama Muslim, dengan saudaranya sesama manusia, dengan alam, dan dalam kaitannya dengan kehidupannya","teori hukum islam yakni dalil-dalil ushul ul fiqh","hukum yang bersumber dari dan menjadi bagian dari agama islam"],
+    answer: 1
+  },
+  {
+    id: 30,
+    text: "Menurut Clarkson dan Hill, isu yang berkenaan dengan pertanyaan ketentuan hukum mana yang akan diberlakukan dalam kasus yang diperiksa merupakan isu….",
+    options: ["Jurisdiction","Choice of law","The law of the forum","Recognition and enforcement of foreign judgements"],
+    answer: 1
+  },
+  {
+    id: 31,
+    text: "Istilah tindak pidana dalam Bahasa Latin disebut dengan….",
+    options: ["Strafbaar feit","Criminal act","Delictum","Actus reus"],
+    answer: 2
+  },
+  {
+    id: 32,
+    text: "Setelah lewat waktu seseorang dapat dibebaskan dari semua tuntutan hukum atau penagihan. Pernyataan tersebut merupakan pengertian dari ….",
+    options: ["Daluarsa","Pembuktian","Acquisitieve Verjaring","Extinctieve Verjaring"],
+    answer: 0
+  },
+  {
+    id: 33,
+    text: "Menurut Mochtar Kusumatmadja, definisi hukum internasional yang dikemukakan Starke terlalu luas, karena hukum internasional publik adalah hukum yang ….",
+    options: ["Hukum perang dan hukum damai","Hukum internasional Regional","tidak termasuk persoalan internasional yang diatur oleh Hukum perdata internasional","Hukum Internasional Privat yang berbeda"],
+    answer: 2
+  },
+  {
+    id: 34,
+    text: "Salah satu unsur subjektif dari tindak pidana dibawah ini adalah….",
+    options: ["Perasaan takut","Melawan hukum","Akibat hukum","Melanggar hukum"],
+    answer: 0
+  },
+  {
+    id: 35,
+    text: "Hak negara untuk memidana merupakan muatan yang terdapat dalam hukum pidana….",
+    options: ["Materiil","Formal","Objektif","Subjektif"],
+    answer: 3
+  },
+  {
+    id: 36,
+    text: "Hukum bukan hanya undang-undang yang tertulis, tetapi juga meliputi hukum yang tidak tertulis. Sehingga belum tentu perbuatan yang memenuhi rumusan dalam undang-undang itu bersifat melawan hukum. Pernyataan tersebut adalah ciri dari sifat melawan hukum….",
+    options: ["Umum","Khusus","Materiil","Formal"],
+    answer: 2
+  },
+  {
+    id: 37,
+    text: "Menurut teori Receptio In Complexu bahwa hukum adat suatu masyarakat tertentu merupakan penerimaan secara keseluruhan dari agama yang dianut oleh masyarakat yang bersangkutan. Teori ini dibantah oleh….",
+    options: ["Van Den Berg dan Ter Haar","Salmon Keyzer dan Snouck Hurgronje","Snouck Hurgronje dan Van Vollenhoven","Ter Haar dan Van Vollenhoven"],
+    answer: 2
+  },
+  {
+    id: 38,
+    text: "Penjatuhan pidana itu dibenarkan semata-mata karena orang telah melakukan kejahatan. Pernyataan tersebut merupakan pengertian dari….",
+    options: ["Teori gabungan","Teori tujuan","Teori pembalasan","Teori relatif"],
+    answer: 2
+  },
+  {
+    id: 39,
+    text: "Salah satu kewenangan Mahkamah Konstitusi dibawah ini adalah….",
+    options: ["Memutus perkara sengketa Aparatur Sipil Negara","Memutus perkara perselisihan hasil pemilihan umum","Menguji peraturan yang berada dibawah Undang-Undang","Pembubaran lembaga negara"],
+    answer: 1
+  },
+  {
+    id: 40,
+    text: "Teori yang berpendapat bahwa semua syarat untuk timbulnya suatu akibat adalah sama sebagai sebab yang tidak dapat dihilangkan dan harus diberi nilai yang sama adalah teori ....",
+    options: ["Mengindividualisasikan","Syarat mutlak","Menggeneralisasikan","Keseimbangan"],
+    answer: 1
+  },
+  {
+    id: 41,
+    text: "Fungsi dari kajian Hukum Administrasi Negara terhadap Ilmu Politik, adalah ….",
+    options: ["Melancarkan usaha-usaha politik","Membatasi agar tidak terjadi penyelewengan","Melegalkan usaha-usaha politik","Mempertahankan kekuasaan"],
+    answer: 1
+  },
+  {
+    id: 42,
+    text: "Suatu perceraian dianggap terjadi beserta segala akibat hukumnya terhitung sejak…",
+    options: ["Pengambilan putusan","Pemeriksaan gugatan","Pemeriksaan persidangan","Pendaftaran perkara"],
+    answer: 0
+  },
+  {
+    id: 43,
+    text: "Perlindungan hukum yang memberikan kesempatan kepada rakyat untuk mengajukan keberatan sebelum keputusan pemerintah berbentuk definitif merupakan bentuk perlindungan hukum yang bersifat ….",
+    options: ["Represif","Preventif","Agresif","Massif"],
+    answer: 1
+  },
+  {
+    id: 44,
+    text: "Fungsi dari Hukum Acara Perdata sebagai Hukum Formal adalah….",
+    options: ["Menafsirkan isi hukum materiil","Menolak isi hukum materiil","Mempertahankan isi hukum materiil","Memperluas isi hukum materiil"],
+    answer: 2
+  },
+  {
+    id: 45,
+    text: "Pengertian perkawinan menurut Hukum Islam, adalah ….",
+    options: ["perkawinan adalah hidup bersama dari seorang laki-laki dan perempuan yang memenuhi syarat-syarat tertentu","perkawinan ialah pertalian yang sah antara seorang laki-laki dan seorang perempuan untuk waktu yang lama","nikah adalah akad yang memberikan faedah (mengakibatkan) kepemilikan untuk bersenang-senang secara sadar bagi seorang pria dan wanita","perkawinan ialah ikatan lahir batin antara seorang pria dengan seorang wanita sebagai suami istri dengan tujuan membentuk keluarga (rumah tangga) yang bahagia dan kekal berdasarkan Ketuhanan Yang Maha Esa"],
+    answer: 2
+  },
+  {
+    id: 46,
+    text: "Hakim memberikan wakil terhadap orang dewasa yang dungu atau sakit jiwa atau pemboros, yang dinamakan ….",
+    options: ["Kuratil","Kurator","Penasehat","Wali"],
+    answer: 1
+  },
+  {
+    id: 47,
+    text: "Pembuatan perjanjian internasional dapat dibagi dalam beberapa tahap, salah satu tahapnya adalah….",
+    options: ["Penetapan hukum baru","Penandatanganan","Penangguhan","Pembatalan"],
+    answer: 1
+  },
+  {
+    id: 48,
+    text: "Transaksi tanah yang bersifat perbuatan hukum dua pihak, yaitu ….",
+    options: ["gadai","warisan","hibah","wasiat"],
+    answer: 0
+  },
+  {
+    id: 49,
+    text: "Dari sudut waktu (fase), dikenal dua fungsi konstitusi yaitu A Priori dan A Posteriori. Pada fungsi ini konstitusi dianggap sebagai ….",
+    options: ["Dasar Hukum sebuah Negara","Akte Pendirian sebuah Negara","Perjanjian sebuah Negara","Volkgeist sebuah Negara"],
+    answer: 1
+  },
+  {
+    id: 50,
+    text: "Tokoh teori kedaulatan rakyat yang menyatakan bahwa Negara merupakan kedaulatan dari rakyat atau perjanjian rakyat, adalah....",
+    options: ["Hans Kelsen","Roscoe Pound","Mochtar Kusumaatmadja","J.J. Rousseau"],
+    answer: 3
+  },
+  {
+    id: 51,
+    text: "Menurut C.S.T. Kansil, hukum Indonesia yaitu hukum yang berlaku pada waktu ini di Indonesia merupakan hukum yang paling sulit di dunia karena hukum Indonesia itu campur aduk. Berikut ini merupakan Hukum Indonesia berdasarkan asalnya, diantaranya adalah ….",
+    options: ["Hukum barat","Hukum timur asing","Hukum yang terpengaruh oleh agama Islam","Hukum internasional"],
+    answer: 0
+  },
+  {
+    id: 52,
+    text: "Hubungan hukum yaitu hubungan yang diatur oleh hukum dan mempunyai akibat hukum. Menurut Utrecht, setiap hubungan hukum mempunyai dua segi, yaitu….",
+    options: ["kekuasaan dan kewajiban","untung dan rugi","hak dan sanksi","janji dan prestasi"],
+    answer: 0
+  },
+  {
+    id: 53,
+    text: "Pada tanggal 28 Februari 2006, UU. No. 7 tahun 1989 tentang Peradilan Agama telah diamandemen melalui UU ....",
+    options: ["UU. No. 10 tahun 2006","UU. No. 7 tahun 2006","UU. No. 3 tahun 2006","UU. No. 12 tahun 2006"],
+    answer: 2
+  },
+  {
+    id: 54,
+    text: "Perbuatan hukum wakif untuk memisahkan dan/atau menyerahkan sebagian harta benda miliknya untuk dimanfaatkan selamanya atau untuk jangka waktu tertentu sesuai dengan kepentingannya guna keperluan ibadah dan/atau kesejahteraan umum menurut syariah. Hal ini merupakan pengertian wakaf menurut ....",
+    options: ["Kompilasi hukum islam","PP Nomor 28 tahun 1977","UU. No. 41 tahun 2004","Muhammad Daud Ali"],
+    answer: 2
+  },
+  {
+    id: 55,
+    text: "Proses penyelesaian atau pemutusan sengketa oleh seorang hakim atau para hakim yang berdasarkan persetujuan bahwa mereka akan tunduk kepada atau mentaati keputusan yang diberikan oleh para hakim yang mereka pilih atau tunjuk merupakan pengertian dari penyelesaian sengketa bisnis melalui jalur…",
+    options: ["Musyawarah","Pengadilan","Rekonsiliasi","Arbitrase"],
+    answer: 3
+  },
+  {
+    id: 56,
+    text: "Berdasarkan UU No. 1 Tahun 2004 tentang Perbendaharaan Negara yang disebut sebagai barang milik negara adalah semua barang yang dibeli atau diperoleh….",
+    options: ["dari uang pemerintah atau berasal dari perolehan lainnya yang sah","dari anggaran DPR atau berasal dari perolehan lainnya yang sah","atas beban APBD atau berasal dari perolehan lainnya yang sah","atas beban APBN atau berasal dari perolehan lainnya yang sah"],
+    answer: 3
+  },
+  {
+    id: 57,
+    text: "Pembagian warisan menurut islam, jika istri yang meninggal tetapi mempunyai anak, maka suami mendapatkan ....",
+    options: ["2 kali dari anak perempuan","1/6 bagian","1/3 bagian","1/4 bagian"],
+    answer: 3
+  },
+  {
+    id: 58,
+    text: "Istilah Hukum Administrasi Negara di negara Jerman adalah….",
+    options: ["Administratiefrecht","Administrative law","Droit administratif","Verwaltungrecht"],
+    answer: 3
+  },
+  {
+    id: 59,
+    text: "Hukum utang piutang dalam hukum adat tidak hanya meliputi perbuatan-perbuatan hukum yang menyangkut masalah perkreditan saja, tetapi juga meliputi….",
+    options: ["hak atas perumahan","gadai","bagi hasil","jual beli"],
+    answer: 2
+  },
+  {
+    id: 60,
+    text: "Unsur-unsur perbuatan pidana menurut Moeljatno ada dua yaitu unsur formal dan unsur material. Unsur bahwa perbuatan itu harus bersifat bertentangan dengan hukum, yaitu harus benar-benar dirasakan oleh masyarakat sebagai perbuatan yang tidak patut dilakukan merupakan pengertian dari unsur….",
+    options: ["Material","Subjektif","Formal","Objektif"],
+    answer: 0
+  },
+  {
+    id: 61,
+    text: "Pasal 362 KUHP merupakan contoh sifat melawan hukum….",
+    options: ["Khusus","Umum","Formal","Material"],
+    answer: 2
+  },
+  {
+    id: 62,
+    text: "Ajaran Al-Quran yang memberi pengetahuan, berisi petunjuk menyerupai sejarah-sejarah, dan berisi sesuatu yang sulit dijelaskan dalam bahasa biasa. Pendapat tersebut merupakan penjelasan dari....",
+    options: ["Ahmad Warson Munawwir","Sayyid Hussein Nasr","Sulaiman bin Yasar","Tsabit Bin Qurrah"],
+    answer: 1
+  },
+  {
+    id: 63,
+    text: "Suatu hak kebendaan untuk menarik penghasilan dari suatu benda orang lain, seolah-olah benda itu kepunyaannya sendiri, dengan kewajiban menjaga supaya benda tersebut tetap dalam keadaannya semula disebut ….",
+    options: ["Servituut","Hak postal","Hak erfpacht","Vruchtgebruik"],
+    answer: 3
+  },
+  {
+    id: 64,
+    text: "Suatu ilmu pengetahuan yang mencari apa dan sebabnya dari kejahatan dan berusaha untuk memberantasnya adalah pengertian dari....",
+    options: ["Tindak pidana","Hukum pidana","Kriminologi","Penitensir"],
+    answer: 2
+  },
+  {
+    id: 65,
+    text: "Dalam hukum pidana, ketentuan-ketentuan yang mengandung asas universalitas (universaliteitbeginsel) adalah contoh dari ….",
+    options: ["Hukum pidana internasional","Hukum pidana adat","Hukum pidana nasional","Hukum pidana umum"],
+    answer: 0
+  },
+  {
+    id: 66,
+    text: "Subekti tidak menggunakan istilah Hukum Sipil untuk menyebut semua peraturan hukum privat materiil, karena lazim dipakai sebagai lawan dari ....",
+    options: ["hukum militer","hukum pidana","hukum tata negara","hukum internasional"],
+    answer: 0
+  },
+  {
+    id: 67,
+    text: "Pembalasan itu tidak boleh melebihi dari pada yang diperlukan dalam mempertahankan ketertiban masyarakat. Pernyataan ini merupakan teori gabungan yang menitikberatkan kepada ….",
+    options: ["Pertahanan","Pembalasan","Ketertiban masyarakat","Penderitaan"],
+    answer: 2
+  },
+  {
+    id: 68,
+    text: "Salah satu dari macam-macam klasifikasi konstitusi menurut K.C. Wheare adalah konstitusi ….",
+    options: ["monarki dan konstitusi demokrasi","pusat dan konstitusi daerah","derajat tinggi dan konstitusi tidak tinggi","mengikat dan tidak mengikat"],
+    answer: 2
+  },
+  {
+    id: 69,
+    text: "Menurut Sri Soemantri, istilah lembaga negara di Indonesia pertama kali ditemukan dalam….",
+    options: ["UUD NRI Tahun 1945","UUDS 1950","Konstitusi RIS","TAP MPRS RI No. XIV/MPRS/1966"],
+    answer: 3
+  },
+  {
+    id: 70,
+    text: "Dalam sistematika KUHP, bagian paling penting dalam satu kitab tersebut adalah….",
+    options: ["Pelanggaran","Kejahatan","Aturan umum","Keadilan"],
+    answer: 2
+  },
+  {
+    id: 71,
+    text: "Keseluruhan kegiatan usaha yang dijalankan oleh orang atau badan secara teratur dan terus-menerus, yaitu berupa kegiatan mengadakan barang-barang atau jasa-jasa maupun fasilitas-fasilitas untuk diperjualbelikan, dipertukarkan, atau disewakan dengan tujuan mendapatkan keuntungan. Pernyataan tersebut merupakan pengertian hukum bisnis yang dikemukakan oleh ....",
+    options: ["Ismail Saleh","Munir Fuady","Richard Burton Simatupang","Amirizal"],
+    answer: 2
+  },
+  {
+    id: 72,
+    text: "Unsur dibawah ini yang tidak termasuk kedalam unsur negara hukum adalah ….",
+    options: ["Perlindungan Hak Asasi Manusia","Otoriter","Supremasi Hukum","Peradilan bebas"],
+    answer: 1
+  },
+  {
+    id: 73,
+    text: "Menurut Maria Farida, jenis peraturan perundang-undangan terbagi kedalam dua bagian, yaitu….",
+    options: ["Tingkat Tinggi dan Tingkat Rendah","Tingkat Pertama dan Tingkat Kedua","Tingkat Pusat dan Tingkat Daerah","Tingkat Atas dan Tingkat Bawah"],
+    answer: 2
+  },
+  {
+    id: 74,
+    text: "Menurut Utrecht, setiap jabatan adalah suatu lingkungan pekerjaan tetap yang dihubungkan dengan ….",
+    options: ["Organisasi sosial tertinggi","Perangkat pemerintah","Organisasi politik","Lembaga negara"],
+    answer: 1
+  },
+  {
+    id: 75,
+    text: "Suatu sistem pemasaran atau distribusi barang dan jasa, dimana sebuah perusahaan induk memberikan kepada individu atau perusahaan lain hak-hak istimewa untuk melaksanakan suatu sistem usaha tertentu dengan cara yang sudah ditentukan selama waktu tertentu merupakan pengertian dari ….",
+    options: ["Bangun guna serah","Franchising","Agen","Perusahaan"],
+    answer: 1
+  },
+  {
+    id: 76,
+    text: "Selain dibutuhkan oleh warga negara sebagai penerima manfaat, perlindungan hukum juga dibutuhkan oleh ….",
+    options: ["Badan hukum","Organisasi negara","Pemerintah dalam melaksanakan tugasnya","Organisasi masyarakat"],
+    answer: 2
+  },
+  {
+    id: 77,
+    text: "Berdasarkan ciri-cirinya hukum pidana, badan dan peraturan negara termasuk kedalam….",
+    options: ["Pelanggaran","Kejahatan","Kodifikasi","Kepentingan umum"],
+    answer: 3
+  },
+  {
+    id: 78,
+    text: "Dalam delik omisi yang memerlukan ajaran sebab-akibat, adalah ….",
+    options: ["Delik omisi tak murni","Delik omisi murni","Delik omisi formal","Delik omisi materiil"],
+    answer: 0
+  },
+  {
+    id: 79,
+    text: "Hukum Adat sebagai suatu endapan atau renapan dari kesusilaan. Kaidah adat itu merupakan kaidah kesusilaan yang telah diakui kebenarannya oleh masyarakat umum. Pengertian hukum adat tersebut dikemukakan oleh ….",
+    options: ["Dr. Sukanto, SH.","Prof. Kusumadi Pudjosewodjo, SH.","DR. Hazairin, SH","Prof. Mr. B. Terhaar"],
+    answer: 1
+  },
+  {
+    id: 80,
+    text: "Contoh konkrit perbedaan antara hukum adat dengan hukum barat, adalah bahwa hukum barat hanya mengenal satu macam jual beli yaitu ….",
+    options: ["Jual sende","Jual tahunan","Jual lepas","Sewa"],
+    answer: 2
+  },
+  {
+    id: 81,
+    text: "Pasal 49 Ayat (2) KUHP berisi tentang pembelaan terpaksa yang termasuk kedalam alasan penghapusan hukuman. Alasan dibawah ini yang sesuai dengan pasal diatas adalah….",
+    options: ["Alasan pembenar","Alasan pembelaan","Alasan penghapusan","Alasan pemaaf"],
+    answer: 3
+  },
+  {
+    id: 82,
+    text: "Pengertian sistem hukum nasional menurut Bagir Manan berbeda dengan Sunaryati Hartono. Bagir Manan mengartikan sistem hukum nasional adalah….",
+    options: ["Hukum nasional berbeda dengan pengertian hukum positif","Hukum nasional sama dengan ius constituendum Indonesia","Hukum nasional sama dengan hukum positif","Hukum nasional sama dengan hukum kolonial"],
+    answer: 2
+  },
+  {
+    id: 83,
+    text: "Reglement Buitergewesten (Rbg) merupakan Hukum Acara Perdata zaman Belanda yang berlaku di daerah….",
+    options: ["Jawa dan Madura","Jawa","Luar jawa dan Madura","Madura"],
+    answer: 2
+  },
+  {
+    id: 84,
+    text: "Istilah norms oleh Hans Kelsen diartikan sebagai \"imperatiefvoorschrift\" yaitu suatu peraturan hukum yang harus diikuti dan yang dilindungi oleh sanksi. Yang termasuk ke dalam individual norms atau concrete norms adalah ….",
+    options: ["Peraturan-peraturan","UUD","UU","Vonis"],
+    answer: 3
+  },
+  {
+    id: 85,
+    text: "Perceraian yang dilakukan oleh pihak istri disebut dengan ….",
+    options: ["Cerai talak","Talak gugat","Gugat talak","Cerai gugat"],
+    answer: 3
+  },
+  {
+    id: 86,
+    text: "Yang membagi Hukum internasional kedalam Hukum damai dan Hukum perang adalah....",
+    options: ["Starke","Utrecht","Anzilotti","Mochtar Kusumaatmadja"],
+    answer: 2
+  },
+  {
+    id: 87,
+    text: "Berikut ini adalah ciri hukum sebagai kaedah sebagaimana dikemukakan Soerjono Soekanto, adalah ....",
+    options: ["Merupakan suatu strategi","Berbentuk tertulis dan tidak tertulis","Jalinan hukum","Merupakan pedoman/patokan tingkah laku yang pantas"],
+    answer: 3
+  },
+  {
+    id: 88,
+    text: "Setiap permohonan perkara yang diajukan ke Mahkamah Konstitusi diperiksa oleh….",
+    options: ["Sekjen Mahkamah Konstitusi","Hakim Konstitusi","Ketua Mahkamah Konstitusi","Panitera Mahkamah Konstitusi"],
+    answer: 1
+  },
+  {
+    id: 89,
+    text: "Penemuan hukum diperlukan dalam rangka memecahkan atau menyelesaikan suatu persoalan hukum berdasarkan atau secara hukum. Ada aliran yang sangat mempengaruhi timbulnya kekosongan hukum. Aliran ini berpendapat bahwa hukum itu merupakan satu kesatuan yang lengkap dan tertutup, di luar undang-undang bukan merupakan hukum dan hakim tidak boleh menjalankan hukum yang tidak disebutkan dalam peraturan perundang-undangan. Aliran yang menyatakan hal tersebut adalah….",
+    options: ["Freie Rechtslehre","Hukum Alam","Legisme","Rechtvinding"],
+    answer: 2
+  },
+  {
+    id: 90,
+    text: "Asas-asas perundang-undangan yang menyatakan bahwa undang-undang yang bersifat khusus mengesampingkan Undang-undang yang bersifat umum, yaitu ….",
+    options: ["asas kepatutan","Lex Specialis Derogat Legi Generali","Lex Superiore Derogat Legi Priori","Lex Posteriore Derogat Legi Priore"],
+    answer: 1
+  },
+  {
+    id: 91,
+    text: "Yurisdiksi yang dimana orang yang bukan warganegaranya ditundukkan dibawah hukum nasionalnya, disebabkan oleh karena perbuatan atau perilaku orang asing itu yang merugikan kepentingan negara tersebut, merupakan pengertian dari yurisdiksi ....",
+    options: ["personal berdasarkan kewarganegaraan pasif","kriminal","personal berdasarkan kewarganegaraan aktif","eksklusif"],
+    answer: 0
+  },
+  {
+    id: 92,
+    text: "Keputusan Tata Usaha Negara dapat disebut final apabila telah terdapat….",
+    options: ["Kepastian hukum","Kesepakatan bersama","Pengesahan dari pejabat publik","Akibat hukum"],
+    answer: 3
+  },
+  {
+    id: 93,
+    text: "Menurut Mochtar Kusumaatmadja, Negara adalah subjek Hukum internasional dalam arti yang klasik. Bahkan hingga sekarang pun masih ada anggapan bahwa hukum internasional itu pada hakikatnya adalah hukum antarnegara. Negara yang diakui sebagai subyek hukum internasional adalah ….",
+    options: ["Negara yang merdeka","Negara demokrasi","Negara jajahan","Kedutaan negara"],
+    answer: 0
+  },
+  {
+    id: 94,
+    text: "Anak yang lahir dari perkawinan yang sah antara seorang wanita dan seorang pria, sebagai ibu wanita yang melahirkannya dan sebagai bapak, suami dari wanita tersebut, adalah merupakan .....",
+    options: ["anak lahir di luar perkawinan","anak kandung","anak sumbang","anak angkat"],
+    answer: 1
+  },
+  {
+    id: 95,
+    text: "Peradilan Agama menurut UU No. 4 tahun 2004 tentang Kekuasaan Kehakiman, merupakan badan peradilan yang berada dibawah kewenangan ….",
+    options: ["Mahkamah Agung","Mahkamah Konstitusi","Kementrian Agama","Kementrian Hukum dan HAM"],
+    answer: 0
+  },
+  {
+    id: 96,
+    text: "Pasal 2 Aturan Peralihan UUD NRI Tahun 1945 mengandung asas….",
+    options: ["equality before the law","pacta sunt servanda","konkordansi","legalitas"],
+    answer: 2
+  },
+  {
+    id: 97,
+    text: "Pemerintahan daerah dapat dengan bebas mengatur dan mengurus rumah tangganya sendiri karena menganut asas….",
+    options: ["Pluralitas","Legalitas","Otonomi","Sentralisasi"],
+    answer: 2
+  },
+  {
+    id: 98,
+    text: "Salah satu bidang perkara menurut UU. no. 3 tahun 2006 tentang Peradilan Agama yang diselesaikan pada pengadilan agama adalah bidang ekonomi syariah. Bidang ekonomi syariah yang dimaksudkan dalam UU ini adalah meliputi….",
+    options: ["seluruh perkara jual beli","sekuritas syari'ah","fatwa dewan syari'ah nasional","ketentuan syari'ah"],
+    answer: 1
+  },
+  {
+    id: 99,
+    text: "Sistem hukum kewarisan islam adalah ....",
+    options: ["sistem kolektif","sistem individual","sistem individual patrilinial","sistem mayorat"],
+    answer: 1
+  },
+  {
+    id: 100,
+    text: "Menurut Soehino, Hukum Administrasi Negara adalah ….",
+    options: ["Hukum yang berisi peraturan-peraturan yang menyangkut administrasi","Kelanjutan dari Hukum Tata Negara","Himpunan peraturan-peraturan yang menjadi sebab sebuah negara berfungsi","Keseluruhan aturan-aturan hukum yang mengatur bagaimana alat-alat perlengkapan negara melakukan fungsinya atau tugasnya"],
+    answer: 3
+  },
+  {
+    id: 101,
+    text: "Salah satu hal yang menyatakan bahwa manusia merupakan subjek dari tindak pidana adalah ….",
+    options: ["Dianggap dapat berbuat kesalahan","Dianggap mampu","Dianggap berwenang","Dianggap memiliki pengetahuan"],
+    answer: 0
+  },
+  {
+    id: 102,
+    text: "Setiap perbuatan yang dilarang dan diancam dengan pidana oleh peraturan hukum pidana itu harus bersifat melawan hukum. Perbuatan bersifat melawan hukum apabila perbuatan tersebut memenuhi rumusan undang-undang, kecuali jika diadakan pengecualian-pengecualian yang telah ditentukan dalam undang-undang pula. Pernyataan tersebut termasuk kedalam sifat melawan hukum ....",
+    options: ["Material","Umum","Khusus","Formal"],
+    answer: 3
+  },
+  {
+    id: 103,
+    text: "Keanekaraman hukum dan pengadilan mengakibatkan perlunya pengaturan yang membantu hakim dan pejabat administrasi pemerintahan (birokrasi) eksekutif untuk menentukan hukum mana yang berlaku, apabila dua orang Hindia Belanda yang termasuk golongan penduduk yang berbeda melakukan suatu transaksi jual beli atau dagang, atau pinjam-meminjam atau bahkan menikah, dan lain sebagainya. Istilah yang dipakai oleh Prof. Gouw Giok Siong untuk keragaman hukum yang berlaku tersebut adalah ….",
+    options: ["intergentierecht","hukum antar golongan","hukum antar bangsa","hukum antar suku"],
+    answer: 0
+  },
+  {
+    id: 104,
+    text: "Sumber hukum islam yang secara etimologis memiliki pengertian adat-istiadat (kebiasaan), dan perjalanan hidup (sirah) yang tidak dibedakan antara yang baik dan yang buruk adalah….",
+    options: ["Al-Qur'an","Alqanun","Hadist","Ijtihad"],
+    answer: 2
+  },
+  {
+    id: 105,
+    text: "Objek dari hukum syariah yang juga merupakan perbedaan dengan hukum konvensional adalah sebagai berikut, diantaranya ….",
+    options: ["Peraturan-peraturan lahir mengenai hubungan manusia dengan sesama manusia dan/atau dengan benda saja","Peraturan-peraturan terkait hubungan manusia dengan sesama manusia, manusia dengan benda, dan manusia dengan Tuhannya (ibadat)","Pikiran/rasio manusia dan kebiasaan-kebiasaan dalam masyarakat","Wahyu dan/atau kesimpulan-kesimpulan yang diambil dari wahyu"],
+    answer: 1
+  },
+  {
+    id: 106,
+    text: "Hak yang hanya dapat dipertahankan oleh orang-orang tertentu saja, yaitu hak-hak yang timbul karena adanya perikatan adalah ….",
+    options: ["Hak perseorangan","Hak kebendaan","Hak guna usaha","Hak guna bangunan"],
+    answer: 0
+  },
+  {
+    id: 107,
+    text: "Pengertian tindak pidana menurut Simons dan Van Hamel disebut monistis karena mengandung ….",
+    options: ["Criminal act","Criminal responsibility","Actus reus","Delictum"],
+    answer: 1
+  },
+  {
+    id: 108,
+    text: "Kepenjaraan yang dilakukan dengan cara memberikan kesunyian yang mencekam sebagai pengunduran diri dari masyarakat yang kebetulan ke penjara adalah bentuk kepenjaraan yang diberikan oleh ….",
+    options: ["Masyarakat kuno","Gerakan pembaruan","Gereja","Rumah sakit kota"],
+    answer: 2
+  },
+  {
+    id: 109,
+    text: "Jika seorang Bumi Putera melakukan suatu perbuatan melanggar hukum yang tidak dikenal di dalam hukumnya sendiri, ia dianggap menundukkan diri pada hukum Eropa secara….",
+    options: ["Terbuka","Terang-terangan","Tertutup","Diam-diam"],
+    answer: 3
+  },
+  {
+    id: 110,
+    text: "Menurut Philipus M. Hadjon, salah satu fungsi dari DPR adalah medewetgeving yang mengandung makna….",
+    options: ["Merancang undang-undang","Membuat undang-undang","Ikut serta membuat undang-undang","Meratifikasi undang-undang"],
+    answer: 2
+  },
+  {
+    id: 111,
+    text: "Hukum adat masih menjadi salah satu sumber hukum pidana sebagaimana yang termaktub dalam ….",
+    options: ["Pasal 6 UU No. 1 Tahun 1946","Pasal 5 Ayat (3)b UU No. 1 Tahun 1951","UU No. 8 Tahun 1981","Kitab Undang-Undang Hukum Pidana"],
+    answer: 1
+  },
+  {
+    id: 112,
+    text: "Berdasarkan sumbernya, kewenangan diperoleh dari ….",
+    options: ["Atribusi dan pelimpahan wewenang","Amanat dan perintah","Intruksi dan mandat","Undang-undang dan ketetapan"],
+    answer: 0
+  },
+  {
+    id: 113,
+    text: "Hukum dagang memiliki sumber hukum yang terpisah dari hukum perdata. Dalam istilah Bahasa Belanda sumber hukum tersebut dinamakan ….",
+    options: ["Wetboek van Koophandel","Wetboek van Strafrecht","Burgerlijk Wetboek","Indische Staatregeling"],
+    answer: 0
+  },
+  {
+    id: 114,
+    text: "Berdasarkan Pasal 1 Ayat (1) UUD NRI Tahun 1945 setelah perubahan, Negara Indonesia adalah Negara….",
+    options: ["federal yang berbentuk republik","kesatuan yang berbentuk republik","kesatuan yang berbentuk demokrasi","federal yang berbentuk demokrasi"],
+    answer: 1
+  },
+  {
+    id: 115,
+    text: "Menurut Bagir Manan dan Kuntana Magnar, pembangunan hukum nasional itu dapat dilakukan dengan berbagai cara, yaitu melalui….",
+    options: ["Hukum tata negara, hukum pidana, dan hukum perdata","Hukum acara pidana, hukum acara perdata, dan hukum acara TUN","Hukum internasional, hukum adat, dan hukum nasional","Peraturan perundang-undangan, yurisprudensi, dan hukum tidak tertulis"],
+    answer: 3
+  },
+  {
+    id: 116,
+    text: "Sifat yang terdapat dalam hukum perjanjian adalah ….",
+    options: ["Mengikat","Tidak mengikat","Tertutup","Terbuka"],
+    answer: 3
+  },
+  {
+    id: 117,
+    text: "Jabatan Sekretaris Desa harus diisi oleh….",
+    options: ["Pegawai honorer","Organisator","Pegawai negeri","Pegawai pemerintah berdasarkan perjanjian kerja"],
+    answer: 2
+  },
+  {
+    id: 118,
+    text: "Suatu asuransi yang memberikan sejumlah uang seperti yang telah diperjanjikan dengan tidak perlu adanya suatu hubungan antara kerugian yang diderita dengan besarnya jumlah uang tersebut yang diterima merupakan pengertian dari ….",
+    options: ["Asuransi kerugian","Asuransi kepailitan","Asuransi jumlah","Asuransi campuran"],
+    answer: 2
+  },
+  {
+    id: 119,
+    text: "Sanksi atas jaminan terhadap penataan kepada hukum administrasi negara merupakan pengertian dari ….",
+    options: ["Asas kebebasan","Asas keadilan","Asas kepastian","Asas berupaya memaksa"],
+    answer: 3
+  },
+  {
+    id: 120,
+    text: "Aliran yang menyebut bahwa tujuan adanya hukum pidana itu untuk melindungi kepentingan negara adalah aliran ….",
+    options: ["Klasik","Modern","Sosiologis","Positivis"],
+    answer: 0
+  },
+  {
+    id: 121,
+    text: "Apabila hukum asing itu ditunjuk oleh Lex fori, menunjuk kembali kearah Lex fori itu, atau kepada sistem hukum asing lain, maka timbullah istilah yang dinamakan ….",
+    options: ["Lex loci solutionis","Lex loci contractus","Renvoi","Lex fori"],
+    answer: 2
+  },
+  {
+    id: 122,
+    text: "Salah satu tujuan dari ajaran sebab-akibat adalah….",
+    options: ["Untuk mempertahankan hukum pidana","Untuk menentukan ada atau tidaknya tindak pidana","Untuk menentukan sah atau tidaknya penyelidikan","Untuk menghindari seseorang dari tindak pidana"],
+    answer: 1
+  },
+  {
+    id: 123,
+    text: "Golongan penduduk Indonesia berdasarkan Pasal 161 IS terdiri dari: Golongan Eropa, Golongan Timur Asing dan Golongan Bumi Putera. Yang termasuk Golongan Eropa adalah….",
+    options: ["Cina","Arab","Tionghoa","Jepang"],
+    answer: 3
+  },
+  {
+    id: 124,
+    text: "Seseorang hanya dapat dikatakan bersalah apabila ia dapat mempertanggungjawabkan perbuatannya yang dikualifikasikan sebagai perbuatan pidana merupakan pengertian dari asas ....",
+    options: ["Nullum Delictum Nulla Poena Sine Praevia Lege Poenali","Objektif","Subjektif","Geen Straf Zonder Schuld"],
+    answer: 3
+  },
+  {
+    id: 125,
+    text: "Sistem hukum yang diberlakukan bagi seluruh bangsa Indonesia, dibuatnya setelah Indonesia merdeka berdasarkan pada Pancasila dan konstitusi yang berlaku, merupakan pengertian dari ….",
+    options: ["Ius Constituendum","Hukum positif","Sistem Hukum Nasional","Politik Hukum"],
+    answer: 2
+  },
+  {
+    id: 126,
+    text: "Undang-Undang yang mengatur tentang kepolisian adalah….",
+    options: ["UU Nomor 2 Tahun 2002","UU Nomor 16 Tahun 2004","UU Nomor 4 Tahun 2004","UU Nomor 5 Tahun 2004"],
+    answer: 0
+  },
+  {
+    id: 127,
+    text: "Tokoh yang menganalogikan aturan hukum membentuk dirinya dalam sistem hukum dan merupakan suatu pohon hukum (the science trees of the law), serta memberikan gambaran pohon hukum tersebut adalah….",
+    options: ["Crince Le Roy","Bagir Manan","Hans Kelsen","Mochtar Kusumaatmadja"],
+    answer: 0
+  },
+  {
+    id: 128,
+    text: "Sistem adalah sekumpulan elemen di antara mana terdapat adanya hubungan-hubungan. Kerapkali dalam litteratur dapat diketemukan kata-kata tambahan. Elemen-elemen mana ditujukan kearah pencapaian sasaran-sasaran umum tertentu. Pengertian sistem tersebut dikemukakan oleh ….",
+    options: ["Sri Soemantri","West Churman","Van der Poel","Soerjono Soekanto"],
+    answer: 2
+  },
+  {
+    id: 129,
+    text: "Dalam menilai alat-alat bukti, Mahkamah Konstitusi memperhatikan persesuaian antara alat bukti yang satu dengan alat bukti yang lain. Maka, konsekuensi logis dari pernyataan tersebut adalah ….",
+    options: ["Para pihak, saksi, dan ahli wajib membayar perkara","Para pihak, saksi, dan ahli bekerja sama dalam menyelesaikan perkara","Para pihak, saksi, dan ahli wajib hadir memenuhi panggilan","Para pihak, saksi, dan ahli wajib mencari alat bukti"],
+    answer: 2
+  },
+  {
+    id: 130,
+    text: "Penafsiran dengan memperluas arti kata-kata dalam peraturan itu sehingga sesuatu peristiwa dapat dimaksudkannya, disebut dengan penafsiran ....",
+    options: ["Restriktif","Ekstensif","Gramatikal","Autentik"],
+    answer: 1
+  },
+  {
+    id: 131,
+    text: "Sumber hukum menurut Van Apeldoorn….",
+    options: ["undang-undang, traktat, doktrin","kebiasaan, undang-undang, yurisprudensi","traktat, undang-undang, kebiasaan","yurisprudensi, doktrin, undang-undang"],
+    answer: 1
+  },
+  {
+    id: 132,
+    text: "Kewenangan hukum pengadilan suatu Negara terhadap perkara-perkara yang menyangkut keperdataan baik yang sifatnya nasional yaitu bila para pihak atau objek perkaranya menyangkut unsur asing. Merupakan pengertian dari ....",
+    options: ["yurisdiksi pidana","perdata internasional","yurisdiksi sipil","hukum asing"],
+    answer: 2
+  },
+  {
+    id: 133,
+    text: "Perbedaan alur perkara antara PTUN dan peradilan umum terletak pada adanya….",
+    options: ["Upaya normatif","Upaya kasasi","Upaya administratif","Upaya banding"],
+    answer: 2
+  },
+  {
+    id: 134,
+    text: "Dalam negara federal yang mengemban hak dan kewajiban hukum internasional, terletak pada ....",
+    options: ["konstitusi","pemerintah federal","undang-undang","pengadilan"],
+    answer: 1
+  },
+  {
+    id: 135,
+    text: "Sumber hukum internasional yang diatur dalam Pasal 38 ayat 1 Piagam Mahkamah Pengadilan Internasional dan dicantumkan sebagai Hukum Internasional, adalah....",
+    options: ["Konvensi","Traktat","Ratifikasi","Yurisprudensi"],
+    answer: 1
+  },
+  {
+    id: 136,
+    text: "Pemberian harta kekayaan kepada ahli waris, semasa pewaris masih hidup adalah ….",
+    options: ["Hibah Wasiat","Pewarisan","Wakaf","Hutang-piutang"],
+    answer: 0
+  },
+  {
+    id: 137,
+    text: "Masyarakat hukum adat yang para anggotanya menarik garis keturunan berganti-ganti secara bergiliran melalui garis ayah maupun melalui garis ibu sesuai dengan bentuk perkawinan yang dialami oleh orang tua, yaitu bergiliran kawin jujur, kawin semendo maupun kawin semendo rajorajo (Rejang), adalah ….",
+    options: ["Alternerend","Patrilineal","Parental","Matrilineal"],
+    answer: 0
+  },
+  {
+    id: 138,
+    text: "Kekuasaan negara dalam menerima, memeriksa, mengadili, memutus, dan menyelesaikan perkara-perkara tertentu antara orang-orang yang beragama Islam untuk menegakkan hukum dan keadilan. Merupakan perwujudan dari….",
+    options: ["Pengadilan Tinggi Negeri","Peradilan Muamalah","Mahkamah Syariah","Peradilan Agama"],
+    answer: 3
+  },
+  {
+    id: 139,
+    text: "Menurut Van Vollenhoven, Hukum Administrasi Negara itu merupakan verlengstuk, dapat dijelaskan sebagai ….",
+    options: ["Kesamaan dari Hukum Tata Negara","Kelanjutan dari Hukum Tata Negara","Ketimpangan dari Hukum Tata Negara","Kemunduran dari Hukum Tata Negara"],
+    answer: 1
+  },
+  {
+    id: 140,
+    text: "Yang termasuk barang milik negara adalah ….",
+    options: ["Hewan-hewan","Perusahaan milik perseorangan","Harta benda masyarakat","Jiwa raga"],
+    answer: 0
+  },
+  {
+    id: 141,
+    text: "Zakat fitrah merupakan zakat yang wajib dikeluarkan setiap muslim sebelum hari raya. Jumlah yang dikeluarkan adalah sebanyak... makanan pokok masyarakat setempat.",
+    options: ["3,5 Kg","2,5 Kg","1,5 Kg","1 Kg"],
+    answer: 1
+  },
+  {
+    id: 142,
+    text: "Pengertian perkawinan menurut Prof. Dr. Wirjono, adalah….",
+    options: ["perkawinan adalah hidup bersama dari seorang laki-laki dan perempuan yang memenuhi syarat-syarat tertentu","perkawinan ialah pertalian yang sah antara seorang laki-laki dan seorang perempuan untuk waktu yang lama","nikah adalah akad yang memberikan faedah (mengakibatkan) kepemilikan untuk bersenang-senang secara sadar bagi seorang pria dan wanita","perkawinan ialah ikatan lahir batin antara seorang pria dengan seorang wanita sebagai suami istri dengan tujuan membentuk keluarga (rumah tangga) yang bahagia dan kekal berdasarkan Ketuhanan Yang Maha Esa"],
+    answer: 1
+  },
+  {
+    id: 143,
+    text: "Hukum Administrasi Negara adalah (hukum pemerintahan) yang menguji hubungan hukum istimewa yang diadakan untuk meyakinkan….",
+    options: ["Para aparat","Para pejabat","Para pegawai","Para administratur"],
+    answer: 1
+  },
+  {
+    id: 144,
+    text: "Perbuatan menjual tanaman padi yang masih muda, di mana hasil panen ini menjadi milik yang membeli pada waktu masih muda, disebut….",
+    options: ["tebasan","ijon","gadai","maro"],
+    answer: 0
+  },
+  {
+    id: 145,
+    text: "Memorie van Toelichting mengemukakan bahwa yang turut melakukan adalah setiap orang yang ….",
+    options: ["Tidak sengaja berbuat","Sengaja berbuat","Membantu berbuat","Menyuruh berbuat"],
+    answer: 1
+  },
+  {
+    id: 146,
+    text: "Menurut Nico Keijer, sifat melawan hukum terbagi kedalam ….",
+    options: ["3 makna","5 makna","2 makna","4 makna"],
+    answer: 2
+  },
+  {
+    id: 147,
+    text: "Konsep hukum adat yang dipakai secara internasional adalah ….",
+    options: ["sistem ijon","asas pemisahan horizontal","asas geneologis","asas teritorial"],
+    answer: 1
+  },
+  {
+    id: 148,
+    text: "Secara etimologis, kata sunnah berasal dari kata berbahasa Arab al-sunnah yang berarti….",
+    options: ["sesuatu yang berasal dari Nabi Saw. yang berupa perkataan, perbuatan, penetapan, sifat, dan perjalanan hidup beliau baik pada waktu sebelum diutus menjadi Nabi maupun sesudahnya","hukum atau ketentuan-ketentuan Allah mengenai alam semesta, yang di dalam dunia ilmu pengetahuan disebut \"hukum alam\" atau natural law","cara, adat-istiadat (kebiasaan), dan perjalanan hidup (sirah) yang tidak dibedakan antara yang baik dan yang buruk","anjuran jika dikerjakan mendapat pahala kebaikan kalau tidak dilakukan tidak berdosa atau tidak apa-apa"],
+    answer: 2
+  },
+  {
+    id: 149,
+    text: "Penjelasan untuk istilah Jaiz atau mubah atau ibahah ….",
+    options: ["larangan untuk dilakukan","kebebasan memilih untuk melakukan atau tidak melakukan suatu perbuatan","Kaidah yang seyogyanya tidak dilakukan karena jelas tidak berguna dan akan merugikan orang yang melakukannya","anjuran untuk dilakukan karena jelas manfaatnya bagi pelaku"],
+    answer: 1
+  },
+  {
+    id: 150,
+    text: "Menurut ilmu pengetahuan, sistematika hukum perdata eropa terbagi kedalam 4 bagian. Bagian kedua dalam sistematika tersebut adalah hukum keluarga yang mengatur hubungan kekeluargaan. Salah satu hubungan kekeluargaan tersebut adalah….",
+    options: ["Kekayaan suami istri","Waris","Harta kekayaan","Perikatan"],
+    answer: 0
+  },
+  {
+    id: 151,
+    text: "Pertanggungjawaban pidana tidak cukup dengan dilakukannya perbuatan pidana saja, tetapi disamping itu harus ada kesalahan, atau sikap batin yang dapat dicela. Pernyataan tersebut merupakan pengertian dari ....",
+    options: ["Ius curia novit","Nullum delictum","Actus non facit, reum, nisi mens sit rea","Actus reus"],
+    answer: 2
+  },
+  {
+    id: 152,
+    text: "Menurut Pasal 10 KUHP, hukuman pidana terdiri dari dua bagian, yaitu hukuman pokok dan hukuman tambahan. Salah satu contoh hukuman pokok dibawah ini adalah ….",
+    options: ["Pencabutan hak","Pidana tutupan","Perampasan barang","Putusan hakim"],
+    answer: 1
+  },
+  {
+    id: 153,
+    text: "Menurut Simons, dasar primer pidana adalah prevensi umum, dan dasar sekunder pidana adalah prevensi khusus, serta dasar ketiganya adalah ….",
+    options: ["Tersier","Prevensi relatif","Prevensi absolut","Sesuai dengan kesadaran hukum masyarakat"],
+    answer: 3
+  },
+  {
+    id: 154,
+    text: "Menurut Sri Soemantri bahwa negara merupakan suatu organisasi….",
+    options: ["Politik","Hukum","Kesejahteraan","Kekuasaan"],
+    answer: 3
+  },
+  {
+    id: 155,
+    text: "Mahkamah Konstitusi lahir karena adanya perubahan paradigma dari ….",
+    options: ["Supremasi hukum ke supremasi politik","Monarki ke demokrasi","Supremasi MPR ke checks and balances system","Machstaat ke rechtstaat"],
+    answer: 2
+  },
+  {
+    id: 156,
+    text: "Dibawah ini adalah salah satu pasal dalam KUHP yang mencantumkan sanksi terlebih dahulu kemudian norma, yaitu pasal ….",
+    options: ["Pasal 122","Pasal 338","Pasal 362","Pasal 167"],
+    answer: 3
+  },
+  {
+    id: 157,
+    text: "Menurut Philipus M. Hadjon, kekuasaan pemerintah yang berisi wewenang pengaturan dan pengendalian kehidupan masyarakat dibatasi secara ….",
+    options: ["Kewenangan","Prosedur","Sistem","Substansi"],
+    answer: 3
+  },
+  {
+    id: 158,
+    text: "Sumber formal Hukum Tata Negara terdiri dari….",
+    options: ["UUD 1945, UU, Perrpu, PP, Perpres, dan Perda","Hukum Administrasi, Hukum Pidana, dan Hukum Perdata","Hukum Perundang-undangan, Hukum Kebiasaan (Konvensi), Traktat, dan Doktrin","Hukum Islam, Hukum Adat, dan Hukum Internasional"],
+    answer: 2
+  },
+  {
+    id: 159,
+    text: "Dibawah ini merupakan pejabat umum yang berhak membuat akta autentik, yaitu…",
+    options: ["Polisi","Pengacara","Hakim","Penyidik"],
+    answer: 2
+  },
+  {
+    id: 160,
+    text: "Contoh perusahaan yang diatur diluar KUH Perdata dan KUH Dagang adalah….",
+    options: ["CV","Firma","Koperasi","Perseroan Terbatas"],
+    answer: 2
+  },
+  {
+    id: 161,
+    text: "Adanya freies ermessen menimbulkan akibat munculnya ….",
+    options: ["Keadilan","Ultra vires","Kepastian hukum","Kesejahteraan"],
+    answer: 1
+  },
+  {
+    id: 162,
+    text: "Yang mengemukakan pendapat bahwa Hukum Perdata Internasional merupakan bagian dari Hukum Internasional, adalah….",
+    options: ["Harsanto Nursadi","Van Brekel","Gouw Giok Siong","Hymans"],
+    answer: 3
+  },
+  {
+    id: 163,
+    text: "Salah satu ciri hukum adat di Indonesia menurut F.D. Holman adalah kontan. Kontan artinya….",
+    options: ["mementingkan kepentingan umum","percaya pada kekuatan gaib","adanya prestasi dan kontra prestasi dilakukan secara bersamaan","transaksi yang harus disaksikan oleh kepala adat"],
+    answer: 2
+  },
+  {
+    id: 164,
+    text: "Pemberlakuan hukum di Hindia Belanda diatur dalam pasal 131 IS yang menyatakan bahwa untuk orang Eropa berlaku hukum Eropa, apa yang menjadi hukum positif di Belanda ditetapkan pula di Hindia Belanda tanpa ada perubahan. Pemberlakuan hukum yang sama dengan di Belanda tersebut merupakan ….",
+    options: ["Unifikasi","Asas konkordansi","Kodifikasi","Penundukan diri"],
+    answer: 1
+  },
+  {
+    id: 165,
+    text: "Apabila seseorang yang melakukan tindak pidana dan kemudian dikenakan denda tapi tidak mampu membayar atau tidak mau membayar, maka akan dikenakan hukuman ….",
+    options: ["Kurungan","Tambahan","Pokok","Penjara"],
+    answer: 0
+  },
+  {
+    id: 166,
+    text: "Sistem hukum yang diberlakukan bagi seluruh bangsa Indonesia, dibuatnya setelah Indonesia merdeka berdasarkan pada Pancasila dan konstitusi yang berlaku, merupakan pengertian dari ....",
+    options: ["Politik Adat","Hukum positif","Sistem Hukum Nasional","Politik Hukum"],
+    answer: 2
+  },
+  {
+    id: 167,
+    text: "Alat bukti yang sah dalam KUHAP diatur dalam pasal ….",
+    options: ["185 Ayat (1)","188 Ayat (2)","189 Ayat (3)","184 Ayat (1)"],
+    answer: 3
+  },
+  {
+    id: 168,
+    text: "Dalam perkara perdata, saksi dapat ditolak oleh pihak lawan apabila…",
+    options: ["Memiliki hubungan kekeluargaan dengan pihak yang berperkara","Belum dewasa","Hanya terdapat satu saksi","Tidak kooperatif"],
+    answer: 0
+  },
+  {
+    id: 169,
+    text: "Semenjak kembali ke UUD NRI Tahun 1945 setelah dikeluarkannya Dekrit Presiden 1959, maka kondisi hukum di Indonesia sangat jamak/plural. Hal ini menyiratkan bahwa politik hukum Indonesia sebenarnya ditentukan oleh ….",
+    options: ["Pembukaan UUD NRI Tahun 1945","Pasal II Aturan Peralihan","Sistem Hukum Common Law","Hukum Kolonial"],
+    answer: 1
+  },
+  {
+    id: 170,
+    text: "Dalam proses perkara di Pengadilan Agama, setiap penetapan dan putusan dimulai dengan kalimat ….",
+    options: ["Syahadat","Basmalah","Hamdalah","Sumpah"],
+    answer: 1
+  },
+  {
+    id: 171,
+    text: "Agar kepentingan-kepentingan manusia di dalam masyarakat tidak saling berbenturan, maka di dalam masyarakat terdapat beberapa norma yang berlaku. Norma yang dalam pelaksanaannya dapat dipaksakan, karena ada sanksi bagi orang yang melanggarnya adalah….",
+    options: ["norma kesusilaan","norma hukum","norma agama","norma kebiasaan"],
+    answer: 1
+  },
+  {
+    id: 172,
+    text: "Dalam acara pemeriksaan pendahuluan, Mahkamah Konstitusi wajib memberikan nasehat kepada pemohon untuk memperbaiki permohonannya selama ….",
+    options: ["7 hari","21 hari","30 hari","14 hari"],
+    answer: 3
+  },
+  {
+    id: 173,
+    text: "Hukum yang baik adalah hukum yang sesuai dan merupakan pencerminan dari nilai-nilai yang tumbuh dan berkembang dalam masyarakat. Pemikiran tersebut merupakan konsep….",
+    options: ["mahzab hukum alam","mahzab sejarah","aliran Pragmatic Legal Realism","aliran Sociological Jurisprudence"],
+    answer: 3
+  },
+  {
+    id: 174,
+    text: "Yurisdiksi yang muncul didorong oleh keinginan dan kemampuan negara-negara mengeksplorasi dasar laut dan tanah di bawahnya serta mengeksploitasi sumber daya alamnya, sebagai akibat dari kemajuan dan perkembangan ilmu pengetahuan dan teknologi. Pernyataan diatas merupakan pengertian dari yurisdiksi....",
+    options: ["Kriminal","Personal","Eksklusif","Kebendaan"],
+    answer: 2
+  },
+  {
+    id: 175,
+    text: "Dalam perkara TUN, Hakim dapat memberi nasehat kepada penggugat untuk memperbaiki gugatan dan melengkapinya selama 30 hari. Jika hal tersebut tidak dipenuhi, maka gugatan akan ….",
+    options: ["Batal demi hukum","Tidak dapat diterima","Dibatalkan","Dianggap tidak pernah ada"],
+    answer: 1
+  },
+  {
+    id: 176,
+    text: "Globalisasi adalah menciutnya dunia (compression of the world), meluasnya kesadaran. Pendapat tersebut dikemukakan oleh ….",
+    options: ["M. Sastrapratedja","Lily Rasjidi","Sunaryati Hartono","Bagir Manan"],
+    answer: 0
+  },
+  {
+    id: 177,
+    text: "Salah satu bentuk tindakan pemerintahan atau kewenangan pejabat negara yang digunakan dalam mengambil keputusan untuk mengatasi masalah berdasarkan pada pertimbangan pribadi dan hati nuraninya dengan memperhatikan batas-batas hukum merupakan pengertian dari ….",
+    options: ["Dispensasi","Deviasi","Diskresi","Delegasi"],
+    answer: 2
+  },
+  {
+    id: 178,
+    text: "Maksud dan tujuan hukum pidana menurut RUU KUHP tahun 1968 cenderung bersinggungan dengan aliran ….",
+    options: ["Klasik","Sosiologis","Modern","Positivis"],
+    answer: 2
+  },
+  {
+    id: 179,
+    text: "Pegawai Negeri Sipil yang diberi wewenang khusus untuk menegakkan hukum di lingkungan pemerintah daerah adalah ….",
+    options: ["Polisi daerah","Polisi hutan","Pamong praja","Hansip"],
+    answer: 2
+  },
+  {
+    id: 180,
+    text: "Tokoh yang menyatakan Ubi Societas Ibi Ius yang artinya dimana ada manusia disitu ada hukum, adalah ….",
+    options: ["Van Vollenhoven","Cicero","Jeremy Bentham","Aristoteles"],
+    answer: 1
+  },
+  {
+    id: 181,
+    text: "Istilah yang dipakai oleh Prof. Kollewijn untuk menyebut hukum yang mengatur, hukum mana yang berlaku apabila ada 2 orang Hindia Belanda yang termasuk ke dalam golongan penduduk yang berbeda melakukan transaksi jual beli, pinjam-meminjam, adalah....",
+    options: ["intergentiirecht","hukum antar golongan","hukum antar adat","hukum adat"],
+    answer: 0
+  },
+  {
+    id: 182,
+    text: "Menurut Arief Hidayat, lembaga negara dibagi kedalam dua bagian, yaitu….",
+    options: ["Diperintah langsung oleh konstitusi dan tidak diperintah langsung oleh konstitusi","Disebut langsung oleh konsitusi dan tidak disebut langsung oleh konstitusi","Diamanatkan langsung oleh konstitusi dan tidak diamanatkan langsung oleh konstitusi","Dibentuk oleh konstitusi dan tidak dibentuk oleh konstitusi"],
+    answer: 1
+  },
+  {
+    id: 183,
+    text: "Tugas hukum ekonomi adalah senantiasa menjaga dan mengadakan kaidah-kaidah pengaman, agar pelaksanaan pembangunan ekonomi tidak akan mengabaikan hak-hak dan kepentingan-kepentingan pihak yang lemah. Pernyataan tersebut dikemukakan oleh….",
+    options: ["Ismail Saleh","Sunaryati Hartono","Abdul Hakim Garuda Nusantara","Amiriza"],
+    answer: 1
+  },
+  {
+    id: 184,
+    text: "Berdasarkan cara pembentukannya, badan hukum publik dibentuk oleh ….",
+    options: ["Pejabat publik","Presiden","Masyarakat","Undang-Undang"],
+    answer: 3
+  },
+  {
+    id: 185,
+    text: "Suatu daerah di dalam daerah mana garis-garis besar, corak dan sifat hukum adat yang berlaku di situ seragam rechtskring atau lingkaran hukum atau lingkungan hukum. Pakar hukum yang membagi seluruh wilayah Indonesia dalam 19 lingkaran, adalah ….",
+    options: ["Terhaar","Van Vollenhoven","Hazairin","Sukanto"],
+    answer: 1
+  },
+  {
+    id: 186,
+    text: "Ideologi yang memandang bahwa peraturan diambil dari alat-alat produksi. Merupakan pancaran peraturan dari aqidah ideologi ...",
+    options: ["Komunis","Kapitalis","Islam","Pancasila"],
+    answer: 0
+  },
+  {
+    id: 187,
+    text: "Antara kaedah hukum asing yang mengandung unsur-unsur asing yang berlaku pada suatu peristiwa hukum merupakan pengertian dari ....",
+    options: ["Titik taut","Renvoi","Lex cause","Lex fori"],
+    answer: 0
+  },
+  {
+    id: 188,
+    text: "Perbuatan melakukan atau tidak melakukan sesuatu yang oleh peraturan perundang-undangan dinyatakan sebagai perbuatan yang terlarang dan diancam pidana merupakan pengertian tindak pidana menurut ....",
+    options: ["Departemen Kehakiman","Badan Pembinaan Hukum Nasional","RKUHP 1991/1992","KUHP"],
+    answer: 2
+  },
+  {
+    id: 189,
+    text: "Suatu perhubungan hukum (mengenai kekayaan harta benda) antara dua orang yang memberikan hak kepada pihak yang satu untuk menuntut barang sesuatu dari yang lain sedangkan pihak yang lain berkewajiban untuk memenuhinya/tuntutan tersebut merupakan pengertian dari….",
+    options: ["Perjanjian","Perikatan","Pembuktian","Lewat waktu"],
+    answer: 1
+  },
+  {
+    id: 190,
+    text: "Peraturan-peraturan yang tumbuh pada suatu bagian dunia tertentu mengenai hubungan negara-negara yang terdapat disana. Merupakan pengertian dari Hukum Internasional yang bersifat ....",
+    options: ["Umum","Regional","Publik","Privat"],
+    answer: 1
+  },
+  {
+    id: 191,
+    text: "Menurut Terhaar, hukum adat adalah keseluruhan peraturan yang menjelma dalam keputusan-keputusan para fungsionaris hukum yang mempunyai wibawa, serta pengaruh dan yang dalam pelaksanaannya berlaku serta merta (spontan) dan dipatuhi dengan penuh hati. Ajarannya ini terkenal dengan nama ….",
+    options: ["Receptio in complexu","Beslissingenleer","Geneologis","Teori bola"],
+    answer: 1
+  },
+  {
+    id: 192,
+    text: "Salah satu penganut teori relatif adalah ….",
+    options: ["Van Hamel","Karl Binding","Stahl","Herbart"],
+    answer: 0
+  },
+  {
+    id: 193,
+    text: "Permohonan tentang perkara perselisihan hasil pemilihan umum hanya dapat diajukan setelah ….",
+    options: ["KPU mengumumkan hasilnya secara nasional","3x24 jam setelah KPU mengumumkan hasilnya secara nasional","2x24 jam setelah KPU mengumumkan hasilnya secara nasional","4x24 jam setelah KPU mengumumkan hasilnya secara nasional"],
+    answer: 0
+  },
+  {
+    id: 194,
+    text: "Ajaran sebab akibat diperlukan dalam delik yang dikualifikasikan oleh akibatnya (door het gevolg gequalificeerd), yaitu karena timbulnya akibat tertentu, maka ancaman pidana terhadap delik tersebut akan….",
+    options: ["Diringankan","Diperberat","Ditangguhkan","Disesuaikan"],
+    answer: 1
+  },
+  {
+    id: 195,
+    text: "Ilmu pemerintahan adalah ilmu yang mengkaji perbuatan pemerintah dalam penyelenggaraan negara yang ….",
+    options: ["Sesuai dengan hukum","Berbanding terbalik dengan hukum","Berakibat hukum","Melawan hukum"],
+    answer: 2
+  },
+  {
+    id: 196,
+    text: "Asas kebebasan dalam hukum administrasi negara merupakan asas yang tidak diberikan kepada seorang….",
+    options: ["Menteri","Sekretaris Daerah","Hakim","Kepala Dinas"],
+    answer: 2
+  },
+  {
+    id: 197,
+    text: "Dalam proses berperkara Hukum Acara Perdata, setelah tahapan replik dan duplik dilakukan, maka tahap selanjutnya adalah ….",
+    options: ["Pembuktian","Kesimpulan","Putusan akhir","Putusan sela"],
+    answer: 0
+  },
+  {
+    id: 198,
+    text: "Pengertian perkawinan menurut UU No. 1 tahun 1974 tentang Perkawinan adalah ….",
+    options: ["perkawinan adalah hidup bersama dari seorang laki-laki dan perempuan yang memenuhi syarat-syarat tertentu","perkawinan ialah pertalian yang sah antara seorang laki-laki dan seorang perempuan untuk waktu yang lama","nikah adalah akad yang memberikan faedah (mengakibatkan) kepemilikan untuk bersenang-senang secara sadar bagi seorang pria dan wanita","perkawinan ialah ikatan lahir batin antara seorang pria dengan seorang wanita sebagai suami istri dengan tujuan membentuk keluarga (rumah tangga) yang bahagia dan kekal berdasarkan Ketuhanan Yang Maha Esa"],
+    answer: 3
+  },
+  {
+    id: 199,
+    text: "Traktat yang diadakan oleh sejumlah besar Negara-negara, baik guna menentukan apa yang menjadi Hukum mengenai hal ihwal tertentu, maupun menetapkan Hukum baru yang umum untuk hari depan, ataupun guna membentuk lembaga internasional. Traktat tersebut adalah merupakan traktat ….",
+    options: ["Traktat kontrak","Traktat yang membentuk hukum yang mengikat","Traktat bilateral antara dua negara","Treaty contracs"],
+    answer: 1
+  },
+  {
+    id: 200,
+    text: "Dalam masyarakat adat Indonesia tidak hanya di kenal anak kandung saja tetapi ada pula anak angkat. Anak angkat merupakan ahli waris dari orang tua angkatnya, tetapi dia tidak mewaris terhadap....",
+    options: ["Harta gono-gini","Harta asal","Harta bawaan","Utang-piutang"],
+    answer: 1
+  },
+  {
+    id: 201,
+    text: "Berdasarkan pada teori Hans Nawiasky, Pancasila yang terdapat dalam Pembukaan UUD NRI Tahun 1945 merupakan ….",
+    options: ["Formell Gesetz","Konvensi Ketatanegaraan","Norma Fundamental Negara","Staatrecht"],
+    answer: 2
+  },
+  {
+    id: 202,
+    text: "Negara-negara yang menempatkan peraturan perundang-undangan sebagai sendi utama sistem hukumnya, merupakan Negara yang menganut tradisi hukum....",
+    options: ["kontinental","anglo-saxon","sosialis","menurut agama Islam"],
+    answer: 0
+  },
+  {
+    id: 203,
+    text: "Berikut ini merupakan unsur dalam wakaf yang berarti harta yang diwakafkan ….",
+    options: ["Wakif","Rikaz","Mauquf bih","Mauquf alaihi"],
+    answer: 2
+  },
+  {
+    id: 204,
+    text: "Menurut A Van Gennep, perkawinan adalah merupakan upacara-upacara peralihan (rites de passage). Upacara perjalanan ke status baru, disebut ….",
+    options: ["Rites de separatie","Rites de marge","Rites de agregatio","Rites de maried"],
+    answer: 2
+  },
+  {
+    id: 205,
+    text: "Didalam UUD NRI Tahun 1945 setelah amandemen, terdapat Pasal yang mencantumkan mengenai perubahan konstitusi, adalah….",
+    options: ["Pasal 3","Pasal 37","Pasal 23","Pasal 20"],
+    answer: 1
+  },
+  {
+    id: 206,
+    text: "Palang Merah Internasional secara umum diakui sebagai organisasi internasional yang memiliki kedudukan sebagai subjek hukum internasional. Berdasarkan Konvensi Jenewa tahun 1949 pendirian Palang Merah Internasional ditujukan untuk ....",
+    options: ["Melindungi korban perang","Melindungi harta rampasan","Mencegah terjadinya perang","Memberi upaya perdamaian"],
+    answer: 0
+  },
+  {
+    id: 207,
+    text: "Hukum pidana adalah dasar dari semua hukum yang berlaku di suatu negara yang berisi aturan hukum untuk menentukan perbuatan mana yang melanggar, menentukan kapan dan dalam hal apa mereka dapat terkena hukuman, dan menentukan cara bagaimana pengenaan pidana itu dilakukan. Pernyataan diatas merupakan pengertian yang dikemukakan oleh….",
+    options: ["C.S.T Kansil","Soedarto","Moeljatno","Wirjono Prodjodikoro"],
+    answer: 1
+  },
+  {
+    id: 208,
+    text: "Dalam proses perkara pidana, pelaksanaan pidana yang dilakukan dapat ditentukan oleh ….",
+    options: ["Adanya pengaduan","LSM","Negara","Masyarakat"],
+    answer: 2
+  },
+  {
+    id: 209,
+    text: "Adanya Hukum Administrasi, Hukum Perdata, dan Hukum Pidana didahului oleh adanya….",
+    options: ["Hukum Internasional","Hukum Adat","Hukum Islam","Hukum Tata Negara"],
+    answer: 3
+  },
+  {
+    id: 210,
+    text: "Salah satu bagian dari sistematika Kitab Undang-Undang Hukum Dagang yaitu….",
+    options: ["Ekonomi","Hak dan kewajiban yang timbul dari pelayaran","Bisnis","Usaha"],
+    answer: 1
+  },
+  {
+    id: 211,
+    text: "Salah satu sumber hukum pidana abnormal adalah….",
+    options: ["Coup de 'etat yang berhasil","Persetujuan","Konstitusi","Yurisprudensi"],
+    answer: 0
+  },
+  {
+    id: 212,
+    text: "Yurisdiksi adalah kekuasaan atau kompetensi Hukum Negara terhadap orang, benda atau peristiwa (Hukum). Yurisdiksi ini merupakan refleksi dari prinsip dasar kedaulatan Negara, kesamaan derajat Negara dan prinsip tidak campur tangan. Pernyataan tersebut dikemukakan oleh….",
+    options: ["Starke","Huala Adolf","Mochtar Kusumaatmadja","Anzilotti"],
+    answer: 1
+  },
+  {
+    id: 213,
+    text: "Menteri Jajahan Belanda yang mengusulkan penggunaan hukum tanah Eropa bagi penduduk desa di Indonesia untuk kepentingan agraria pengusaha Belanda, adalah….",
+    options: ["Van der Putte","Mr. Wichers","Cremer","Van Vollenhoven"],
+    answer: 0
+  },
+  {
+    id: 214,
+    text: "Menyamakan hukum suatu hal yang tidak terdapat ketentuannya di dalam Al-Qur'an dan As-Sunnah atau Al-Hadist dengan hal (lain) yang hukumnya disebut Al-Qur'an dan Sunnah rasul (yang terdapat dalam kitab-kitab hadist) karena persamaan illat (penyebab atau alasan)nya, merupakan metode atau cara untuk melakukan ijtihad, yaitu….",
+    options: ["Ijmak","Qiyas","Istihsan","Tatlub"],
+    answer: 1
+  },
+  {
+    id: 215,
+    text: "Hukum islam menurut Mohammad Daud Ali, adalah….",
+    options: ["koleksi daya upaya fuqaha dalam menerapkan syariah Islam sesuai dengan kebutuhan masyarakat","aturan-aturan yang diterapkan oleh Allah agar digunakan oleh manusia dalam hubunganya dengan Tuhannya, dengan saudaranya sesama Muslim, dengan saudaranya sesama manusia, dengan alam, dan dalam kaitannya dengan kehidupannya","teori hukum Islam yakni dalil-dalil ushul ul fiqh","hukum yang bersumber dari dan menjadi bagian dari agama Islam"],
+    answer: 3
+  },
+  {
+    id: 216,
+    text: "Asas hukum yang mendasari sistem hukum modern, banyak dipengaruhi oleh asas dan lembaga hukum negara barat dan sebagian besar berdasarkan asas lembaga dan lembaga Hukum Romawi. Pernyataan tersebut merupakan pengertian dari salah satu sumber hukum perdata internasional yaitu ....",
+    options: ["Doktrin","Traktat","Kebiasaan","Prinsip hukum umum"],
+    answer: 3
+  },
+  {
+    id: 217,
+    text: "Syarat sah perjanjian terdapat dalam Pasal ….",
+    options: ["1338 BW","1339 BW","1330 BW","1320 BW"],
+    answer: 3
+  },
+  {
+    id: 218,
+    text: "Pakar yang membagi hukum internasional kedalam hukum internasional publik dan hukum internasional privat adalah ....",
+    options: ["Starke","Utrecht","Anzilotti","Mochtar Kusumaatmadja"],
+    answer: 1
+  },
+  {
+    id: 219,
+    text: "Menurut Simons, melawan hukum artinya….",
+    options: ["Sejalan dengan hukum","Mengenyampingkan hukum","Menghindari hukum","Bertentangan dengan hukum"],
+    answer: 3
+  },
+  {
+    id: 220,
+    text: "Pencegahan yang didasarkan pada pikiran bahwa pidana itu dimaksudkan agar orang yang telah melakukan kejahatan tidak mengulangi lagi adalah merupakan pencegahan….",
+    options: ["Primer","Sekunder","Umum","Khusus"],
+    answer: 3
+  },
+  {
+    id: 221,
+    text: "Dalam acara penyelesaian perkara perceraian dengan alasan zina, jika pemohon/penggugat tidak dapat menunjukkan bukti-bukti, dan termohon/tergugat menyanggah alasan tersebut, serta Hakim berkeyakinan pembuktian sudah tidak mungkin lagi, maka yang dilakukan Hakim adalah ….",
+    options: ["Melakukan mediasi","Membatalkan perkara tersebut","Menyuruh para pihak untuk bersumpah","Mencari bukti-bukti bersama para pihak"],
+    answer: 2
+  },
+  {
+    id: 222,
+    text: "Pasal 1 Ayat (3) UUD NRI Tahun 1945 menganut asas….",
+    options: ["Asas keadilan","Asas kepastian","Asas persamaan","Asas legalitas"],
+    answer: 3
+  },
+  {
+    id: 223,
+    text: "Hukum dapat digolongkan atau diklasifikasikan berdasarkan isinya yaitu hukum publik dan hukum privat. Yang tertera di bawah ini termasuk dalam hukum privat yaitu….",
+    options: ["Hukum Tata Negara","Hukum Administrasi Negara","Hukum Perdata","Hukum Internasional"],
+    answer: 2
+  },
+  {
+    id: 224,
+    text: "Ada perbedaan antara hierarki dan jenis peraturan perundang-undangan pada Pasal 7 ayat (1) Undang-Undang No. 10 Tahun 2004, dengan TAP MPR No. III/MPR/2001. Pada Pasal 7 ayat (1) UU Nomor 10 Tahun 2004 tidak menempatkan pada posisi kedua peraturan ….",
+    options: ["Undang-Undang Dasar Negara Republik Indonesia Tahun 1945","Undang-undang/Peraturan Pemerintah Pengganti Undang-undang","Ketetapan MPR RI","Peraturan Daerah"],
+    answer: 2
+  },
+  {
+    id: 225,
+    text: "UU di Indonesia yang mengatur wakaf adalah….",
+    options: ["UU No. 4 Tahun 2001","UU No. 41 tahun 2004","UU No. 4 tahun 2004","UU. No. 41 Tahun 2001"],
+    answer: 1
+  },
+  {
+    id: 226,
+    text: "Keseluruhan perbuatan yang dilakukan secara tidak terputus-putus dengan terang-terangan dalam kedudukan tertentu dan untuk mencari laba merupakan pengertian perusahan menurut....",
+    options: ["Molengraff dan Polak","Soebekti","Soekardono","KUHD"],
+    answer: 2
+  }
 ];
 
-// Tambahan soal hingga 150 (dari PDF yang tersisa)
-const tambahan = [
-  { q: "Permohonan tentang perkara perselisihan hasil pemilihan umum hanya dapat diajukan setelah", opts: { A: "KPU mengumumkan hasilnya secara nasional", B: "3x24 jam setelah pengumuman", C: "2x24 jam setelah pengumuman", D: "4x24 jam setelah pengumuman" }, correct: "A" },
-  { q: "Penemuan hukum diperlukan dalam rangka memecahkan persoalan hukum. Aliran yang berpendapat bahwa hukum itu merupakan suatu keadaan yang lengkap dan tertutup, di luar undang-undang bukan merupakan hukum adalah", opts: { A: "Frei Rechtslehere", B: "Hukum Alam", C: "Legisme", D: "Rechtvinding" }, correct: "C" },
-  { q: "Hubungan hukum yaitu hubungan yang diatur oleh hukum dan mempunyai akibat hukum. Menurut Utrecht, setiap hubungan hukum mempunyai dua segi, yaitu", opts: { A: "kekuasaan dan kewajiban", B: "untung dan rugi", C: "hak dan sanksi", D: "janji dan prestasi" }, correct: "B" },
-  { q: "Kewenangan hukum pengadilan suatu Negara terhadap perkara-perkara yang menyangkut keperdataan baik yang sifatnya nasional yaitu bila para pihak atau obyek perkaranya menyangkut unsur asing. Merupakan pengertian dari", opts: { A: "yurisdiksi pidana", B: "perdata internasional", C: "yurisdiksi sipil", D: "hukum asing" }, correct: "A" },
-  { q: "Perbedaan alur perkara antara PTUN dan peradilan umum terletak pada adanya", opts: { A: "Upaya normatif", B: "Upaya kasasi", C: "Upaya administratif", D: "Upaya banding" }, correct: "A" },
-  { q: "Teori tertua yang mengkaji keberadaan hukum internasional adalah", opts: { A: "Hukum alam", B: "Mazhab sejarah", C: "Teori utility", D: "Sosiological jurisprudence" }, correct: "C" },
-  { q: "Agar kebiasaan diakui sebagai sumber hukum internasional, maka harus dipenuhi syarat adanya", opts: { A: "kebiasaan yang bersifat umum", B: "kebiasaan umum yang diterima sebagai hukum", C: "kebiasaan yang dilakukannya berulang-ulang", D: "sanksi" }, correct: "B" },
-  { q: "Pemberian harta kekayaan kepada ahli waris, semasa pewaris masih hidup adalah", opts: { A: "Hibah Wasiat", B: "Pewarisan", C: "Wakaf", D: "Hutang-piutang" }, correct: "C" },
-  { q: "Salah satu faktor yang menentukan terbentuknya persekutuan hukum adalah asas teritorial. Yang termasuk persekutuan hukum territorial adalah", opts: { A: "matrilineal", B: "parental", C: "perserikatan", D: "patrilineal" }, correct: "C" }
-];
+// State
+const state = {};
+questions.forEach(q => state[q.id] = null); // null = unanswered, true = correct, false = wrong
 
-// Gabung dan pastikan 150 soal
-let allSoal = [...SOAL_DATA, ...tambahan];
-while(allSoal.length < 150) {
-  allSoal.push({ q: "Salah satu asas dalam hukum perjanjian adalah kebebasan berkontrak, yang berarti ....", opts: { A: "Para pihak bebas membuat perjanjian apa pun", B: "Perjanjian harus dibuat secara tertulis", C: "Perjanjian hanya sah jika disaksikan notaris", D: "Perjanjian tidak boleh bertentangan dengan undang-undang" }, correct: "A" });
-}
-const SOAL = allSoal.slice(0,150);
-console.log("Total soal:", SOAL.length);
+let filter = 'all';
 
-let answered = 0, correct = 0, wrong = 0;
-let userAnswers = new Array(SOAL.length).fill(null);
+function getLetters(){ return ['A','B','C','D','E','F']; }
 
-function updateScoreUI() {
-  document.getElementById('sc-total').innerText = answered;
-  document.getElementById('sc-correct').innerText = correct;
-  document.getElementById('sc-wrong').innerText = wrong;
-  const percent = (answered / SOAL.length) * 100;
-  document.getElementById('progress').style.width = percent + '%';
-  if (answered === SOAL.length) showSummary();
-}
-
-function showSummary() {
-  const sumDiv = document.getElementById('summary');
-  sumDiv.classList.add('show');
-  document.getElementById('f-total').innerText = answered;
-  document.getElementById('f-correct').innerText = correct;
-  document.getElementById('f-wrong').innerText = wrong;
-  document.getElementById('f-pct').innerText = Math.round((correct/SOAL.length)*100) + '%';
-  setTimeout(() => sumDiv.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
-}
-
-function renderQuiz() {
-  const container = document.getElementById('quiz');
+function renderAll() {
+  const container = document.getElementById('questions-container');
   container.innerHTML = '';
-  document.getElementById('summary').classList.remove('show');
-  answered = 0; correct = 0; wrong = 0; userAnswers.fill(null);
-  updateScoreUI();
+  const letters = getLetters();
+  let shown = 0;
 
-  SOAL.forEach((item, idx) => {
+  questions.forEach(q => {
+    const answered = state[q.id] !== null;
+    const correct = state[q.id] === true;
+    const wrong = state[q.id] === false;
+
+    // Filter logic
+    if (filter === 'unanswered' && answered) return;
+    if (filter === 'correct' && !correct) return;
+    if (filter === 'wrong' && !wrong) return;
+
+    shown++;
     const card = document.createElement('div');
-    card.className = 'card';
-    card.id = `card-${idx}`;
-    const topBar = document.createElement('div'); topBar.className = 'card-top';
-    const qHeader = document.createElement('div'); qHeader.className = 'q-header';
-    qHeader.innerHTML = `<div class="q-num">${idx+1}</div><div class="q-text">${item.q}</div>`;
-    card.appendChild(topBar); card.appendChild(qHeader);
-    const optsDiv = document.createElement('div'); optsDiv.className = 'options'; optsDiv.id = `opts-${idx}`;
-    const letters = ['A','B','C','D'];
-    letters.forEach(letter => {
-      if (!item.opts[letter]) return;
-      const btn = document.createElement('button'); btn.className = 'option'; btn.dataset.letter = letter;
-      btn.innerHTML = `<span class="opt-key">${letter}</span><span>${item.opts[letter]}</span>`;
-      btn.addEventListener('click', () => handleAnswer(idx, letter, item.correct, item));
-      optsDiv.appendChild(btn);
+    card.className = 'question-card' + (correct ? ' answered-correct' : wrong ? ' answered-wrong' : '');
+    card.id = 'q-' + q.id;
+
+    let optionsHTML = '';
+    q.options.forEach((opt, i) => {
+      let cls = 'option-btn';
+      if (answered) {
+        if (i === q.answer) cls += ' revealed-correct';
+        if (i === state[q.id + '_chosen'] && i !== q.answer) cls += ' wrong-answer';
+        if (i === state[q.id + '_chosen'] && i === q.answer) cls = 'option-btn correct-answer';
+      }
+      optionsHTML += `<button class="${cls}" data-qid="${q.id}" data-idx="${i}" ${answered ? 'disabled' : ''}>
+        <span class="option-letter">${letters[i]}</span>
+        ${opt}
+      </button>`;
     });
-    const revealDiv = document.createElement('div'); revealDiv.className = 'reveal'; revealDiv.id = `reveal-${idx}`;
-    card.appendChild(optsDiv); card.appendChild(revealDiv);
+
+    card.innerHTML = `
+      <div class="question-head">
+        <span class="q-num">${q.id}.</span>
+        <span class="q-text">${q.text}</span>
+      </div>
+      <div class="options">${optionsHTML}</div>
+    `;
     container.appendChild(card);
   });
+
+  if (shown === 0) {
+    container.innerHTML = '<div class="empty-state">Tidak ada soal yang sesuai filter ini.</div>';
+  }
+  document.getElementById('footer-info').textContent = shown + ' dari ' + questions.length + ' soal ditampilkan';
 }
 
-function handleAnswer(idx, chosen, correctLetter, item) {
-  if (userAnswers[idx] !== null) return;
-  userAnswers[idx] = chosen;
-  const optsDiv = document.getElementById(`opts-${idx}`);
-  const revealDiv = document.getElementById(`reveal-${idx}`);
-  const card = document.getElementById(`card-${idx}`);
-  const isCorrect = (chosen === correctLetter);
-  if (isCorrect) correct++; else wrong++;
-  answered++;
-  updateScoreUI();
-  card.classList.add(isCorrect ? 's-correct' : 's-wrong');
-  optsDiv.querySelectorAll('.option').forEach(btn => {
-    btn.disabled = true;
-    const val = btn.dataset.letter;
-    if (val === correctLetter) btn.classList.add('correct');
-    else if (val === chosen && !isCorrect) btn.classList.add('wrong');
-    else btn.classList.add('dimmed');
-  });
-  revealDiv.classList.add('show', isCorrect ? 'is-correct' : 'is-wrong');
-  const correctText = `${correctLetter}. ${item.opts[correctLetter]}`;
-  if (isCorrect) revealDiv.innerHTML = `<span>✅</span><span><strong>Benar!</strong> Jawaban: ${correctText}</span>`;
-  else revealDiv.innerHTML = `<span>❌</span><span><strong>Salah.</strong> Jawaban benar: ${correctText}</span>`;
+function updateScore() {
+  const answered = Object.values(state).filter(v => v !== null).length;
+  const correct = Object.values(state).filter(v => v === true).length;
+  const wrong = Object.values(state).filter(v => v === false).length;
+  document.getElementById('cnt-answered').textContent = answered;
+  document.getElementById('cnt-correct').textContent = correct;
+  document.getElementById('cnt-wrong').textContent = wrong;
+  document.getElementById('progress-bar').style.width = (answered / questions.length * 100) + '%';
+}
+
+// Event delegation for option clicks
+document.getElementById('questions-container').addEventListener('click', e => {
+  const btn = e.target.closest('.option-btn');
+  if (!btn || btn.disabled) return;
+  const qid = parseInt(btn.dataset.qid);
+  const idx = parseInt(btn.dataset.idx);
+  const q = questions.find(x => x.id === qid);
+  const correct = idx === q.answer;
+  state[qid] = correct;
+  state[qid + '_chosen'] = idx;
+  updateScore();
+  renderAll();
+  // Scroll to the card
   setTimeout(() => {
-    const nextCard = document.getElementById(`card-${idx+1}`);
-    if (nextCard) nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 250);
-}
+    const card = document.getElementById('q-' + qid);
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 50);
+});
 
-function resetTryout() {
-  renderQuiz();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+// Filter buttons
+ 
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filter = btn.dataset.filter;
+    renderAll();
+  });
+});
 
-renderQuiz();
+// Reset
+document.getElementById('reset-btn').addEventListener('click', () => {
+  if (!confirm('Reset semua jawaban?')) return;
+  questions.forEach(q => { state[q.id] = null; delete state[q.id + '_chosen']; });
+  updateScore();
+  renderAll();
+});
+
+// Init
+renderAll();
+updateScore();
 </script>
 </body>
 </html>
