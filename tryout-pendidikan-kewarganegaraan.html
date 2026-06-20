@@ -3,366 +3,572 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tryout MKWN4109 - PKN (150 Soal)</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+<title>UAS MKDU4111 — Pendidikan Kewarganegaraan | Universitas Terbuka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(145deg, #eef2f5 0%, #e0eaf5 100%);
-    color: #1e2f3e;
-    min-height: 100vh;
+  :root{
+    --paper:#F7F3EA;
+    --paper-2:#EFE8D8;
+    --ink:#1C2240;
+    --ink-soft:#4A5072;
+    --merah:#A8282E;
+    --merah-deep:#7E1C21;
+    --gold:#B98B2A;
+    --hijau:#2F6F4E;
+    --line:#D8CFB8;
+    --white:#FFFDF8;
+    --shadow: 0 10px 30px -12px rgba(28,34,64,0.25);
+    --radius: 14px;
   }
-  .header {
-    background: rgba(255,255,250,0.96);
-    backdrop-filter: blur(8px);
-    border-bottom: 3px solid #2c7a4d;
-    padding: 18px 32px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(900px 500px at 110% -10%, rgba(184,139,42,0.10), transparent 60%),
+      radial-gradient(700px 500px at -10% 110%, rgba(168,40,46,0.08), transparent 55%),
+      var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
   }
-  .title-block h1 {
-    font-size: 1.7rem;
-    background: linear-gradient(135deg, #1f633f, #3e9b6b);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  .serif{font-family:"Source Serif 4", serif;}
+  .mono{font-family:"IBM Plex Mono", monospace;}
+
+  /* ===== Layout shells ===== */
+  .wrap{max-width:980px; margin:0 auto; padding:28px 20px 60px;}
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom:3px double var(--ink);
+    padding-bottom:14px; margin-bottom:18px;
   }
-  .title-block p { color: #4a627a; font-size: 0.8rem; margin-top: 4px; }
-  .scoreboard { display: flex; gap: 16px; }
-  .pill {
-    background: white;
-    border-radius: 60px;
-    padding: 6px 20px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    border: 1px solid #cbdae9;
+  .topbar .crest{
+    width:46px;height:46px;border-radius:50%;
+    background:conic-gradient(from 220deg, var(--merah), var(--gold), var(--merah));
+    display:flex;align-items:center;justify-content:center;
+    color:var(--white); font-weight:700; font-size:13px; flex:none;
+    box-shadow: inset 0 0 0 3px rgba(255,253,248,0.85);
   }
-  .pill .num { font-size: 1.7rem; font-weight: 800; line-height: 1.2; }
-  .pill .lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px; color: #4f6f8f; }
-  .pill.total .num { color: #2c5a7a; }
-  .pill.correct .num { color: #1f8a4c; }
-  .pill.wrong .num { color: #c94f3a; }
-  .progress-bar { height: 5px; background: #d8e2ec; position: sticky; top: 86px; z-index: 99; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, #2c7a4d, #5fcb95); width: 0%; transition: width 0.3s; }
-  .container { max-width: 900px; margin: 28px auto; padding: 0 20px 70px; }
-  .card {
-    background: #ffffff;
-    border-radius: 28px;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.06);
-    margin-bottom: 24px;
-    overflow: hidden;
-    border: 1px solid #e2edf2;
-    transition: all 0.2s;
+  .topbar .lembaga{display:flex; gap:12px; align-items:center;}
+  .topbar h1{font-size:15px; margin:0; letter-spacing:.04em;}
+  .topbar p{margin:2px 0 0; font-size:11.5px; color:var(--ink-soft);}
+  .naskah{
+    text-align:right; font-size:11px; color:var(--ink-soft);
   }
-  .card.s-correct { border-left: 6px solid #2c7a4d; background: #f4fbf7; }
-  .card.s-wrong { border-left: 6px solid #c94f3a; background: #fff7f5; }
-  .card-top { height: 5px; background: #e6edf4; }
-  .card.s-correct .card-top { background: #2c7a4d; }
-  .card.s-wrong .card-top { background: #c94f3a; }
-  .q-header { padding: 20px 24px 8px; display: flex; gap: 16px; align-items: flex-start; }
-  .q-num {
-    font-weight: 700; background: #eef3fc; width: 38px; height: 38px; display: flex;
-    align-items: center; justify-content: center; border-radius: 40px; color: #2c7a4d; flex-shrink: 0;
+  .naskah b{display:block; color:var(--ink); font-size:12.5px;}
+
+  /* ===== Screens ===== */
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  /* ---- Cover ---- */
+  .cover-card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding:38px 34px;
   }
-  .q-text { font-size: 1rem; font-weight: 500; line-height: 1.45; color: #1f3448; }
-  .options { padding: 12px 24px 20px; display: flex; flex-direction: column; gap: 10px; }
-  .option {
-    display: flex; align-items: center; gap: 14px; padding: 10px 18px;
-    background: #f9fbfe; border: 1px solid #e2eaf0; border-radius: 60px; cursor: pointer;
-    transition: all 0.2s; font-family: inherit; font-size: 0.92rem; color: #1f3a4e;
+  .cover-card .kop{text-align:center; margin-bottom:22px;}
+  .cover-card .kop .badge{
+    display:inline-block; width:64px; height:64px; border-radius:50%;
+    background:conic-gradient(from 220deg, var(--merah), var(--gold), var(--merah));
+    box-shadow: inset 0 0 0 4px var(--white), 0 0 0 1px var(--line);
+    margin-bottom:10px;
   }
-  .option:hover:not(:disabled) { background: #eaf5e9; border-color: #2c7a4d; transform: translateX(5px); }
-  .opt-key { font-weight: 700; background: #e9eff5; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 30px; color: #2c5a3a; }
-  .option.correct { background: #e0f3e8; border-color: #2c7a4d; }
-  .option.correct .opt-key { background: #2c7a4d; color: white; }
-  .option.wrong { background: #ffe6e2; border-color: #c94f3a; }
-  .option.wrong .opt-key { background: #c94f3a; color: white; }
-  .option.dimmed { opacity: 0.45; background: #f2f4f8; }
-  .reveal {
-    margin: 0 24px 24px; padding: 12px 20px; border-radius: 24px; font-size: 0.85rem;
-    display: none; gap: 12px; align-items: center; background: #f4fafe; border-left: 4px solid;
+  .cover-card .kop h2{font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); margin:0;}
+  .cover-card .kop h1{font-size:26px; margin:6px 0 0; line-height:1.25;}
+  .cover-card .kop .kode{
+    display:inline-block; margin-top:10px; padding:5px 14px;
+    background:var(--paper-2); border:1px solid var(--line); border-radius:999px;
+    font-size:12px; letter-spacing:.08em; color:var(--merah-deep); font-weight:600;
   }
-  .reveal.show { display: flex; }
-  .reveal.is-correct { background: #e3f5eb; border-color: #2c7a4d; color: #1c5a38; }
-  .reveal.is-wrong { background: #ffe8e4; border-color: #c94f3a; color: #a83523; }
-  .summary {
-    display: none; background: white; border-radius: 40px; padding: 40px 32px;
-    text-align: center; margin-top: 40px; box-shadow: 0 20px 35px rgba(0,0,0,0.08);
+  .meta-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px 28px;
+    margin:24px 0; padding:18px 20px; background:var(--paper); border-radius:10px;
+    border:1px solid var(--line);
   }
-  .summary.show { display: block; }
-  .summary h2 { color: #1f633f; font-size: 2rem; }
-  .stats { display: flex; justify-content: center; gap: 24px; margin: 28px 0; flex-wrap: wrap; }
-  .stat { background: #f8fafc; padding: 18px 28px; border-radius: 32px; min-width: 110px; }
-  .stat .big { font-size: 2.4rem; font-weight: 800; }
-  .btn-reset { background: #2c7a4d; border: none; padding: 12px 32px; font-size: 1rem; font-weight: 600; border-radius: 60px; color: white; cursor: pointer; transition: 0.2s; }
-  .btn-reset:hover { background: #1e5a3a; transform: scale(1.02); }
-  @media (max-width: 640px) {
-    .header { flex-direction: column; align-items: flex-start; }
-    .q-header { padding: 16px; }
-    .options { padding: 8px 16px 16px; }
+  .meta-grid div{font-size:13px; display:flex; justify-content:space-between; border-bottom:1px dotted var(--line); padding-bottom:6px;}
+  .meta-grid div span:first-child{color:var(--ink-soft);}
+  .meta-grid div span:last-child{font-weight:600;}
+  .instruksi{font-size:13.5px; line-height:1.75; color:var(--ink);}
+  .instruksi ol{margin:8px 0 0; padding-left:20px;}
+  .instruksi li{margin-bottom:6px;}
+  .start-row{display:flex; align-items:center; gap:16px; margin-top:26px; flex-wrap:wrap;}
+  .btn{
+    appearance:none; border:none; cursor:pointer;
+    font-family:"IBM Plex Sans", sans-serif; font-weight:600; font-size:14px;
+    padding:13px 26px; border-radius:10px; letter-spacing:.01em;
+    transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
   }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--merah); color:var(--white); box-shadow:0 8px 18px -8px rgba(168,40,46,.6);}
+  .btn-primary:hover{background:var(--merah-deep);}
+  .btn-ghost{background:transparent; color:var(--ink); border:1.5px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--ink); }
+  .btn-gold{background:var(--gold); color:var(--white);}
+  .start-row label{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink-soft);}
+
+  /* ---- Quiz screen ---- */
+  .examgrid{display:grid; grid-template-columns: 1fr 250px; gap:20px; align-items:start;}
+  @media (max-width:760px){ .examgrid{grid-template-columns:1fr;} }
+
+  .progressbar{height:8px; background:var(--paper-2); border-radius:99px; overflow:hidden; margin-bottom:18px; border:1px solid var(--line);}
+  .progressbar > div{height:100%; background:linear-gradient(90deg, var(--merah), var(--gold)); width:0%; transition:width .25s ease;}
+
+  .qcard{
+    background:var(--white); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:28px 26px;
+  }
+  .qcard .qno{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--merah-deep); font-weight:700;
+    margin-bottom:12px;
+  }
+  .qcard .qno .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+  .qcard .qtext{font-size:17px; line-height:1.65; margin:0 0 20px; color:var(--ink);}
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .opt{
+    display:flex; align-items:flex-start; gap:13px;
+    border:1.5px solid var(--line); border-radius:10px; padding:12px 14px;
+    cursor:pointer; background:var(--paper); transition:border-color .12s, background .12s;
+  }
+  .opt:hover{border-color:var(--gold);}
+  .opt.selected{border-color:var(--merah); background:#FBEFEC;}
+  .opt .bubble{
+    flex:none; width:28px; height:28px; border-radius:50%;
+    border:2px solid var(--ink-soft); display:flex; align-items:center; justify-content:center;
+    font-family:"IBM Plex Mono", monospace; font-size:12.5px; font-weight:600; color:var(--ink-soft);
+    background:var(--white);
+  }
+  .opt.selected .bubble{background:var(--merah); border-color:var(--merah); color:var(--white);}
+  .opt .otext{font-size:14.5px; line-height:1.55; padding-top:4px;}
+
+  .navrow{display:flex; justify-content:space-between; align-items:center; margin-top:22px; gap:10px;}
+  .navrow .right{display:flex; gap:10px;}
+
+  /* ---- LJK sidebar ---- */
+  .ljk{
+    background:var(--white); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:18px;
+    position:sticky; top:20px;
+  }
+  .ljk h3{font-size:11.5px; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-soft); margin:0 0 4px;}
+  .ljk .sub{font-size:11px; color:var(--ink-soft); margin:0 0 12px;}
+  .ljk-grid{
+    display:grid; grid-template-columns:repeat(10, 1fr); gap:5px;
+    max-height:320px; overflow-y:auto; padding-right:2px;
+  }
+  .ljk-grid button{
+    aspect-ratio:1; border-radius:50%; border:1.5px solid var(--line); background:var(--paper);
+    font-family:"IBM Plex Mono", monospace; font-size:10px; color:var(--ink-soft); cursor:pointer;
+  }
+  .ljk-grid button.answered{background:var(--ink); color:var(--white); border-color:var(--ink);}
+  .ljk-grid button.current{outline:2px solid var(--merah); outline-offset:1px;}
+  .legend{display:flex; gap:14px; margin-top:12px; font-size:11px; color:var(--ink-soft); flex-wrap:wrap;}
+  .legend span{display:inline-flex; align-items:center; gap:5px;}
+  .legend i{width:10px; height:10px; border-radius:50%; display:inline-block; border:1.5px solid var(--line);}
+  .legend i.a{background:var(--ink); border-color:var(--ink);}
+  .submitbox{margin-top:16px;}
+  .submitbox .count{font-size:12px; color:var(--ink-soft); margin-bottom:10px;}
+
+  /* ---- Result screen ---- */
+  .score-hero{
+    background:linear-gradient(135deg, var(--ink) 0%, #2A3261 100%);
+    color:var(--white); border-radius:var(--radius); padding:34px 30px; text-align:center;
+    box-shadow:var(--shadow); position:relative; overflow:hidden;
+  }
+  .score-hero::after{
+    content:""; position:absolute; inset:0;
+    background: radial-gradient(400px 200px at 90% 0%, rgba(184,139,42,.35), transparent 60%);
+  }
+  .score-hero .label{font-size:12px; letter-spacing:.18em; text-transform:uppercase; opacity:.75; position:relative;}
+  .score-hero .num{font-size:58px; font-weight:700; margin:6px 0; font-family:"Source Serif 4", serif; position:relative;}
+  .score-hero .sub{font-size:13.5px; opacity:.85; position:relative;}
+  .grade-pill{
+    display:inline-block; margin-top:14px; padding:6px 18px; border-radius:999px;
+    background:rgba(255,253,248,.12); border:1px solid rgba(255,253,248,.35);
+    font-weight:600; font-size:13px; position:relative;
+  }
+  .statrow{display:flex; gap:14px; margin-top:22px; flex-wrap:wrap;}
+  .statcard{
+    flex:1; min-width:140px; background:var(--white); border:1px solid var(--line); border-radius:12px;
+    padding:16px 18px; text-align:center;
+  }
+  .statcard .n{font-size:26px; font-weight:700; font-family:"Source Serif 4", serif;}
+  .statcard .l{font-size:11.5px; color:var(--ink-soft); margin-top:4px;}
+  .statcard.benar .n{color:var(--hijau);}
+  .statcard.salah .n{color:var(--merah);}
+
+  .review-header{display:flex; align-items:center; justify-content:space-between; margin:30px 0 14px;}
+  .review-header h3{margin:0; font-size:16px;}
+  .filter-row{display:flex; gap:8px;}
+  .chip{
+    border:1.5px solid var(--line); background:var(--white); border-radius:999px;
+    padding:6px 14px; font-size:12px; cursor:pointer; color:var(--ink-soft); font-weight:600;
+  }
+  .chip.active{background:var(--ink); color:var(--white); border-color:var(--ink);}
+
+  .review-item{
+    background:var(--white); border:1px solid var(--line); border-radius:12px;
+    padding:18px 20px; margin-bottom:12px;
+  }
+  .review-item .rtop{display:flex; gap:10px; align-items:center; margin-bottom:10px;}
+  .review-item .badge{
+    font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px;
+  }
+  .badge.benar{background:#E5F2EB; color:var(--hijau);}
+  .badge.salah{background:#FBEAEA; color:var(--merah-deep);}
+  .review-item .rq{font-size:14.5px; margin:0 0 10px; line-height:1.6;}
+  .ropt{font-size:13px; padding:8px 12px; border-radius:8px; margin-bottom:6px; border:1px solid var(--line); display:flex; gap:8px;}
+  .ropt.correct{background:#E5F2EB; border-color:var(--hijau); color:#1d4a34;}
+  .ropt.wrongpick{background:#FBEAEA; border-color:var(--merah); color:var(--merah-deep);}
+  .ropt .l{font-family:"IBM Plex Mono", monospace; font-weight:700;}
+
+  footer{text-align:center; font-size:11.5px; color:var(--ink-soft); margin-top:40px; padding-top:16px; border-top:1px solid var(--line);}
+
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--line); border-radius:99px;}
 </style>
 </head>
 <body>
-<header class="header">
-  <div class="title-block">
-    <h1>📚 Tryout PKN MKWN4109</h1>
-    <p>Pendidikan Kewarganegaraan | 150 Soal Pilihan Ganda | Kunci Jawaban Terkoreksi</p>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="lembaga">
+      <div class="crest">UT</div>
+      <div>
+        <h1 class="serif">UNIVERSITAS TERBUKA</h1>
+        <p>Ujian Akhir Semester &middot; Simulasi Mandiri</p>
+      </div>
+    </div>
+    <div class="naskah">
+      <b>MKDU4111</b>
+      Pendidikan Kewarganegaraan
+    </div>
   </div>
-  <div class="scoreboard">
-    <div class="pill total"><div class="num" id="sc-total">0</div><div class="lbl">Dijawab</div></div>
-    <div class="pill correct"><div class="num" id="sc-correct">0</div><div class="lbl">Benar</div></div>
-    <div class="pill wrong"><div class="num" id="sc-wrong">0</div><div class="lbl">Salah</div></div>
-  </div>
-</header>
-<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-<div class="container" id="quiz"></div>
-<div id="summary" class="summary">
-  <div><h2>✨ Hasil Tryout PKN</h2><p class="sub">MKWN4109 – 150 Soal</p>
-  <div class="stats"><div class="stat total"><div class="big" id="f-total">0</div><div class="slabel">Total</div></div>
-  <div class="stat correct"><div class="big" id="f-correct">0</div><div class="slabel">Benar</div></div>
-  <div class="stat wrong"><div class="big" id="f-wrong">0</div><div class="slabel">Salah</div></div></div>
-  <p class="score-line">🎯 Nilai Akhir: <span id="f-pct">0%</span></p>
-  <button class="btn-reset" onclick="resetTryout()">🔄 Kerjakan Ulang</button>
-  </div>
+
+  <!-- ===================== COVER SCREEN ===================== -->
+  <section id="screen-cover" class="screen active">
+    <div class="cover-card">
+      <div class="kop">
+        <div class="badge"></div>
+        <h2>Naskah Ujian</h2>
+        <h1 class="serif">Pendidikan Kewarganegaraan</h1>
+        <div class="kode">MKDU4111 &nbsp;&middot;&nbsp; Edisi 3 &nbsp;&middot;&nbsp; 3 SKS</div>
+      </div>
+
+      <div class="meta-grid">
+        <div><span>Mata Kuliah</span><span>Pendidikan Kewarganegaraan</span></div>
+        <div><span>Kode / SKS</span><span>MKDU4111 &middot; 3 SKS</span></div>
+        <div><span>Jumlah Soal</span><span id="meta-total">150 Butir</span></div>
+        <div><span>Jenis Soal</span><span>Pilihan Ganda (A&ndash;D)</span></div>
+        <div><span>Penulis BMP</span><span>Lasiyo, Reno Wikandaru, Hastangka</span></div>
+        <div><span>Penerbit</span><span>Universitas Terbuka, 2021</span></div>
+      </div>
+
+      <div class="instruksi">
+        <strong>Petunjuk Pengerjaan</strong>
+        <ol>
+          <li>Bacalah setiap soal dengan saksama sebelum memilih jawaban.</li>
+          <li>Pilih salah satu jawaban (A, B, C, atau D) yang Anda anggap paling tepat dengan mengeklik opsi yang tersedia.</li>
+          <li>Gunakan Lembar Jawaban (panel kanan) untuk melompat ke nomor soal mana pun dan memantau progres pengerjaan.</li>
+          <li>Jawaban yang sudah dipilih dapat diubah kapan saja sebelum ujian diakhiri.</li>
+          <li>Klik <em>Akhiri Ujian &amp; Lihat Nilai</em> setelah seluruh soal terjawab untuk melihat skor dan pembahasan kunci jawaban.</li>
+        </ol>
+      </div>
+
+      <div class="start-row">
+        <button class="btn btn-primary" id="btn-start">Mulai Mengerjakan Ujian</button>
+        <label><input type="checkbox" id="chk-shuffle"> Acak urutan soal</label>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== QUIZ SCREEN ===================== -->
+  <section id="screen-quiz" class="screen">
+    <div class="progressbar"><div id="progress-fill"></div></div>
+
+    <div class="examgrid">
+      <div>
+        <div class="qcard">
+          <div class="qno"><span class="dot"></span><span id="q-counter">Soal 1 / 150</span></div>
+          <p class="qtext" id="q-text"></p>
+          <div class="options" id="q-options"></div>
+        </div>
+        <div class="navrow">
+          <button class="btn btn-ghost" id="btn-prev">&larr; Sebelumnya</button>
+          <div class="right">
+            <button class="btn btn-ghost" id="btn-next">Berikutnya &rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="ljk">
+        <h3>Lembar Jawaban</h3>
+        <p class="sub">Klik nomor untuk berpindah soal</p>
+        <div class="ljk-grid" id="ljk-grid"></div>
+        <div class="legend">
+          <span><i class="a"></i>Terjawab</span>
+          <span><i></i>Belum</span>
+        </div>
+        <div class="submitbox">
+          <div class="count" id="answered-count">0 dari 150 soal terjawab</div>
+          <button class="btn btn-primary" id="btn-finish" style="width:100%;">Akhiri Ujian &amp; Lihat Nilai</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===================== RESULT SCREEN ===================== -->
+  <section id="screen-result" class="screen">
+    <div class="score-hero">
+      <div class="label">Nilai Akhir</div>
+      <div class="num" id="res-score">0</div>
+      <div class="sub" id="res-fraction">0 dari 150 jawaban benar</div>
+      <div class="grade-pill" id="res-grade">—</div>
+    </div>
+
+    <div class="statrow">
+      <div class="statcard benar"><div class="n" id="stat-benar">0</div><div class="l">Jawaban Benar</div></div>
+      <div class="statcard salah"><div class="n" id="stat-salah">0</div><div class="l">Jawaban Salah</div></div>
+      <div class="statcard"><div class="n" id="stat-kosong">0</div><div class="l">Tidak Dijawab</div></div>
+    </div>
+
+    <div class="review-header">
+      <h3 class="serif">Pembahasan &amp; Kunci Jawaban</h3>
+      <div class="filter-row">
+        <button class="chip active" data-filter="all">Semua</button>
+        <button class="chip" data-filter="wrong">Salah / Kosong</button>
+        <button class="chip" data-filter="correct">Benar</button>
+      </div>
+    </div>
+    <div id="review-list"></div>
+
+    <div class="start-row" style="margin-top:18px;">
+      <button class="btn btn-gold" id="btn-restart">Ulangi Ujian</button>
+    </div>
+  </section>
+
+  <footer>
+    Simulasi UAS dibuat berdasarkan bank soal BMP MKDU4111 Pendidikan Kewarganegaraan (Edisi 3) &mdash; Universitas Terbuka. Untuk keperluan latihan mandiri.
+  </footer>
 </div>
+
 <script>
-// ======================= 150 SOAL PKN (berdasarkan PDF + tambahan logis) =======================
-const SOAL = [
-  { q: "Demokrasi harus dibarengi dengan tata pemerintahan yang berciri good governance karena ....", opts: { A: "good governance lahir dari demokrasi", B: "demokrasi lahir dari good governance", C: "demokrasi merupakan semangat dari good governance", D: "good governance merupakan semangat konsep yang diadopsi dari pembaharuan demokrasi" }, correct: "D" },
-  { q: "Di bawah ini yang bukan merupakan unsur perangkat daerah adalah ....", opts: { A: "lembaga kedinasan daerah", B: "sekretariat daerah", C: "pemerintah desa", D: "dewan perwakilan daerah" }, correct: "C" },
-  { q: "Pengertian geopolitik berdasarkan ....", opts: { A: "Frederich Ratzel", B: "Rudolf Kjellen", C: "Pancasila", D: "Hasan Habib" }, correct: "C" },
-  { q: "Bibit gagasan Nusantara sebagai kesatuan politik sudah dimulai sejak ....", opts: { A: "28 Oktober 1928", B: "20 Mei 1908", C: "13 Desember 1957", D: "17 Agustus 1945" }, correct: "A" },
-  { q: "Geostrategi politik luar negeri Indonesia menganut sistem politik bebas aktif, kecuali ....", opts: { A: "membina persahabatan dan kerja sama saling menguntungkan", B: "meningkatkan citra positif Indonesia", C: "kepentingan nasional disesuaikan dengan kepentingan perdamaian dunia", D: "menentang segala bentuk imperialisme dan kolonialisme" }, correct: "C" },
-  { q: "Cara negara melindungi hak dan kewajiban warga negaranya adalah dengan ....", opts: { A: "memberi kebebasan tanpa batas", B: "mengawasi yang tidak melakukan kewajiban", C: "menyusun regulasi tidak mengikat HAM", D: "membangun sistem peradilan HAM yang bermartabat" }, correct: "D" },
-  { q: "Berikut contoh semangat rela berkorban untuk bangsa, kecuali ....", opts: { A: "gotong royong", B: "kerja mandiri", C: "kerja bakti", D: "kerja sosial" }, correct: "B" },
-  { q: "Pengelolaan SDA untuk memakmurkan rakyat serta mengurangi ketergantungan, merupakan asas ....", opts: { A: "daya saing", B: "maksimal", C: "lestari", D: "manfaat" }, correct: "D" },
-  { q: "Geostrategi sangat terkait dengan aspek kehidupan sosial di bawah ini, kecuali ....", opts: { A: "ideologi", B: "politik", C: "sumber daya alam", D: "pertahanan" }, correct: "C" },
-  { q: "Integrasi nasional penting dan perlu pada negara yang masyarakatnya ....", opts: { A: "majemuk", B: "seragam", C: "individualis", D: "sosialis" }, correct: "A" },
-  { q: "Wawasan Nusantara sebagai geopolitik dipengaruhi oleh wawasan ....", opts: { A: "benua", B: "bahari", C: "dirgantara", D: "kombinasi" }, correct: "B" },
-  { q: "Bukan ciri demokrasi Indonesia adalah ....", opts: { A: "sistem perwakilan", B: "musyawarah", C: "subsidi untuk seluruh rakyat", D: "dijiwai Pancasila" }, correct: "C" },
-  { q: "Bukan perwujudan wawasan Nusantara sebagai kesatuan politik yaitu ....", opts: { A: "Pancasila sebagai ideologi", B: "kepulauan satu kesatuan hukum", C: "kesatuan bangsa beragam", D: "kekayaan wilayah sebagai modal bersama bangsa" }, correct: "D" },
-  { q: "Bela negara secara nonfisik adalah ....", opts: { A: "kesadaran berbangsa dan cinta tanah air", B: "perang melawan agresi", C: "latihan militer", D: "menjadi tentara" }, correct: "A" },
-  { q: "Berikut bukan rumusan ketahanan nasional dalam GBHN 1998 yaitu ....", opts: { A: "didasari Asta Gatra", B: "sebagai konsepsi atau doktrin", C: "keterpaduan aspek kehidupan", D: "ketangguhan menjamin kelangsungan hidup" }, correct: "B" },
-  { q: "Pernyataan Clifford Geertz 'Indonesia anggur tua dalam botol baru' artinya ....", opts: { A: "rakyat berbeda tetapi satu", B: "masyarakat maju dalam negara baru", C: "masyarakat lama dalam negara baru", D: "rakyat berbudaya dalam negara baru" }, correct: "C" },
-  { q: "Kedudukan Presiden dalam sistem presidensial adalah kepala ....", opts: { A: "negara", B: "pemerintahan", C: "wilayah", D: "negara dan pemerintahan" }, correct: "D" },
-  { q: "Arti bebas dalam pemilu yang bebas dan jujur adalah ....", opts: { A: "lembaga independen", B: "setiap warga jadi calon", C: "waktu bebas", D: "rakyat bebas memilih tanpa intervensi" }, correct: "D" },
-  { q: "Faktor yang bukan pemudar filosofi bangsa adalah ....", opts: { A: "globalisasi", B: "materialisme", C: "patriotisme", D: "hedonisme" }, correct: "C" },
-  { q: "Bukan arti demokrasi secara etimologis yaitu ....", opts: { A: "kekuasaan rakyat", B: "rakyat berkuasa", C: "rakyat merdeka", D: "government of rule by the people" }, correct: "C" },
-  { q: "Bukan personal rights yaitu hak kebebasan ....", opts: { A: "bergerak", B: "berpendapat", C: "berorganisasi", D: "mengadakan perjanjian kontrak" }, correct: "D" },
-  { q: "Pasal 28 ayat (1) UUD 1945, kebebasan manusia bersifat tidak ....", opts: { A: "mutlak", B: "tak terbatas", C: "luas", D: "bebas" }, correct: "A" },
-  { q: "Masa renaissance dan reformasi membawa keberanian berpikir sendiri disebut ....", opts: { A: "renaissance", B: "kegelapan", C: "aufklärung", D: "peradaban" }, correct: "C" },
-  { q: "Wujud cinta tanah air kecuali ....", opts: { A: "produk dalam negeri", B: "pakaian adat", C: "mempelajari tari balet", D: "buah lokal" }, correct: "C" },
-  { q: "Sifat negara sesuai hakikat Tuhan sebagai causa prima, inti sila ....", opts: { A: "Persatuan", B: "Kemanusiaan", C: "Ketuhanan", D: "semua salah" }, correct: "C" },
-  { q: "Harkat martabat HAM dijunjung tinggi, penjabaran dari sila ....", opts: { A: "Pertama", B: "Kedua", C: "Ketiga", D: "Keempat" }, correct: "B" },
-  { q: "Tradisi budaya Indonesia yang menghormati HAM yaitu ....", opts: { A: "hak upeti", B: "hak pepe", C: "bakudang batiung", D: "tudung sipulung" }, correct: "D" },
-  { q: "Indonesia Raya pertama kali dinyanyikan pada ....", opts: { A: "17 Agustus 1945", B: "Sumpah Palapa", C: "Kongres Sumpah Pemuda 1928", D: "BPUPKI 29 Mei 1945" }, correct: "C" },
-  { q: "Peristiwa tidak mengandung tantangan integrasi nasional setelah kemerdekaan adalah ....", opts: { A: "KMB", B: "Konstitusi RIS", C: "pembentukan UUD 1945", D: "berakhirnya Orde Baru" }, correct: "C" },
-  { q: "Implikasi Pancasila sebagai way of life adalah ....", opts: { A: "petunjuk seperti agama", B: "dijiwai secara parsial", C: "cita-cita moral individual", D: "semua tingkah laku dijiwai nilai semua sila" }, correct: "D" },
-  { q: "Tiga kelompok etnis Belgia kecuali suku ....", opts: { A: "Vlaam", B: "Vallon", C: "minoritas berbahasa Jerman", D: "Viking" }, correct: "D" },
-  { q: "Bukan identitas nasional fisik yaitu ....", opts: { A: "bendera merah putih", B: "lambang negara", C: "jati diri psikis bangsa", D: "Bahasa Indonesia" }, correct: "C" },
-  { q: "Tujuan dibentuknya negara kecuali ....", opts: { A: "tatanan teratur", B: "kehidupan serasi", C: "kesatuan orang yang setia kawan", D: "jaminan hak dan keamanan" }, correct: "C" },
-  { q: "Objek formal PKn kecuali ....", opts: { A: "hak dan kewajiban negara", B: "hukum pidana", C: "wawasan nusantara", D: "ketahanan nasional" }, correct: "B" },
-  { q: "Bukan aspek tri gatra dalam wawasan nusantara adalah ....", opts: { A: "posisi geografis", B: "negara kepulauan", C: "keadaan alam", D: "komposisi penduduk" }, correct: "D" },
-  { q: "Kesepakatan antar individu untuk melindungi kepentingan disebut ....", opts: { A: "pakta sosial", B: "sosial amandemen", C: "kontak sosial", D: "prasati sosial" }, correct: "A" },
-  { q: "Materi demokrasi dalam PKn mencakup kecuali ....", opts: { A: "pengertian demokrasi", B: "prinsip umum", C: "mekanisme Pancasila", D: "demokrasi luar negeri" }, correct: "D" },
-  { q: "Konstitusi dari bahasa Perancis 'constituer' berarti ....", opts: { A: "peraturan", B: "undang-undang", C: "keputusan", D: "ketetapan" }, correct: "D" },
-  { q: "Bukan fungsi negara adalah ....", opts: { A: "keamanan", B: "keadilan", C: "kesejahteraan", D: "mempersiapkan perang" }, correct: "D" },
-  { q: "Landasan utama Pendidikan Pancasila adalah ....", opts: { A: "GBHN", B: "Instruksi Presiden", C: "Pancasila", D: "Peraturan Pemerintah" }, correct: "C" },
-  { q: "Hak, wewenang, kewajiban daerah otonom disebut ....", opts: { A: "desentralisasi", B: "dekonsentrasi", C: "tugas pembantuan", D: "otonomi daerah" }, correct: "D" },
-  { q: "Tujuan good governance bagi Indonesia adalah ....", opts: { A: "berpegang demokrasi", B: "menjadi populer", C: "pinjaman luar negeri", D: "partisipasi masyarakat meningkat" }, correct: "D" },
-  { q: "Organisasi yang mendiami wilayah dengan pemerintahan disebut ....", opts: { A: "bangsa", B: "negara", C: "kesatuan", D: "kewarganegaraan" }, correct: "B" },
-  { q: "Bukan ruang lingkup PKn adalah ....", opts: { A: "demokrasi Indonesia", B: "konsep negara", C: "asal usul Bahasa Indonesia", D: "otonomi daerah" }, correct: "C" },
-  { q: "PKn berobjek material nilai moral, perspektif ....", opts: { A: "epistemologi", B: "ontologi", C: "metodologi", D: "aksiologi" }, correct: "B" },
-  { q: "Responsif dalam good governance artinya ....", opts: { A: "cepat merespon persoalan", B: "rakyat pemilik kedaulatan", C: "transparansi informasi", D: "negara entitas kolektif" }, correct: "A" },
-  { q: "Kedudukan pembukaan UUD 1945 tetap karena ....", opts: { A: "pasal diubah", B: "hormati perjuangan", C: "kaidah fundamental negara", D: "disepakati MPR" }, correct: "C" },
-  { q: "Good governance harus ada di negara yang menganut prinsip ....", opts: { A: "reformasi", B: "demokrasi", C: "otonomi daerah", D: "oligarki" }, correct: "B" },
-  { q: "Esensi otonomi daerah adalah ....", opts: { A: "wewenang mengatur sendiri", B: "pemisahan wewenang", C: "pemisahan kekuasaan", D: "kebebasan tanpa campur tangan" }, correct: "A" },
-  { q: "Geopolitik terkait demopolitik, sosiopolitik disampaikan oleh ....", opts: { A: "Ratzel", B: "Kjellen", C: "Karl Haushofer", D: "Hasan Habib" }, correct: "C" },
-  { q: "Deklarasi Djuanda memperluas laut karena ....", opts: { A: "5,9 juta km2", B: "12 mil dari pulau terluar", C: "negara kepulauan", D: "gugusan pulau dan laut" }, correct: "B" },
-  { q: "Bukan perwujudan geostrategi dalam negeri adalah ....", opts: { A: "sistem hukum kedaulatan rakyat", B: "mekanisme demokrasi etis", C: "komunikasi agresif", D: "kepemimpinan akomodatif" }, correct: "C" },
-  { q: "Demi harkat martabat, hak dan kewajiban harus ....", opts: { A: "disamakan", B: "diusahakan", C: "seimbang", D: "diutamakan" }, correct: "A" },
-  { q: "Integrasi nasional sebagai dasar nilai cita-cita bersama, aspek ....", opts: { A: "manfaat", B: "historis", C: "filosofis", D: "ekonomi" }, correct: "C" },
-  { q: "Bukan usaha atasi distribusi penduduk ....", opts: { A: "transmigrasi", B: "pusat industri", C: "infrastruktur di kota", D: "pusat pertumbuhan" }, correct: "C" },
-  { q: "Bukan landasan geostrategi adalah ....", opts: { A: "posisi antar benua", B: "posisi antar samudra", C: "demografi", D: "agama dan kepercayaan" }, correct: "D" },
-  { q: "Integrasi nasional secara politis adalah ....", opts: { A: "upaya menyatukan ke satu wilayah", B: "kesamaan ekonomi", C: "kesamaan hukum", D: "kesamaan sejarah" }, correct: "A" },
-  { q: "Negara kuasai Eropa Timur kuasai dunia, pernyataan ....", opts: { A: "Halford Mackinder", B: "Alfred Mahan", C: "Savenky", D: "Mitchell" }, correct: "A" },
-  { q: "Kata 'hikmat' dalam sila keempat artinya ....", opts: { A: "bersungguh-sungguh", B: "nilai agama", C: "kearifan", D: "bermanfaat" }, correct: "C" },
-  { q: "Negara disebut lembaga sosial karena ....", opts: { A: "bekerja sukarela", B: "melayani masyarakat", C: "tidak mencari untung", D: "semua kehidupan diatur" }, correct: "B" },
-  { q: "Bukan dasar moral bangsa Indonesia adalah ....", opts: { A: "sila pertama", B: "sila kedua", C: "alinea ketiga", D: "alinea keempat" }, correct: "D" },
-  { q: "Keikutsertaan warga negara dalam bela negara nonfisik dapat melalui ....", opts: { A: "menjadi TNI", B: "pengabdian profesi", C: "ASN", D: "Menwa" }, correct: "B" },
-  { q: "Aspek sosial Asta Gatra adalah ....", opts: { A: "kependudukan", B: "kekayaan alam", C: "geografi", D: "ideologi" }, correct: "A" },
-  { q: "Kesadaran identitas nasional historis dimulai sejak ....", opts: { A: "KMB", B: "Budi Utomo 1908", C: "Ki Hajar", D: "RA Kartini" }, correct: "B" },
-  { q: "Demokrasi dengan tanggung jawab pemerintah kepada parlemen disebut ....", opts: { A: "parlementer", B: "presidensial", C: "demokrasi", D: "kekuasaan" }, correct: "A" },
-  { q: "Tingkat demokratis dinilai berdasarkan kecuali ....", opts: { A: "pembatasan pemerintah", B: "kekuasaan mayoritas", C: "hak minoritas", D: "kebebasan pers" }, correct: "C" },
-  { q: "Fungsi identitas nasional adalah ....", opts: { A: "meningkatkan hajat hidup", B: "mencerdaskan bangsa", C: "memperkuat persatuan", D: "memajukan budaya" }, correct: "A" },
-  { q: "Bukan pengertian demokrasi menurut Lincoln adalah pemerintahan ....", opts: { A: "karena rakyat", B: "dari rakyat", C: "oleh rakyat", D: "untuk rakyat" }, correct: "A" },
-  { q: "HAM menurut Wahidin (2015) dibagi enam, kecuali hak asasi ....", opts: { A: "pribadi", B: "sosial", C: "politik", D: "ekonomi" }, correct: "D" },
-  { q: "Aturan kewajiban warga negara dalam UUD bersifat ....", opts: { A: "komprehensif", B: "universal", C: "parsial", D: "struktural" }, correct: "A" },
-  { q: "Masa rasio sebagai instrumen utama menggantikan kegelapan disebut ....", opts: { A: "Renaissance", B: "feodalisme", C: "post-modern", D: "kejayaan" }, correct: "A" },
-  { q: "Peran aktif warga negara membangun integrasi nasional yaitu ....", opts: { A: "gotong royong", B: "bullying", C: "merugikan", D: "organisasi terlarang" }, correct: "A" },
-  { q: "Negara berdasarkan rakyat, permusyawaratan, kedaulatan rakyat, sila ....", opts: { A: "pertama", B: "kelima", C: "ketiga", D: "keempat" }, correct: "D" },
-  { q: "Aspek nonjasmaniah penentu harkat martabat manusia adalah ....", opts: { A: "akal", B: "perasaan", C: "kebebasan", D: "hati" }, correct: "A" },
-  { q: "Pengertian kewajiban secara etimologi adalah ....", opts: { A: "historis", B: "ontologi", C: "etimologi", D: "aksiologi" }, correct: "C" },
-  { q: "Integrasi nasional berasal dari kondisi masyarakat Indonesia yang ....", opts: { A: "majemuk", B: "individualis", C: "sosialis", D: "liberalis" }, correct: "A" },
-  { q: "Cita-cita moral bangsa yang memberi pedoman rohaniah adalah ....", opts: { A: "Pancasila", B: "UUD", C: "Tap MPR", D: "PP" }, correct: "A" },
-  { q: "Kasus Yugoslavia dipicu oleh suku di wilayah ....", opts: { A: "Semenanjung Balkan", B: "Sinai", C: "Suez", D: "Eropa Tengah" }, correct: "A" },
-  { q: "Kata 'kerakyatan' dalam sila keempat menunjukkan ....", opts: { A: "rakyat pemilik kedaulatan", B: "sistem merakyat", C: "rakyat mandiri", D: "rakyat pembentuk negara" }, correct: "A" },
-  { q: "Identitas nasional nonfisik adalah ....", opts: { A: "bahasa Indonesia", B: "Garuda Pancasila", C: "Pancasila sebagai jati diri", D: "lagu kebangsaan" }, correct: "C" },
-  { q: "Bukan kebutuhan masyarakat untuk keberlangsungan negara adalah ....", opts: { A: "jaminan hak", B: "ekonomi sama rata", C: "perlindungan keamanan", D: "perlakuan sama di hukum" }, correct: "B" },
-  { q: "Objek formal PKn berhubungan dengan ....", opts: { A: "sistem ketatanegaraan", B: "manfaat universal", C: "bidang sasaran", D: "metode kajian" }, correct: "A" },
-  { q: "Tujuan nasional menurut MPR No VII/MPR/2001 adalah ....", opts: { A: "melindungi segenap bangsa", B: "masyarakat religius, manusiawi, bersatu, demokratis, adil, sejahtera", C: "melindungi tumpah darah", D: "mencerdaskan rakyat" }, correct: "B" },
-  { q: "Teori terjadinya negara: raja wakil Tuhan termasuk teori ....", opts: { A: "hukum alam", B: "ketuhanan", C: "perjanjian", D: "tata negara" }, correct: "B" },
-  { q: "Ruang lingkup hak dan kewajiban warga negara kecuali ....", opts: { A: "pengertian hak dan kewajiban", B: "landasan filosofis HAM", C: "macam-macam hak", D: "cara menjadi warga negara" }, correct: "D" },
-  { q: "Konstitusi dari bahasa Belanda 'gronwet' artinya ....", opts: { A: "tanah basah", B: "peraturan", C: "hukum dasar", D: "pembentukan" }, correct: "C" },
-  { q: "Bukan cita-cita Negara Indonesia adalah menjadi negara ....", opts: { A: "berdaulat", B: "boneka", C: "merdeka", D: "bersatu" }, correct: "B" },
-  { q: "Alasan pembangunan tidak merata sejak kemerdekaan adalah ....", opts: { A: "negara kepulauan", B: "masyarakat susah", C: "Belanda memecah belah", D: "campur tangan asing" }, correct: "A" },
-  { q: "Bukan cakupan governance adalah tata kelola ....", opts: { A: "administrasi negara", B: "pemerintahan", C: "administrasi", D: "daerah" }, correct: "A" },
-  { q: "Sekelompok orang bersatu berdasarkan jiwa spiritual dan pengorbanan masa lampau adalah ....", opts: { A: "pemerintah berdaulat", B: "bangsa", C: "negara", D: "klan" }, correct: "B" },
-  { q: "Azas umum otonomi daerah tidak termasuk ....", opts: { A: "desentralisasi", B: "dekonsentrasi", C: "tugas pembantuan", D: "tertib penyelenggaraan negara" }, correct: "D" },
-  { q: "Kompetensi tidak diharapkan setelah PKn adalah ....", opts: { A: "memahami kebangsaan", B: "rasa kebangsaan", C: "cinta tanah air", D: "semangat kemandirian" }, correct: "D" },
-  { q: "Landasan filsafat PKn kecuali ....", opts: { A: "epistemologi", B: "ontologi", C: "metodologi", D: "aksiologi" }, correct: "C" },
-  { q: "Transparansi dalam good governance artinya ....", opts: { A: "cepat respon", B: "rakyat berdaulat", C: "menjamin transparansi informasi", D: "entitas kolektif" }, correct: "C" },
-  { q: "Bagian awal konstitusi biasanya berisi ....", opts: { A: "asas dan tujuan negara", B: "jaminan HAM", C: "identitas negara", D: "cara perubahan" }, correct: "A" },
-  { q: "Good governance tidak lepas dari reformasi karena ....", opts: { A: "reformasi semangat good governance", B: "reformasi manifestasi demokrasi", C: "good governance semangat reformasi", D: "reformasi merombak tata kelola korup" }, correct: "A" },
-  { q: "Tata kelola baik dan bersih merupakan konsep ....", opts: { A: "desentralisasi", B: "good and clean governance", C: "demokrasi", D: "dekonsentrasi" }, correct: "B" },
-  { q: "Bukan kekuatan mental politik Indonesia adalah ....", opts: { A: "agama", B: "ideologi", C: "ilmu pengetahuan", D: "kekuatan jasmani" }, correct: "D" },
-  { q: "Makna wawasan Nusantara sebagai kesatuan ekonomi adalah ....", opts: { A: "kekayaan wilayah modal bersama", B: "kesatuan politik", C: "kesatuan sosial", D: "kesatuan budaya" }, correct: "A" },
-  { q: "Demokrasi Pancasila berciri ....", opts: { A: "individualis", B: "kompetisi", C: "liberal", D: "kekeluargaan" }, correct: "D" },
-  { q: "Pendiri negara meletakkan asas .... bagi kehidupan berbangsa", opts: { A: "sosialis", B: "liberalis", C: "demokrasi", D: "kapitalis" }, correct: "C" },
-  { q: "Integrasi nasional karena penderitaan penjajahan didasarkan aspek ....", opts: { A: "sosiologis", B: "historis", C: "ekonomi", D: "politik" }, correct: "B" },
-  { q: "Bukan kriteria komposisi penduduk adalah ....", opts: { A: "asal daerah", B: "jenis kelamin", C: "pendidikan", D: "mata pencaharian" }, correct: "A" },
-  { q: "Karakteristik masyarakat Indonesia yang memerlukan integrasi nasional kecuali ....", opts: { A: "keberagaman etnis", B: "kondisi sosial berbeda", C: "SDA beragam", D: "keanekaragaman budaya" }, correct: "C" },
-  { q: "Negara berkewajiban membangun tanpa diskriminatif sesuai sila ....", opts: { A: "Ketuhanan", B: "Keadilan Sosial", C: "Persatuan", D: "Kemanusiaan" }, correct: "B" },
-  { q: "Filsuf Yunani yang mengubah fokus ke manusia adalah ....", opts: { A: "Socrates", B: "Plato", C: "Pythagoras", D: "Aristoteles" }, correct: "A" },
-  { q: "Kewenangan yang benar atas sesuatu merupakan pengertian hak secara ....", opts: { A: "historis", B: "ontologi", C: "etimologi", D: "aksiologi" }, correct: "C" },
-  { q: "Rumusan integrasi nasional orde baru melalui kegiatan ....", opts: { A: "gotong royong", B: "kerja bakti", C: "Inpres Desa Tertinggal (IDT)", D: "Wonderful Indonesia" }, correct: "C" },
-  { q: "Pancasila sebagai perjanjian luhur maksudnya ....", opts: { A: "tidak boleh diubah", B: "konsensus pendiri negara", C: "dapat ditafsir ulang", D: "hanya MPR menafsirkan" }, correct: "B" },
-  { q: "Bangunan fisik untuk kesadaran kolektif kecuali ....", opts: { A: "museum sejarah", B: "museum perjuangan", C: "Dufan", D: "TMII" }, correct: "C" },
-  { q: "Bukan hakikat manusia menurut demokrasi adalah sebagai makhluk ....", opts: { A: "individual", B: "kreatif", C: "sosial", D: "bebas" }, correct: "B" },
-  { q: "Kebenaran ilmiah bersifat universal artinya ....", opts: { A: "dapat disanggah", B: "diterima dimana saja kapan saja", C: "terbatas waktu", D: "hanya wilayah tertentu" }, correct: "B" },
-  { q: "Hasan Habib wawasan nusantara kecuali kesatuan ....", opts: { A: "bangsa", B: "tujuan", C: "menyamakan perbedaan", D: "sosial budaya" }, correct: "C" },
-  { q: "Teori kedaulatan Tuhan menjelaskan bahwa ....", opts: { A: "kepala negara wakil Tuhan", B: "kekuasaan tertinggi di tangan Tuhan", C: "kehendak Tuhan", D: "Tuhan pencipta" }, correct: "B" },
-  { q: "Ruang lingkup PKn tidak termasuk aspek ....", opts: { A: "wawasan nusantara", B: "demokrasi", C: "ketahanan nasional", D: "enterpreneurship" }, correct: "D" },
-  { q: "Konstitusi dalam arti sempit sama dengan ....", opts: { A: "UU", B: "UUD", C: "hukum", D: "konvensi" }, correct: "B" },
-  { q: "Kondisi ketika negara berfungsi baik kecuali ....", opts: { A: "kesejahteraan merata", B: "bencana alam di mana-mana", C: "keamanan terwujud", D: "serangan terantisipasi" }, correct: "B" },
-  { q: "Membantu mahasiswa memantapkan kepribadian sesuai Pancasila merupakan ....", opts: { A: "visi", B: "moto", C: "misi", D: "amanat" }, correct: "A" },
-  { q: "Alasan otonomi daerah diterapkan adalah ....", opts: { A: "banyak korupsi", B: "masyarakat kurang puas", C: "pemerintahan tidak terintegrasi", D: "sentralistik tidak merata" }, correct: "D" },
-  { q: "Perbedaan governance dan government: government cakupan ....", opts: { A: "lebih sempit", B: "lebih luas", C: "legislatif vs eksekutif", D: "berbeda bahasa" }, correct: "A" },
-  { q: "Pendidikan Kewarganegaraan menurut UU No 20/2003 membentuk manusia yang memiliki ....", opts: { A: "rasa syukur", B: "rasa kebangsaan dan cinta tanah air", C: "rasa kebangsaan dan kenegaraan", D: "toleransi" }, correct: "B" },
-  { q: "Azas umum otonomi daerah adalah ....", opts: { A: "kejujuran", B: "keadilan", C: "keterbukaan", D: "dekonsentrasi" }, correct: "D" },
-  { q: "Kompetensi wajib PKn kecuali ....", opts: { A: "normatif", B: "etis", C: "estetis", D: "dinamis" }, correct: "C" },
-  { q: "PKn sebagai wahana pendidikan nilai moral dilihat dari perspektif ....", opts: { A: "epistemologi", B: "ontologi", C: "metodologi", D: "aksiologi" }, correct: "D" },
-  { q: "Partisipasi dalam good governance artinya ....", opts: { A: "cepat respon", B: "rakyat punya suara", C: "transparansi", D: "entitas kolektif" }, correct: "B" },
-  { q: "Demokrasi langsung dapat dilakukan pada negara yang ....", opts: { A: "wilayah kecil", B: "jumlah warga sedikit", C: "kepulauan", D: "banyak laki-laki" }, correct: "B" },
-  { q: "Bukan legal equity rights yaitu hak ....", opts: { A: "berpendapat", B: "perlakuan sama di hukum", C: "jadi PNS", D: "layanan hukum" }, correct: "C" },
-  { q: "Kewajiban warga negara tidak diatur UUD Pasal 27,28,30 adalah ....", opts: { A: "pertahanan keamanan", B: "menjunjung hukum", C: "menghormati hak orang lain", D: "melestarikan budaya" }, correct: "D" },
-  { q: "Piagam Magna Charta adalah kesepakatan antara bangsawan dan Raja John tentang ....", opts: { A: "kemerdekaan, hak, kebebasan", B: "perang", C: "perdagangan", D: "agama" }, correct: "A" },
-  { q: "Integrasi nasional diperlukan karena karakteristik Indonesia kecuali ....", opts: { A: "keberagaman etnis", B: "kondisi sosial berbeda", C: "SDA beragam", D: "keanekaragaman budaya" }, correct: "C" },
-  { q: "Negara wajib membangun nondiskriminatif sesuai sila ....", opts: { A: "Ketuhanan", B: "Keadilan Sosial", C: "Persatuan", D: "Kemanusiaan" }, correct: "B" },
-  { q: "Socrates mengubah fokus filsafat ke ....", opts: { A: "alam", B: "manusia", C: "politik", D: "etika" }, correct: "B" }
-];
-// pastikan 150 soal
-while(SOAL.length < 150) {
-  SOAL.push({ q: "Landasan konstitusional pelaksanaan otonomi daerah di Indonesia tercantum dalam ....", opts: { A: "UUD 1945 Pasal 18", B: "Tap MPR No. XV/1998", C: "UU No. 22/1999", D: "UU No. 32/2004" }, correct: "A" });
-  if(SOAL.length<150) SOAL.push({ q: "Salah satu prinsip demokrasi Pancasila adalah ....", opts: { A: "kekuasaan mayoritas mutlak", B: "musyawarah mufakat", C: "liberalisme", D: "individualisme" }, correct: "B" });
-}
-console.log("Total soal:", SOAL.length); // 150
+const QUESTIONS = [{"no": 1, "q": "Demokrasi harus dibarengi dengan tata pemerintahan yang berciri good governance karena ….", "opts": {"A": "good governance lahir dari demokrasi", "B": "demokrasi lahir dari good governance", "C": "demokrasi merupakan semangat dari good governance", "D": "good governance merupakan semangat konsep yang diadopsi dari pembaharuan demokrasi"}, "ans": "A"}, {"no": 2, "q": "Di bawah ini yang bukan merupakan unsur perangkat daerah adalah ....", "opts": {"A": "lembaga kedinasan daerah", "B": "sekretariat daerah", "C": "pemerintah desa", "D": "dewan perwakilan daerah"}, "ans": "C"}, {"no": 3, "q": "Pengetahuan tentang segala sesuatu yang berhubungan dengan dengan konstelasi geografis suatu negara dengan memanfaatkan kondisi letak geografis untuk kepentingan penyelenggaraan pemerintahan nasional dan penentuan kebijakan secara ilmiah berdasarkan realita dan cita-cita bangsa, merupakan pengertian geopolitik beredasarkan ….", "opts": {"A": "Frederich Ratzel", "B": "Rudolf Kjellen", "C": "Pancasila", "D": "Hasan Habib"}, "ans": "D"}, {"no": 4, "q": "Bibit gagasan Nusantara sebagai kesatuan politik sudah dimulai sejak ….", "opts": {"A": "28 Okteober 1928", "B": "20 Mei 1908", "C": "13 Desember 1957", "D": "17 Agustus 1945"}, "ans": "A"}, {"no": 5, "q": "Geostrategi politik luar negeri Indonesia menganut sistem politik bebas aktif yang dilaksanakan berdasarkan hal-hal berikut ini, kecuali .…", "opts": {"A": "membina persahabatan dan kerja sama yang saling menguntungkan antarnegara", "B": "meningkatkan citra positif Indonesia di kancah internasional", "C": "kepentingan nasional disesuaikan dengan kepentingan perdamaian dunia", "D": "menentang segala bentuk imperialisme dan kolonialisme"}, "ans": "C"}, {"no": 6, "q": "Cara negara melindungi hak dan kewajiban warga negaranya adalah dengan ….", "opts": {"A": "memberikan kebebasan kepada  warga negara untuk melkukan keingannya", "B": "mengawasi warga negara yang tidak melakukan kewajiban", "C": "menyusun regulasi yang tidak mengikat  tentang perlindungan hak asasi manusia", "D": "membangun sistem peradilan hak asasi manusia yang bermartabat dan terpercaya"}, "ans": "D"}, {"no": 7, "q": "Berikut adalah contoh semangat rela berkorban untuk kepentingan bangsa dan negara, kecuali ….", "opts": {"A": "gotong royong", "B": "kerja mandiri", "C": "kerja bakti", "D": "kerja sosial"}, "ans": "B"}, {"no": 8, "q": "Pengelolaan dan pemanfaatan sumber daya alam harus dimanfaatkan untuk memakmurkan dan mensejahterakan rakyat serta mengurangi ketergantungan dengan negara lain. Hal ini merupakan pengertian dari asas ….", "opts": {"A": "daya saing", "B": "maksimal", "C": "lestari", "D": "manfaat"}, "ans": "B"}, {"no": 9, "q": "Geostrategi sangat terkait dengan aspek-aspek kehidupan sosial di bawah ini, kecuali ….", "opts": {"A": "ideologi", "B": "politik", "C": "sumber daya alam", "D": "pertahanan"}, "ans": "C"}, {"no": 10, "q": "Integrasi nasional penting dan perlu pada suatu negara yang masyarakatnya ….", "opts": {"A": "majemuk", "B": "seragam", "C": "individualis", "D": "sosialis"}, "ans": "A"}, {"no": 11, "q": "Negara Indonesia menerapkan wawasan Nusantara sebagai geopolitik yang dipengaruhi oleh wawasan ….", "opts": {"A": "benua", "B": "bahari", "C": "dirgantara", "D": "kombinasi"}, "ans": "D"}, {"no": 12, "q": "Berikut ini yang bukan merupakan ciri-ciri sistem demokrasi yang dianut Negara Indonesia adalah ….", "opts": {"A": "sistem demokrasi perwakilan", "B": "mengedepankan musyawarah dalam mengambil keputusan", "C": "keadilan sosial  dengan pemberian subsidi bagi seluruh rakyat Indonesia", "D": "dijiwai oleh nilai-nilai Pancasila"}, "ans": "C"}, {"no": 13, "q": "Berdasarkan Kamus Besar Bahasa Indonesia (KBBI) negara merupakan ….", "opts": {"A": "tanah yang diperjuangkan bersama", "B": "alat politik yang disusun berdasarkan demokrasi", "C": "organisasi dalam suatu wilayah yang mempunyai kekuasaan tertinggi yang sah dan ditaati oleh rakyat", "D": "kesepakatan antara penduduk yang memiliki tujuan yang sama"}, "ans": "C"}, {"no": 14, "q": "Berikut yang bukan perwujudan wawasan Nusantara sebagai kesatuan politik yaitu ….", "opts": {"A": "Pancasila berperan sebagai ideologi bangsa dan negara", "B": "kepulauan Nusantara sebagai satu kesatuan hukum", "C": "kesatuan dan persatuan bangsa yang terdiri dari beragam suku, agama dan ras", "D": "kekayaan wilayah Nusantara baik potensial maupun efektif merupakan modal bersama bangsa"}, "ans": "D"}, {"no": 15, "q": "Segala upaya untuk mempertahankan Negara Kesatuan Republik Indonesia dengan cara meningkatkan kesadaran berbangsa dan bernegara, menanamkan kecintaan terhadap tanah air, serta berperan aktif dalam memajukan bangsa dan negara, merupakan pengertian dari bela negara secara .…", "opts": {"A": "fisik", "B": "subjektif alut", "C": "nonfisik", "D": "objektif"}, "ans": "B"}, {"no": 16, "q": "Berikut yang bukan rumusan ketahanan nasional yang tercermin dalam dokumen Garis- Garis Besar Haluan Negara (GBHN) tahun 1998 yaitu ….", "opts": {"A": "ketahanan nasional didasari oleh Asta Gatra", "B": "ketahanan nasional sebagai konsepsi atau doktrin", "C": "ketahanan mencerminkan keterpaduan antara segala aspek kehidupan nasional bangsa secara utuh dan menyeluruh alut", "D": "ketahanan nasional merupakan ketangguhan suatu bangsa untuk dapat menjamin kelangsungan hidup menuju kejayaan bangsa dan negara"}, "ans": "B"}, {"no": 17, "q": "Pernyataan Clifford Geertz “Indonesia ibarat anggur tua dalam botol baru” mengandung arti ….", "opts": {"A": "rakyat berbeda tetapi satu", "B": "masyarakat maju dalam negara baru", "C": "masyarakat lama dalam negara baru", "D": "rakyat berbudaya dalam negara baru"}, "ans": "C"}, {"no": 18, "q": "Kedudukan Presiden dalam sebuah negara yang menganut sistem presidensial adalah kepala ….", "opts": {"A": "negara", "B": "pemerintahan", "C": "wilayah", "D": "negara dan pemerintahan"}, "ans": "D"}, {"no": 19, "q": "Salah satu pilar utama di dalam pelaksanaan demokrasi tidak langsung adalah pelaksanaan pemilihan yang bebas dan jujur. Arti bebas dalam hal ini adalah ….", "opts": {"A": "pemilihan diselenggarakan oleh lembaga independen", "B": "setiap warga negara berhak untuk menjadi calon pemimpin", "C": "waktu pemilihan bebas untuk dipilih oleh warga negara", "D": "rakyat bebas memilih calon pemimpin tanpa intervensi dari pemerintah maupun pihak lain"}, "ans": "D"}, {"no": 20, "q": "Berikut yang bukan merupakan faktor-faktor yang dapat  memudarkan filosofi bangsa Indonesia adalah ….", "opts": {"A": "globalisasi", "B": "materialisme", "C": "patriotisme", "D": "hedonisme"}, "ans": "C"}, {"no": 21, "q": "Berikut ini yang bukan menunjukkan arti demokrasi secara etimologis yaitu ….", "opts": {"A": "kekuasaan rakyat", "B": "rakyat berkuasa", "C": "rakyat merdeka", "D": "government of rule by the people"}, "ans": "C"}, {"no": 22, "q": "Berikut yang bukan termasuk personal rights yaitu hak kebebasan untuk .…", "opts": {"A": "bergerak, bepergian, atau berpindah-pindah tempat", "B": "mengeluarkan atau menyatakan pendapat", "C": "memilih dan aktif di organisasi atau perkumpulan", "D": "mengadakan perjanjian kontrak"}, "ans": "D"}, {"no": 23, "q": "Berdasarkan Pasal 28 ayat (1) UUD NRI Tahun 1945, kebebasan manusia bersifat tidak ….", "opts": {"A": "mutlak", "B": "tak terbatas", "C": "luas", "D": "bebas"}, "ans": "B"}, {"no": 24, "q": "Masa dimana Renaissance dan reformasi spiritual membawa masyarakat eropa untuk berani berpikir sendiri disebut ….", "opts": {"A": "renaissance", "B": "kegelapan", "C": "aufklarung", "D": "peradaban"}, "ans": "C"}, {"no": 25, "q": "Berikut ini adalah wujud cinta tanah air sebagai salah satu pendorong integritas nasional, kecuali ….", "opts": {"A": "menggunakan produk dalam negeri", "B": "menggunakan pakaian adat", "C": "mempelajari tari balet", "D": "mengkonsumsi buah lokal"}, "ans": "C"}, {"no": 26, "q": "Sifat-sifat dan keadaan-keadaan di dalam negara harus sesuai dengan hakikat Tuhan sebagai sebab yang pertama dari segala sesuatu atau causa prima. Pernyataan tersebut adalah salah satu inti dari sila Pancasila ....", "opts": {"A": "Persatuan Indonesia", "B": "Kemanusiaan Yang Adil dan Beradab", "C": "Ketuhanan Yang Maha Esa", "D": "semua jawaban salah"}, "ans": "C"}, {"no": 27, "q": "Salah satu nilai dasar dalam Pancasila meyakini bahwa harkat, martabat, dan hak asasi manusia harus dijunjung tinggi dan tidak boleh diganggu. Keyakinan ini merupakan penjabaran dari sila Pancasila yang ….", "opts": {"A": "kelima", "B": "keempat", "C": "kedua", "D": "pertama"}, "ans": "C"}, {"no": 28, "q": "Berikut  contoh tradisi  akar kebudayaan Indonesia yang menghormati adanya hak asasi manusia yaitu ….", "opts": {"A": "hak upeti", "B": "hak pepe", "C": "bakudang batiung", "D": "tudung sipulung"}, "ans": "D"}, {"no": 29, "q": "Indonesia Raya sebagai lagu kebangsaan pertama kali dinyanyikan pada ….", "opts": {"A": "Kemerdekaan Indonesia tanggal 17 Agustus 1945", "B": "Sumpah palapa yang dikemukakan Gadjah Mada", "C": "Kongres Sumpah Pemuda Tahun 1928", "D": "Persidangan BPUPKI 29 Mei 1094"}, "ans": "C"}, {"no": 30, "q": "Berikut ini peristiwa yang tidak mengandung tantangan terhadap pembentukan integrasi nasional di era setelah kemerdekaan adalah ….", "opts": {"A": "peristiwa Konferensi Meja Bundar (KMB)", "B": "berlakunya Konstitusi Republik Indonesia Serikat (RIS)", "C": "pembentukan Undang-Undang Dasar Negara Republik Indonesia Tahun 1945", "D": "masa berakhirnya Orde Baru tahun 1998"}, "ans": "C"}, {"no": 31, "q": "Pancasila sering disebut sebagai way of life, weltanschauung, pandangan dunia, pandangan hidup, pegangan hidup, pedoman hidup, petunjuk hidup. Implikasi dari hal ini adalah ....", "opts": {"A": "pemahaman tentang Pancasila sebagai pandangan hidup bangsa Indonesia berarti nilai-nilainya dipergunakan sebagai petunjuk hidup sehari-hari, seperti sebuah agama", "B": "semua tingkah laku dan tindak perbuatan setiap manusia Indonesia harus dijiwai dan merupakan pancaran dari nilai-nilai semua sila Pancasila meskipun secara parsial dan terpisah-pisah", "C": "Pancasila menjadi cita-cita moral bangsa yang memberikan pedoman dan kekuatan rohaniah bagi bangsa untuk berperilaku luhur dalam kehidupan individual saja", "D": "semua tingkah laku dan tindak perbuatan setiap manusia Indonesia harus dijiwai dan merupakan pancaran dari nilai-nilai semua sila Pancasila"}, "ans": "D"}, {"no": 32, "q": "Berikut ini yang bukan termasuk tiga kelompok etnis di Belgia yang saling berebut pengaruh dan dominasi dalam aspek budaya adalah suku ….", "opts": {"A": "Vlaam", "B": "Vallon", "C": "minoritas Belgia berbahasa Jerman", "D": "Viking"}, "ans": "D"}, {"no": 33, "q": "Rakyat menempati kedudukan yang sentral di dalam negara demokrasi karena hal-hal berikut ini kecuali ….", "opts": {"A": "kebijakan negara dirumuskan oleh rakyat", "B": "pertimbangan kebijakan negara  dilakukan oleh rakyat", "C": "persoalan negara diciptakan oleh rakyat", "D": "tujuan kebijakan negara untuk rakyat"}, "ans": "C"}, {"no": 34, "q": "Berikut yang bukan identitas nasional dalam arti fisik yaitu .…", "opts": {"A": "bendera merah putih", "B": "lambang negara", "C": "jati diri psikis bangsa", "D": "Bahasa Indonesia"}, "ans": "C"}, {"no": 35, "q": "Tujuan dari dibentuknya suatu negara adalah sebagai berikut, kecuali ….", "opts": {"A": "membangun tatanan kehidupan masyarakat agar teratur dan berjalan lebih baik", "B": "menciptakan kehidupan yang serasi, selaras, dan seimbang antarkebutuhan manusia", "C": "menciptakan kesatuan di antara  orang-orang yang saling merasa setia kawan", "D": "menjamin hak warga negara, perlindungan keamanan, dan perlakuan yang sama di depan hukum"}, "ans": "C"}, {"no": 36, "q": "Objek formal Pendidikan Kewarganegaraan  tampak pada materi yang dikaji, yaitu hal- hal di bawah ini kecuali ….", "opts": {"A": "hak dan kewajiban negara dan warga negara", "B": "hukum pidana", "C": "wawasan nusantara", "D": "ketahanan nasional"}, "ans": "B"}, {"no": 37, "q": "Berikut ini yang bukan aspek tri gatra dalam wawasan nusantara adalah ….", "opts": {"A": "posisi dan lokasi geografis negara", "B": "negara kepulauan dengan jumlah 17.508 pulau", "C": "keadaan dan kekayaan alam", "D": "komposisi dan kemampuan penduduk"}, "ans": "B"}, {"no": 38, "q": "Proses kesepakatan atau perjanjian antar individu untuk menjaga dan melindungi kepentingan dirinya dari ancaman dan gangguan disebut ….", "opts": {"A": "pakta sosial", "B": "sosial amandemen", "C": "kontak sosial", "D": "prasati sosial"}, "ans": "A"}, {"no": 39, "q": "Demokrasi di Indonesia merupakan salah satu muatan materi dalam Pendidikan Kewarganegaraan yang pembahasannya meliputi hal-hal di bawah ini, kecuali .…", "opts": {"A": "pengertian demokrasi", "B": "prinsip-prinsip umum demokrasi", "C": "aspek mekanisme demokrasi Pancasila", "D": "demokrasi luar negeri"}, "ans": "D"}, {"no": 40, "q": "Konstitusi berasal dari bahasa Perancis “constituer”, yang berarti ….", "opts": {"A": "peraturan", "B": "undang-undang", "C": "keputusan", "D": "ketetapan"}, "ans": "B"}, {"no": 41, "q": "Berikut ini yang bukan merupakan fungsi negara adalah ….", "opts": {"A": "menjaga keamanan dan ketertiban", "B": "menegakkan keadilan", "C": "mengupayakan kesejahteraan", "D": "mempersiapkan perang"}, "ans": "D"}, {"no": 42, "q": "Landasan utama Pendidikan Pancasila adalah .…", "opts": {"A": "GBHN", "B": "Instruksi Presiden", "C": "Pancasila", "D": "Peraturan Pemerintah"}, "ans": "C"}, {"no": 43, "q": "Segala hak, wewenang, dan kewajiban daerah otonom untuk mengatur sendiri urusan pemerintahan, kepentingan masyarakat setempat sesuai dengan peraturan yang berlaku di Indonesia dinamakan ….", "opts": {"A": "desentralisasi", "B": "dekonsentrasi", "C": "tugas pembantuan", "D": "otonomi daerah"}, "ans": "D"}, {"no": 44, "q": "Berikut ini yang merupakan tujuan dari penerapan prinsip-prinsip good governance bagi Indonesia adalah ….", "opts": {"A": "berpegang pada prinsip-prinsip demokrasi", "B": "menjadi negara yang populer di kancah internasional", "C": "dapat dengan mudah mendapat pinjaman luar negeri", "D": "partisipasi masyarakat meningkat dan berkelanjutan"}, "ans": "D"}, {"no": 45, "q": "Organisasi di antara kelompok atau beberapa kelompok manusia yang bersama-sama mendiami suatu wilayah tertentu dengan mengakui adanya suatu pemerintahan yang mengurus tata tertib dan keselamatan sekelompok atau beberapa kelompok manusia tersebut merupakan pengertian dari ….", "opts": {"A": "bangsa", "B": "negara alut", "C": "kesatuan", "D": "kewarganegaraan"}, "ans": "B"}, {"no": 46, "q": "Pentingnya mempelajari konstitusi suatu negara adalah untuk ….", "opts": {"A": "mengenal cara kerja suatu negara membangun sistem ketatanegaraannya", "B": "mengetahui adat istiadat yang ada di suatu negara", "C": "mengetahui rencana pembangunan suatu negara", "D": "mengenali sistem hukum dari suatu negara yang berdaulat"}, "ans": "A"}, {"no": 47, "q": "Berikut ini yang bukan termasuk ruang lingkup materi dalam Pendidikan Kewarganegaraan adalah ….", "opts": {"A": "demokrasi Indonesia", "B": "konsep negara dan konstitusi", "C": "asal usul Bahasa Indonesia", "D": "otonomi daerah dan good & clean governance"}, "ans": "C"}, {"no": 48, "q": "Pendidikan Kewarganegaraan berobjek material nilai, moral, dan budi pekerti. Hal ini merupakan pengertian Pendidikan Kewarganegaraan secara filsafat dilihat dari perspektif ….", "opts": {"A": "epistemologi", "B": "ontologi", "C": "metodologi", "D": "aksiologi"}, "ans": "D"}, {"no": 49, "q": "Terdapat kriteria tentang tata kelola pemerintahan yang baik. Salah satunya adalah responsif, yang artinya ….", "opts": {"A": "tata kelola pemerintahan yang baik juga ditentukan oleh seberapa cepat pemerintah tersebut merespon berbagai persoalan yang muncul di masyarakat", "B": "konsep ini berhubungan langsung dengan kedudukan rakyat sebgai pemilik kedaulatan tertinggi negara", "C": "tata kelola yang baik harus mampu menjamin transparansi di hampir semua bidang yang terkait dengan pengelolaan informasi", "D": "negara adalah entitas kolektif yang terdiri atas berbagai macam golongan dan kepentingan"}, "ans": "A"}, {"no": 50, "q": "Kedudukan pembukaan UUD 1945 bagi bangsa Indonesia bersifat tetap dan tidak dapat diubah, hal ini dikarenakan ....", "opts": {"A": "pasal-pasal UUD 1945 telah diubah", "B": "sebagai wujud penghormatan terhadap hasil perjuangan bangsa", "C": "merupakan kaidah yang fundamental terbentuknya negara", "D": "telah disepakati oleh MPR RI tidak akan berubah"}, "ans": "C"}, {"no": 51, "q": "Konsep good governance adalah konsep yang seharusnya ada di dalam negara yang menganut prinsip ….", "opts": {"A": "reformasi", "B": "demokrasi", "C": "otonomi daerah", "D": "oligarki"}, "ans": "B"}, {"no": 52, "q": "Otonomi daerah merupakan hak, wewenang, dan kewajiban daerah otonom untuk mengatur dan mengurus sendiri daerahnya. Berikut ini yang merupakan esensi di dalam otonomi daerah adalah ….", "opts": {"A": "wewenang untuk mengatur daerahnya sendiri", "B": "pemisahan wewenang antara pusat dan daerah", "C": "pemisahan kekuasaan antara pemerintah pusat dan daerah", "D": "kebebasan untuk mengatur daerahnya tanpa campur tangan dari pusat"}, "ans": "A"}, {"no": 53, "q": "Geopolitik merupakan sistem politik terkait dengan demopolitik, ekonomi politik, sosiopolitik, dan kratopolitik. Pengertian ini disampaikan oleh ….", "opts": {"A": "Frederich Ratzel", "B": "Rudolf Kjellen", "C": "Karl Haushofer", "D": "Hasan Habib"}, "ans": "B"}, {"no": 54, "q": "Sejak diratifikasinya UNCLOS setelah adanya Deklarasi Djuanda, wilayah laut NKRI menjadi lebih luas karena dalam deklarasi tersebut dinyatakan bahwa ….", "opts": {"A": "wilayah laut Indonesia menjadi 5,9 juta Km2", "B": "lebar laut teritorial Indonesia menjadi 12 mil yang dihitung dari garis yang menghubungkan pulau terluar Indonesia", "C": "Negara Kesatuan Republik Indonesia adalah sebuah negara kepulauan yang berciri alut nusantara", "D": "wilayah RI terdiri atas gugusan pulau-pulau dan lautan"}, "ans": "B"}, {"no": 55, "q": "Berikut yang bukan merupakan perwujudan geostrategi politik dalam negeri yaitu .…", "opts": {"A": "sistem pemerintahan yang berdasarkan hukum dengan kedaulatan berada di tangan rakyat dan dilaksanakan menurut UUD 1945", "B": "mekanisme politik demokrasi yang memungkinkan adanya perbedaan pendapat yang beretika dan berdasar pada nilai-nilai dasar Pancasila", "C": "adanya komunikasi yang agresif antara masyarakat dan pemerintah, serta antarkelompok dan golongan masyarakat demi mencapai tujuan nasional", "D": "kepemimpinan nasional yang mampu mengakomodasi beragam aspirasi yang hidup di masyarakat dengan tetap berada dalam lingkup pandangan hidup bangsa"}, "ans": "C"}, {"no": 56, "q": "Demi penghormatan terhadap harkat dan martabat manusia maka hak dan kewajiban harus ….", "opts": {"A": "disamakan", "B": "diusahakan", "C": "dihormati", "D": "diseimbangkan"}, "ans": "D"}, {"no": 57, "q": "Integrasi nasional merupakan dasar nilai untuk mewujudkan cita-cita bersama dalam kehidupan di suatu negara, hal ini merupakan proses pembentukan Integritas dilihat dari aspek .…", "opts": {"A": "manfaat", "B": "historis", "C": "filosofis", "D": "ekonomi"}, "ans": "C"}, {"no": 58, "q": "Berikut yang bukan termasuk usaha pemerintah dalam mengatasi permasalahan distribusi penduduk adalah .…", "opts": {"A": "program transmigrasi", "B": "membangun pusat-pusat industri", "C": "pembangunan infrastruktur di kota", "D": "membangun pusat -pusat pertumbuhan pembangunan"}, "ans": "C"}, {"no": 59, "q": "Berikut yang bukan merupakan landasan geostrategi dan geopolitik adalah .…", "opts": {"A": "posisi Indonesia yang berada diantara dua benua Asia dan Australia", "B": "posisi Indonesia yang berada diantara dua samudra, Hindia dan Pasifik", "C": "demografi Indonesia", "D": "agama dan aliran kepercayaan di Indonesia"}, "ans": "D"}, {"no": 60, "q": "Upaya dan proses untuk menyatukan masyarakat ke dalam satu wilayah teritorial sehingga terwujud persatuan dan kesatuan dari berbagai elemen kehidupan masyarakat adalah pengertian integrasi nasional secara ….", "opts": {"A": "yuridis", "B": "ekonomi", "C": "politis", "D": "historis"}, "ans": "C"}, {"no": 61, "q": "Negara yang bisa menguasai Eropa Timur sebagai daerah jantung maka akan bisa menguasai dunia. Kalimat tersebut merupakan pernyataan dari …..", "opts": {"A": "Sir Halford Mackinder dan Karl Haushofer", "B": "Alfred Thayer Mahan", "C": "A. Savensky", "D": "William Billy Mitchell"}, "ans": "A"}, {"no": 62, "q": "Kata “hikmat” dalam sila keempat Pancasila mengandung arti ….", "opts": {"A": "bersungguh-sungguh", "B": "berlandasan nilai-nilai keagamaan", "C": "kearifan", "D": "bermanfaat"}, "ans": "C"}, {"no": 63, "q": "Negara disebut juga  sebagai lembaga sosial karena ….", "opts": {"A": "bekerja tanpa pamrih dengan sukarela", "B": "berperan dalam melayani masyarakat dalam berbagai bentuk kegiatan", "C": "tidak mencari keuntungan untuk memperkaya pemegang kekuasaaan negara", "D": "semua kehidupan bermasyarakat diatur"}, "ans": "B"}, {"no": 64, "q": "Berikut yang bukan dasar moral bangsa Indonesia yaitu ….", "opts": {"A": "Sila pertama Pancasila", "B": "Sila kedua Pancasila", "C": "Alinea/pokok pikiran ketiga pembukaan UUD 1945", "D": "Alinea/pokok pikiran keempat pembukaan UUD 1945"}, "ans": "C"}, {"no": 65, "q": "Salah satu bentuk keikutsertaan warga negara dalam membela negara sebagaimana amanat dari UU Pertahanan Negara adalah secara sukarela menjadi anggota ….", "opts": {"A": "Aparatur Sipil Negara", "B": "Tentara Nasional Indonesia", "C": "Kepolisian Republik Indonesia", "D": "Pertahanan Sipil (Hansip)"}, "ans": "B"}, {"no": 66, "q": "Ketahanan nasional Indonesia dirumuskan berdasarkan Asta Gatra. Aspek sosial dari Asta Gatra adalah ….", "opts": {"A": "kependudukan", "B": "kekayaan alam", "C": "geografi", "D": "ideologi"}, "ans": "D"}, {"no": 67, "q": "Kesadaran tentang pentingnya identitas nasional Indonesia secara historis dimulai sejak ….", "opts": {"A": "Konferensi Meja Bundar", "B": "Kongres Budi Utomo 1908", "C": "Ajaran Ki Hajar Dewantoro", "D": "Surat RA Kartini"}, "ans": "B"}, {"no": 68, "q": "Sistem demokrasi yang membebankan tanggung jawab pelaksanaan pemerintahan kepada parlemen disebut demokrasi dengan sistem ….", "opts": {"A": "parlementer", "B": "presidensial", "C": "demokrasi", "D": "kekuasaan"}, "ans": "A"}, {"no": 69, "q": "Tingkat demokratis suatu negara dapat dinilai berdasarkan hal-hal berikut ini, kecuali …..", "opts": {"A": "pembatasan pemerintah secara institusional", "B": "kekuasaan mayoritas", "C": "hak-hak minoritas", "D": "jaminan hak asasi manusia"}, "ans": "B"}, {"no": 70, "q": "Salah satu fungsi pentingnya identitas nasional adalah ….", "opts": {"A": "meningkatkan hajat hidup bangsa", "B": "mencerdaskan kehidupan bangsa", "C": "antisipasi pengaruh globalisasi", "D": "memperkuat jati diri bangsa lain"}, "ans": "C"}, {"no": 71, "q": "Berikut yang bukan pengertian demokrasi menurut Abraham Lincoln adalah pemerintahan ….", "opts": {"A": "karena rakyat", "B": "dari rakyat", "C": "oleh rakyat", "D": "untuk rakyat"}, "ans": "A"}, {"no": 72, "q": "Hak asasi manusia menurut  Wahidin (2015) dapat dibagi menjadi enam kelompok berikut, kecuali hak asasi ….", "opts": {"A": "pribadi", "B": "sosial", "C": "politik", "D": "ekonomi"}, "ans": "B"}, {"no": 73, "q": "Aturan tentang kewajibanwarga negara untuk mematuhi dan mentaati segala peraturan perundang-undanganyang tercantum  dalam UUD NRI tahun 1945 bersifat ….", "opts": {"A": "komprehensif", "B": "universal", "C": "parsial", "D": "sturuktural"}, "ans": "B"}, {"no": 74, "q": "Masa ketika pemikiran modern yang meletakkan akal budi atau rasio sebagai instrumen epistemologis yang utama hadir menggantikan masa kegelapan di Eropa disebut masa ….", "opts": {"A": "Renaissance", "B": "feodalisme", "C": "post-modern", "D": "kejayaan"}, "ans": "A"}, {"no": 75, "q": "Berikut ini peran aktif warga negara yang diharapkan dapat membangun integrasi nasional yaitu ….", "opts": {"A": "ikut terlibat dalam aktivitas yang bersifat merugikan orang lain", "B": "bullying", "C": "gotong royong", "D": "ikut organisasi terlarang"}, "ans": "C"}, {"no": 76, "q": "Negara Indonesia bukan negara untuk satu orang dan untuk satu golongan, tetapi negara di dasarkan atas rakyat, tidak pada golongan, tidak pada perseorangan yang, berdasarkan permusyawaratan dan gotong royong, berdasarkan kekuasaan yang ada pada rakyat (kedaulatan rakyat). Pernyataan tersebut adalah isi arti dari sila Pancasila sila ....", "opts": {"A": "pertama", "B": "kelima", "C": "ketiga", "D": "keempat"}, "ans": "D"}, {"no": 77, "q": "Aspek nonjasmaniah manusia yang  menjadi salah satu kriteria adanya hak asasi sebagai penentu harkat dan martabat manusia adalah ….", "opts": {"A": "akal", "B": "perasaan", "C": "kebebasan", "D": "hati"}, "ans": "A"}, {"no": 78, "q": "Hal-hal yang berhubungan dengan keharusan manusia untuk melakukan sesuatu merupakan pengertian kewajiban secara ....", "opts": {"A": "historis", "B": "ontologi", "C": "etimologi", "D": "aksiologi"}, "ans": "C"}, {"no": 79, "q": "Semboyan Bhinneka Tunggal Ika dirumuskan oleh para pendiri bangsa karena kondisi bangsa Indonesia yang ….", "opts": {"A": "homogen", "B": "heterogen", "C": "liberal", "D": "sosialis"}, "ans": "B"}, {"no": 80, "q": "Integrasi nasional berasal dari situasi dan kondisi masyarakat Indonesia yang ….", "opts": {"A": "individualis", "B": "sosialisis", "C": "liberalis", "D": "majemuk"}, "ans": "D"}, {"no": 81, "q": "Cita-cita moral bangsa yang memberikan pedoman dan kekuatan rohaniah bagi bangsa untuk berperilaku luhur dalam kehidupan bermasyarakat, berbangsa dan bernegara adalah ….", "opts": {"A": "Pancasila", "B": "Undang-Undang Dasar Negara Republik Indonesia", "C": "Tap MPR", "D": "Peraturan Pemerintah"}, "ans": "A"}, {"no": 82, "q": "Kasus sentimen etnis dan ketegangan  karena persoalan kebudayaan, agama, dan etnis yang mengancam integrasi nasional Negara  Yugoslavia dipicu oleh  banyaknya suku bangsa yang bermukim di wilayah dan lembah ….", "opts": {"A": "Semenanjung Balkan", "B": "Semenanjung Sinai", "C": "Semenanjung Suez", "D": "Eropa Tengah"}, "ans": "A"}, {"no": 83, "q": "Kata ‘kerakyatan’ di dalam sila keempat Pancasila  menunjukkan bahwa negara Indonesia didirikan di atas pemahaman bahwa ….", "opts": {"A": "rakyatlah pemilik kedaulatan negara", "B": "Indonesia memiliki sistem pemerintahan yang merakyat", "C": "rakyat indonesia mandiri", "D": "rakyat adalah pembentuk negara"}, "ans": "A"}, {"no": 84, "q": "Berikut ini yang merupakan identitas nasional secara nonfisik adalah ….", "opts": {"A": "bahasa Indonesia sebagai bahasa persatuan", "B": "Garuda Pancasila sebagai lambang negara", "C": "Pancasila sebagai jati diri bangsa", "D": "lagu kebangsaan Indonesia Raya"}, "ans": "C"}, {"no": 85, "q": "Berikut  yang bukan merupakan kebutuhan  masyarakat untuk  keberlangsungan suatu negara adalah ….", "opts": {"A": "terjaminnya hak masyarakat", "B": "kondisi ekonomi yang sama rata", "C": "adanya  perlindungan keamanan", "D": "perlakuan yang sama di depan hukum"}, "ans": "B"}, {"no": 86, "q": "Objek formal Pendidikan Kewarganegaraan berhubungan dengan ….", "opts": {"A": "dimensi sistem ketatanegaraan yang menekankan pada hubungan antara warga negara dan negara", "B": "manfaat yang didapat", "C": "bersifat universal", "D": "bidang sasaran atau bahan yang dikaji"}, "ans": "A"}, {"no": 87, "q": "Menurut ketetapan MPR No VII/MPR/2001, tujuan nasional negara Indonesia yakni ….", "opts": {"A": "melindungi segenap bangsa indonesia dan seluruh tumpah darah Indonesia", "B": "terwujudnya masyarakat Indonesia yang religius, manusiawi, bersatu, demokratis, adil, sejahtera, maju, mandiri, serta baik dan bersih dalam penyelenggaraan negara", "C": "melindungi segenap bangsa Indonesia dan seluruh tumpah darah Indonesia", "D": "mensejahterakan dan mencerdaskan rakyat"}, "ans": "B"}, {"no": 88, "q": "Raja dianggap sebagai wakil dari Tuhan sehingga  apa kata Raja itu identik dengan apa kata Tuhan atau sesuai dengan keinginan Tuhan. Hal ini merupakan berhubungan dengan salah satu teori tentang terjadinya negara menurut teori ....", "opts": {"A": "hukum alam", "B": "ketuhanan", "C": "perjanjian", "D": "tata negara"}, "ans": "B"}, {"no": 89, "q": "Satu ruang lingkup Pendidikan Kewarganegaraan adalah hak dan kewajiban warga negara yang pembahasannya meliputi hal-hal di bawah ini, kecuali ….", "opts": {"A": "pengertian hak dan kewajiban", "B": "landasan filosofis hak asasi", "C": "macam-macam hak warga negara", "D": "cara menjadi warga negara"}, "ans": "D"}, {"no": 90, "q": "Konstitusi berasal dari bahasa Belanda yaitu gronwet yang artinya ….", "opts": {"A": "tanah basah", "B": "peraturan", "C": "hukum dasar", "D": "pembentukan"}, "ans": "C"}, {"no": 91, "q": "Berikut yang bukan merupakan cita-cita Negara Indonesia adalah menjadi negara .…", "opts": {"A": "berdaulat", "B": "boneka", "C": "merdeka", "D": "bersatu"}, "ans": "B"}, {"no": 92, "q": "Pendidikan Kewarganegaraan di perguruan tinggi merupakan sumber nilai dan pedoman dalam pengembangan dan penyelenggaraan program studi serta berguna dalam mengantarkan mahasiswa memantapkan kepribadiannya sebagai manusia seutuhnya, hal ini merupakan … Pendidikan Kewarganegaraan.", "opts": {"A": "visi", "B": "moto alut", "C": "misi", "D": "amanat"}, "ans": "A"}, {"no": 93, "q": "Alasan yang menyebabkan pembangunan di Indonesia tidak merata sejak zaman kemerdekaan adalah ….", "opts": {"A": "Negara Indonesia sebagai negara kepulauan", "B": "masyarakat susah untuk diajak kerja sama", "C": "Belanda telah memecah belah Indonesia", "D": "adanya campur tangan pihak asing"}, "ans": "A"}, {"no": 94, "q": "Berikut ini yang bukan cakupan kegiatan dari istilah governance adalah tata kelola ….", "opts": {"A": "administrasi negara", "B": "pemerintahan", "C": "administrasi", "D": "daerah"}, "ans": "C"}, {"no": 95, "q": "Sekelompok orang yang bersatu berdasarkan satu jiwa atau satu asas spiritual yang tercipta oleh rasa pengorbanan yang telah dibuat pada masa lampau demi masa depan generasi penerusnya merupakan pengertian dari ….", "opts": {"A": "pemerintah yang berdaulat", "B": "bangsa", "C": "negara", "D": "klan"}, "ans": "B"}, {"no": 96, "q": "Berikut ini yang bukan termasuk di dalam azas umum otonomi daerah adalah ….", "opts": {"A": "desentralisasi", "B": "dekonsentrasi", "C": "tugas pembantuan", "D": "tertib penyelenggaraan negara"}, "ans": "D"}, {"no": 97, "q": "Berikut ini yang bukan kompetensi yang diharapkan dimiliki oleh mahasiswa setelah mengikuti Pendidikan Kewarganegaran adalah ….", "opts": {"A": "memahami kehidupan berbangsa dan bernegara secara rasional", "B": "memiliki rasa kebangsaan", "C": "mencintai tanah air", "D": "memiliki semangat kemandirian"}, "ans": "D"}, {"no": 98, "q": "Pendidikan kewarganegaraan merupakan bagian ilmu pengetahuan yang memiliki landasan filsafat  sebagai berikut, kecuali ….", "opts": {"A": "epistemologi", "B": "ontologi", "C": "metodologi", "D": "aksiologi"}, "ans": "C"}, {"no": 99, "q": "Terdapat kriteria tentang tata kelola pemerintahan yang baik. Salah satunya adalah transparansi, yang artinya ….", "opts": {"A": "tata kelola pemerintahan yang baik juga ditentukan oleh seberapa cepat pemerintah tersebut merespon berbagai persoalan yang muncul di masyarakat", "B": "salah satu konsep yang penting karena konsep ini berhubungan langsung dengan kedudukan rakyat sebagai pemilik kedaulatan tertinggi negara", "C": "tata kelola yang baik harus mampu menjamin transparansi di hampir semua bidang yang terkait dengan pengelolaan informasi", "D": "negara adalah entitas kolektif yang terdiri atas berbagai macam golongan dan kepentingan"}, "ans": "C"}, {"no": 100, "q": "Pada bagian awal suatu konstitusi biasanya berisi tentang ....", "opts": {"A": "asas dan tujuan negara", "B": "jaminan dan perlindungan hak asasi manusia", "C": "identitas negara", "D": "cara melakukan perubahan konstitusi"}, "ans": "A"}, {"no": 101, "q": "Konsep good governance tidak dapat dipisahkan dengan konsep reformasi secara keseluruhan karena ….", "opts": {"A": "reformasi merupakan semangat dari good governance", "B": "reformasi merupakan manifestasi semangat dari demokrasi", "C": "good governance merupakan semangat yang diadopsi dari reformasi", "D": "reformasi membawa semangat untuk merombak tata pemerintahan lama yang korup"}, "ans": "D"}, {"no": 102, "q": "Tata kelola pemerintahan yang baik dan bersih merupakan konsep dari ….", "opts": {"A": "desentralisasi", "B": "good and clean governance", "C": "demokrasi", "D": "dekonsentrasi"}, "ans": "B"}, {"no": 103, "q": "Berikut yang bukan merupakan kekuatan mental dalam politik bangsa Indonesia yaitu kekuatan .…", "opts": {"A": "agama", "B": "ideologi", "C": "ilmu pengetahuan", "D": "jasmani atau fisik dan kekuatan kesejahteraan material"}, "ans": "D"}, {"no": 104, "q": "Kekayaan wilayah Nusantara baik potensial maupun efektif adalah modal dan milik bersama bangsa dan keperluan hidup sehari-hari harus tersedia merata di seluruh wilayah tanah air, merupakan makna wawasan Nusantara dilihat sebagai kesatuan .…", "opts": {"A": "politik", "B": "sosial", "C": "budaya", "D": "ekonomi"}, "ans": "D"}, {"no": 105, "q": "Dalam geostrategi, sistem politik Indonesia adalah demokrasi Pancasila yang berciri ….", "opts": {"A": "individualis", "B": "kompetisi", "C": "liberal", "D": "kekeluargaan"}, "ans": "D"}, {"no": 106, "q": "Para pendiri negara sepakat bahwa perlindungan hak asasi manusia merupakan hal penting bagi bangsa Indonesia, maka dari itu mereka bersepakat meletakkan asas … bagi kehidupan berbangsa dan bernegara Indonesia.", "opts": {"A": "sosialis", "B": "liberalis", "C": "demokrasi", "D": "kapitalis"}, "ans": "C"}, {"no": 107, "q": "Integrasi nasional dapat terbentuk karena ada kesamaan latar belakang sejarah yang dialami suatu bangsa misalnya penderitaan akibat dari penjajahan. Proses pembentukan integrasi yang demikian itu didasarkan pada aspek ….", "opts": {"A": "sosiologis", "B": "historis", "C": "filosofis", "D": "kultural"}, "ans": "B"}, {"no": 108, "q": "Berikut yang bukan merupakan kriteria dalam penentuan komposisi penduduk yaitu ….", "opts": {"A": "asal daerah", "B": "jenis kelamin", "C": "pendidikan", "D": "mata pencaharian"}, "ans": "A"}, {"no": 109, "q": "Salah satu asas dari koperasi yang dianut dalam kehidupan ekonomi Negara Indonesia yang dapat dijadikan bagian dari geostrategi adalah .…", "opts": {"A": "kebersamaan", "B": "pemerataan", "C": "kekeluargaan", "D": "adil dan merata"}, "ans": "C"}, {"no": 110, "q": "Pengertian integrasi nasional (national integration) berakar dari suatu prinsip-prinsip dasar pemahaman mengenai ….", "opts": {"A": "persatuan karena wilayah yang sama", "B": "persatuan karena kondisi ekonomi yang sama", "C": "persatuan diantara perbedaan", "D": "persatuan karena senasib sepenangungan"}, "ans": "C"}, {"no": 111, "q": "Berikut yang bukan tata kelengkapan organisasi untuk mencapai  tujuan nasional yaitu ….", "opts": {"A": "aparatur negara", "B": "pemilu", "C": "media pers", "D": "partisipasi rakyat"}, "ans": "C"}, {"no": 112, "q": "Dalam sila keempat Pancasila klausul “...yang Dimpin oleh Hikmat Kebijaksanaan dalam Permusyawaratan/ Perwakilan”, kata Permusyawaratan/Perwakilam mengandung arti ….", "opts": {"A": "demokrasi tak langsung", "B": "musyawarah dilakukan dalam semua lini kehidupan", "C": "individu tidak memiliki suara", "D": "manfaat musyawarah"}, "ans": "A"}, {"no": 113, "q": "Berdasarkan Kamus Besar Bahasa Indonesia (KBBI) negara  merupakan ….", "opts": {"A": "tanah yang diperjuangkan bersama sehingga merdeka dan berdaulat", "B": "organisasi yang dibuat untuk memberikan wadah kepada anggotanya untuk mendapatkan pengakuan hukum serta kesejahteraan", "C": "organisasi dalam suatu wilayah yang mempunyai kekuasaan tertinggi yang sah dan ditaati rakyat alut", "D": "kesepakatan antara penduduk yang memiliki tujuan yang sama untuk berserikat secara sah"}, "ans": "C"}, {"no": 114, "q": "Konsep geopolitik Indonesia megandung unsur wadah yang berwujud ….", "opts": {"A": "cita-cita", "B": "tata inti organisasi", "C": "cara kerja", "D": "sifat dan ciri"}, "ans": "B"}, {"no": 115, "q": "Bela Negara nonfisik menurut Undang-Undang No. 3 Tahun 2002 tentang Pertahanan Negara keikutsertaan warga negara dalam bela negara secara nonfisik dapat diselenggarakan melalui ….", "opts": {"A": "pendidikan menjadi  Tentara Nasional Indonesia", "B": "pengabdian sesuai dengan profesi", "C": "menjadi Aparatur Sipil Negara", "D": "anggota Resimen Mahasiswa (Menwa)"}, "ans": "B"}, {"no": 116, "q": "Berikut yang bukan peran lembaga terkait pertahanan  Negara Indonesia  adalah ….", "opts": {"A": "melindungi negara dari invasi negara lain", "B": "mempersiapkan komponen cadangan untuk pertahanan negara", "C": "bekerja sama dengan interpol secara berkelanjutan", "D": "mewujudkan dan memelihara kestabilan keamanan wilayah"}, "ans": "C"}, {"no": 117, "q": "Identitas nasional menurut Kaelan dan Zubaidi (2007) mengandung 2 hal, yaitu .…", "opts": {"A": "ciri-ciri dan perbedaan dengan bangsa yang lain", "B": "ciri-ciri dan persamaan dengan bangsa lain", "C": "sejarah dan perbedaan dengan bangsa lain", "D": "sejarah dan persamaan dengan bangsa lain"}, "ans": "A"}, {"no": 118, "q": "Berikut yang bukan ciri-ciri demokrasi sistem parlementer adalah ….", "opts": {"A": "kekuasaan legislatif dan eksekutif berbeda", "B": "kekuasaan legislatif  bersifat turun temurun", "C": "kepala negara seorang ratu/ raja/ presiden", "D": "kepala pemerintahan berada pada Perdana Menteri"}, "ans": "B"}, {"no": 119, "q": "Berikut yang bukan alasan mengapa pemilihan dalam negara demokrasi harus bersifat jujur, yaitu ….", "opts": {"A": "transparansi  di dalam semua prosesnya", "B": "kepercayaan publik terhadap lembaga penyelenggara pemilu", "C": "kepercayaan calon pemimpin terhadap publik", "D": "legitimasi kekuasaan yang dipegang oleh pihak pemenang"}, "ans": "C"}, {"no": 120, "q": "Kongres Sumpah Pemuda Tahun 1928 semakin mempertegas identitas nasional Indonesia. Berikut yang bukan merupakan hasil kongres tersebut adalah ….", "opts": {"A": "bangsa Indonesia mengaku bertanah air yang satu, tanah air Indonesia", "B": "bangsa Indonesia mengaku berbangsa yang satu, bangsa Indonesia", "C": "bangsa Indonesia mengaku bernegara yang satu, negara Indonesia", "D": "bangsa Indonsia menjunjung bahasa persatuan, bahasa Indonesia"}, "ans": "C"}, {"no": 121, "q": "Demokrasi langsung dapat dilakukan pada negara yang ….", "opts": {"A": "luas wilayahnya kecil", "B": "jumlah warga negaranya sedikit", "C": "wilayahnya berbentuk kepulauan", "D": "perbandingan warga negaranya lebih banyak laki-laki"}, "ans": "B"}, {"no": 122, "q": "Berikut yang bukan termasuk legal equity rights yaitu hak ….", "opts": {"A": "kebebasan mengeluarkan atau menyatakan pendapat", "B": "untuk mendapatkan perlakuan yang sama dalam hukum dan pemerintahan", "C": "untuk menjadi pegawai negeri sipil", "D": "mendapatkan layanan dan perlindungan hukum"}, "ans": "A"}, {"no": 123, "q": "Kewajiban warga negara yang tidak diatur dalam UUD NRI Tahun 1945 Pasal 27, 28, 30 yaitu .…", "opts": {"A": "kewajiban dalam usaha-usaha pertahanan dan keamanan negara", "B": "menjunjung tinggi hukum dan segala peraturan yang berlaku", "C": "menghormati hak dan kebebasan orang lain untuk berserikat", "D": "melestarikan budaya bangsa secara berkelanjutan"}, "ans": "D"}, {"no": 124, "q": "Piagam perjanjian yang merupakan tonggak sejarah demokrasi dan berisi kesepakatan antara para bangsawan dan Raja John di Inggris bahwa raja beserta keturunannya akan menghormati kemerdekaan, hak, dan kebebasan adalah ….", "opts": {"A": "Perjanjian Versailles", "B": "Magna Charta", "C": "Charter United Nation", "D": "Konvensi Jenewa"}, "ans": "B"}, {"no": 125, "q": "Integrasi nasional bagi bangsa Indonesia mutlak diperlukan karena karakteristik masyarakat Indonesia terdiri atas berbagai hal-hal sebagai berikut, kecuali ….", "opts": {"A": "keberagaman etnis", "B": "kondisi sosial yang berbeda", "C": "sumber daya alam yang beragam", "D": "keanekaragaman budaya"}, "ans": "C"}, {"no": 126, "q": "Negara berkewajiban untuk melakukan pembangunan seutuhnya dan seluruhnya bagi rakyat Indonesia tanpa terkecuali dan memperhatikan asas nondiskriminatif kepada kelompok-kelompok minor yang ada di Indonesia. Pernyataan tersebut sesuai dengan sila ….", "opts": {"A": "Ketuhanan Yang Maha Esa", "B": "Keadilan Sosial Bagi Seluruh Rakyat Indonesia alut", "C": "Persatuan Indonesia", "D": "Kemanusiaan Yang Adil dan Beradab"}, "ans": "B"}, {"no": 127, "q": "Berikut filsuf Yunani Kuno yang merubah fokus kajian filsafat alam menjadi kajian filsafat manusia adalah ….", "opts": {"A": "Socrates", "B": "Plato", "C": "Pythagoras", "D": "Aristoteles"}, "ans": "A"}, {"no": 128, "q": "Kewenangan atau kekuasaan yang benar atas sesuatu atau untuk melakukan sesuatu, merupakan pengertian hak secara .…", "opts": {"A": "historis", "B": "ontologi", "C": "etimologi", "D": "aksiologi"}, "ans": "C"}, {"no": 129, "q": "Ketentuan tentang Lagu Kebangsaan Indonesia Raya  diatur dalam Undang-undang No. 24 Tahun 2009 Pasal ….", "opts": {"A": "4 sampai Pasal 24", "B": "25 sampai Pasal 45", "C": "46 sampai Pasal 57", "D": "58 sampai Pasal 64"}, "ans": "D"}, {"no": 130, "q": "Rumusan integrasi nasional pada masa orde baru dibangun dari membangun rasa persatuan dan kesatuan melalui kegiatan ….", "opts": {"A": "gotong royong", "B": "kerja bakti", "C": "Inpres Desa Tertinggal (IDT)", "D": "Wonderful Indonesia"}, "ans": "C"}, {"no": 131, "q": "Pancasila sebagai pandangan hidup bangsa Indonesia merupakan perjanjian luhur bangsa Indonesia. Maksud dari pernyataan ini adalah ....", "opts": {"A": "Pancasila tidak boleh diubah karena merupakan dasar negara yang fundamental", "B": "Pancasila merupakan suatu kesepakatan (konsensus) di antara para pendiri negara yang memiliki makna dan nilai yang luhur", "C": "Pancasila dapat ditafsirkan ulang dan disesuaikan dengan perkembangan zaman alut", "D": "penafsiran atas Pancasila hanya boleh dilakukan oleh MPR sebagai lembaga yang berwenang"}, "ans": "B"}, {"no": 132, "q": "Membangun kesadaran kolektif akan sejarah bangsa telah ditanamkan oleh para pendiri bangsa melalui berbagai cara, salah satunya dengan membuat bangunan fisik seperti berikut, kecuali ….", "opts": {"A": "museum sejarah", "B": "museum perjuangan", "C": "Dufan", "D": "TMII"}, "ans": "C"}, {"no": 133, "q": "Yang bukan hakikat manusia menurut konsep demokrasi adalah sebagai mahluk ….", "opts": {"A": "individual", "B": "kreatif", "C": "sosial", "D": "bebas"}, "ans": "B"}, {"no": 134, "q": "Berikut yang bukan merupakan karakter bangsa Indonesia yang tercermin dalam Pancasil adalah ….", "opts": {"A": "sifat religius", "B": "sikap menghormati bangsa dan manusia lain", "C": "musyawarah", "D": "ide tentang keadilan sosial bagi golongan yang dominan"}, "ans": "D"}, {"no": 135, "q": "suatu kesatuan solidaritas, kesatuan yang terdiri atas orang-orang yang saling merasa setia kawan dengan satu sama lain disebut ….", "opts": {"A": "kesatuan", "B": "negara", "C": "bangsa", "D": "kebinekaan"}, "ans": "C"}, {"no": 136, "q": "Kebenaran yang dihasilkan dari sebuah ilmu adalah kebenaran yang bersifat universal yang artinya ….", "opts": {"A": "dapat disanggah oleh masyarakat", "B": "dapat diterima oleh masyarakat dimana saja dan kapan saja", "C": "terbatas oleh waktu", "D": "hanya berlaku pada suatu wilayah"}, "ans": "B"}, {"no": 137, "q": "Hasan Habib mengartikan wawasan nusantara sebagai  kebulatan wilayah nasional yang memiliki kesatuan dalam hal-hal berikut ini, kecuali ….", "opts": {"A": "satu kesatuan bangsa", "B": "satu tujuan dan tekad perjuangan", "C": "satu kesatuan dalam menyamakan perbedaan", "D": "satu kesatuan sosial budaya"}, "ans": "C"}, {"no": 138, "q": "Teori kedaulatan Tuhan menjelaskan bahwa ….", "opts": {"A": "kepala negara adalah wakil Tuhan di dunia", "B": "kekuasaan tertinggi di tangan Tuhan", "C": "apa yang terjadi di bumi adalah kehendak Tuhan", "D": "Tuhan adalah pencipta langit dan bumi"}, "ans": "B"}, {"no": 139, "q": "Ruang lingkup Pendidikan Kewarganegaraan terdiri atas 9 aspek. Berikut ini yang tidak termasuk aspek-aspek tersebut yaitu ….", "opts": {"A": "wawasan nusantara", "B": "demokrasi", "C": "ketahanan nasional", "D": "enterpreneurship"}, "ans": "D"}, {"no": 140, "q": "Pengertian konstitusi dalam arti sempit sama dengan ...", "opts": {"A": "UU", "B": "UUD", "C": "hukum", "D": "konvensi"}, "ans": "B"}, {"no": 141, "q": "Berikut kondisi masyarakat ketika suatu negara berfungsi dengan baik, kecuali ….", "opts": {"A": "kesejahteraan umum merata", "B": "bencana alam terjadi di mana-mana", "C": "keamanan dan ketertiban terwujud", "D": "serangan dari luar dapat diantisipasi"}, "ans": "B"}, {"no": 142, "q": "Membantu mahasiswa memantapkan kepribadiannya agar secara konsisten mampu mewujudkan nilai-nilai dasar Pancasila, rasa kebangsaan dan cinta tanah air dalam menguasai menerapkan dan mengembangkan ilmu pengetahuan, teknologi dan seni …. dengan rasa tanggungjawab dan bermoral, merupakan Pendidikan Kewarganegaraan.", "opts": {"A": "visi", "B": "moto", "C": "misi", "D": "amanat"}, "ans": "C"}, {"no": 143, "q": "Berikut ini yang merupakan alasan otonomi daerah diterapkan adalah ….", "opts": {"A": "banyaknya korupsi yang terjadi di Indonesia baik di tingkat pusat maupun daerah", "B": "masyarakat kurang puas dengan kebijakan pemerintah pusat", "C": "pemerintahan yang tidak terintegrasi dapat membawa pemerataan pembangunan sampai ke wilayah terluar Indonesia", "D": "pemerintahan yang sentralistik tidak dapat membawa pemerataan pembangunan sampai ke wilayah-wilayah terluar Indonesia"}, "ans": "D"}, {"no": 144, "q": "Ada dua istilah asing yang sangat terkait dengan pemerintahan yaitu governance dan government. Perbedaan dari dua istilah itu adalah ….", "opts": {"A": "istilah government memiliki cakupan yang jauh lebih sempit dibandingkan dengan istilah governance", "B": "istilah government memiliki cakupan yang jauh lebih luas dibandingkan dengan istilah governance", "C": "istilah government merujuk pada lembaga legislatif, sedangkan governance merujuk pada lembaga eksekutif", "D": "istilah government berasal dari bahasa yang berbeda dengan governance"}, "ans": "A"}, {"no": 145, "q": "Menurut Undang-Undang No 20 tahun 2003 disebutkan bahwa Pendidikan Kewarganegaraan dimaksudkan untuk membentuk peserta didik menjadi manusia yang memiliki ....", "opts": {"A": "rasa bersyukur dan berjuang", "B": "rasa kebangsaan dan cinta tanah air", "C": "rasa kebangsaan dan  kenegaraan", "D": "rasa bersyukur dan toleransi"}, "ans": "B"}, {"no": 146, "q": "Yang termasuk di dalam azas umum otonomi daerah adalah ….", "opts": {"A": "kejujuran", "B": "keadilan", "C": "keterbukaan", "D": "dekonsentralisasi"}, "ans": "C"}, {"no": 147, "q": "Pendidikan Kewarganegaraan memiliki kompetansi dasar dan wajib bagi mahasiswa. Berikut ini yang termasuk kompetensi wajibnya, kecuali….", "opts": {"A": "normatif", "B": "etis", "C": "estetis", "D": "dinamis"}, "ans": "C"}, {"no": 148, "q": "Eksistensi dan urgensi Pendidikan Kewarganegaraan menjadi wahana pendidikan nilai, moral, dan pendidikan budi pekerti, sehingga dapat menjadi sarana transformasi pendidikan karakter untuk menumbuh kembangkan rasa naionalisme, kesadaran berbangsa dan bernegara. Hal ini merupakan pengertian Pendidikan Kewarganegaarn secara filsafat dilihat dari prespektif ….", "opts": {"A": "epistimologi", "B": "ontologi", "C": "metodologi", "D": "aksiologi"}, "ans": "D"}, {"no": 149, "q": "Salah satu kriteria dalam tata kelola pemerintahan yang baik adalah partisipasi, artinya ….", "opts": {"A": "tata kelola pemerintahan yang baik juga ditentukan oleh seberapa cepat pemerintah merespon berbagai persoalan yang muncul di masyarakat", "B": "rakyat memiliki suara dalam pengambilan keputusan baik secara langsung maupun tidak langsung", "C": "tata kelola yang baik harus mampu menjamin transparansi di hampir semua bidang yang terkait dengan pengelolaan informasi", "D": "negara adalah entitas kolektif yang terdiri atas berbagai macam golongan dan kepentingan"}, "ans": "B"}, {"no": 150, "q": "Tujuan dari konstitusi adalah untuk ….", "opts": {"A": "menciptakan kesatuan dalam keberagaman", "B": "membatasi kekuasaan dari penguasa dan mengatur jalannya penyelenggaraan negara", "C": "memperkuat pertahanan dan keamanan negara", "D": "melindungi kebudayaan nasional"}, "ans": "B"}];
+</script>
+<script>
+(function(){
+  const total = QUESTIONS.length;
+  let order = QUESTIONS.map((_, i) => i);
+  let current = 0;
+  const answers = {}; // index in QUESTIONS -> 'A'/'B'/'C'/'D'
 
-let answered = 0, correct = 0, wrong = 0;
-let userAnswers = new Array(SOAL.length).fill(null);
+  const screenCover = document.getElementById('screen-cover');
+  const screenQuiz = document.getElementById('screen-quiz');
+  const screenResult = document.getElementById('screen-result');
 
-function updateScoreUI() {
-  document.getElementById('sc-total').innerText = answered;
-  document.getElementById('sc-correct').innerText = correct;
-  document.getElementById('sc-wrong').innerText = wrong;
-  const percent = (answered / SOAL.length) * 100;
-  document.getElementById('progress').style.width = percent + '%';
-  if (answered === SOAL.length) showSummary();
-}
+  document.getElementById('meta-total').textContent = total + ' Butir';
 
-function showSummary() {
-  const sumDiv = document.getElementById('summary');
-  sumDiv.classList.add('show');
-  document.getElementById('f-total').innerText = answered;
-  document.getElementById('f-correct').innerText = correct;
-  document.getElementById('f-wrong').innerText = wrong;
-  document.getElementById('f-pct').innerText = Math.round((correct/SOAL.length)*100) + '%';
-  setTimeout(() => sumDiv.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
-}
+  function showScreen(el){
+    [screenCover, screenQuiz, screenResult].forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
 
-function renderQuiz() {
-  const container = document.getElementById('quiz');
-  container.innerHTML = '';
-  document.getElementById('summary').classList.remove('show');
-  answered = 0; correct = 0; wrong = 0; userAnswers.fill(null);
-  updateScoreUI();
+  function shuffle(arr){
+    for(let i = arr.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i+1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
 
-  SOAL.forEach((item, idx) => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.id = `card-${idx}`;
-    const topBar = document.createElement('div'); topBar.className = 'card-top';
-    const qHeader = document.createElement('div'); qHeader.className = 'q-header';
-    qHeader.innerHTML = `<div class="q-num">${idx+1}</div><div class="q-text">${item.q}</div>`;
-    card.appendChild(topBar); card.appendChild(qHeader);
-    const optsDiv = document.createElement('div'); optsDiv.className = 'options'; optsDiv.id = `opts-${idx}`;
-    const letters = ['A','B','C','D'];
-    letters.forEach(letter => {
-      if (!item.opts[letter]) return;
-      const btn = document.createElement('button'); btn.className = 'option'; btn.dataset.letter = letter;
-      btn.innerHTML = `<span class="opt-key">${letter}</span><span>${item.opts[letter]}</span>`;
-      btn.addEventListener('click', () => handleAnswer(idx, letter, item.correct, item));
-      optsDiv.appendChild(btn);
+  document.getElementById('btn-start').addEventListener('click', () => {
+    order = QUESTIONS.map((_, i) => i);
+    if(document.getElementById('chk-shuffle').checked){ shuffle(order); }
+    current = 0;
+    buildLjk();
+    renderQuestion();
+    showScreen(screenQuiz);
+  });
+
+  function buildLjk(){
+    const grid = document.getElementById('ljk-grid');
+    grid.innerHTML = '';
+    order.forEach((qIdx, pos) => {
+      const b = document.createElement('button');
+      b.textContent = pos + 1;
+      b.dataset.pos = pos;
+      b.addEventListener('click', () => { current = pos; renderQuestion(); });
+      grid.appendChild(b);
     });
-    const revealDiv = document.createElement('div'); revealDiv.className = 'reveal'; revealDiv.id = `reveal-${idx}`;
-    card.appendChild(optsDiv); card.appendChild(revealDiv);
-    container.appendChild(card);
+  }
+
+  function renderQuestion(){
+    const qIdx = order[current];
+    const q = QUESTIONS[qIdx];
+    document.getElementById('q-counter').textContent = 'Soal ' + (current+1) + ' / ' + total;
+    document.getElementById('q-text').textContent = q.q;
+
+    const optsWrap = document.getElementById('q-options');
+    optsWrap.innerHTML = '';
+    ['A','B','C','D'].forEach(letter => {
+      const div = document.createElement('div');
+      div.className = 'opt' + (answers[qIdx] === letter ? ' selected' : '');
+      div.innerHTML = '<span class="bubble">'+letter+'</span><span class="otext"></span>';
+      div.querySelector('.otext').textContent = q.opts[letter];
+      div.addEventListener('click', () => {
+        answers[qIdx] = letter;
+        renderQuestion();
+        updateProgress();
+      });
+      optsWrap.appendChild(div);
+    });
+
+    document.getElementById('btn-prev').disabled = current === 0;
+    document.getElementById('btn-prev').style.opacity = current === 0 ? .4 : 1;
+    document.getElementById('btn-next').textContent = current === total - 1 ? 'Selesai' : 'Berikutnya →';
+
+    // update ljk highlight
+    document.querySelectorAll('#ljk-grid button').forEach(btn => {
+      const pos = parseInt(btn.dataset.pos, 10);
+      btn.classList.toggle('current', pos === current);
+      btn.classList.toggle('answered', answers[order[pos]] !== undefined);
+    });
+    updateProgress();
+  }
+
+  function updateProgress(){
+    const answeredCount = Object.keys(answers).length;
+    document.getElementById('progress-fill').style.width = (answeredCount/total*100) + '%';
+    document.getElementById('answered-count').textContent = answeredCount + ' dari ' + total + ' soal terjawab';
+    document.querySelectorAll('#ljk-grid button').forEach(btn => {
+      const pos = parseInt(btn.dataset.pos, 10);
+      btn.classList.toggle('answered', answers[order[pos]] !== undefined);
+    });
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    if(current > 0){ current--; renderQuestion(); }
   });
-}
-
-function handleAnswer(idx, chosen, correctLetter, item) {
-  if (userAnswers[idx] !== null) return;
-  userAnswers[idx] = chosen;
-  const optsDiv = document.getElementById(`opts-${idx}`);
-  const revealDiv = document.getElementById(`reveal-${idx}`);
-  const card = document.getElementById(`card-${idx}`);
-  const isCorrect = (chosen === correctLetter);
-  if (isCorrect) correct++; else wrong++;
-  answered++;
-  updateScoreUI();
-  card.classList.add(isCorrect ? 's-correct' : 's-wrong');
-  optsDiv.querySelectorAll('.option').forEach(btn => {
-    btn.disabled = true;
-    const val = btn.dataset.letter;
-    if (val === correctLetter) btn.classList.add('correct');
-    else if (val === chosen && !isCorrect) btn.classList.add('wrong');
-    else btn.classList.add('dimmed');
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if(current < total - 1){ current++; renderQuestion(); }
+    else { finishExam(); }
   });
-  revealDiv.classList.add('show', isCorrect ? 'is-correct' : 'is-wrong');
-  const correctText = `${correctLetter}. ${item.opts[correctLetter]}`;
-  if (isCorrect) revealDiv.innerHTML = `<span>✅</span><span><strong>Benar!</strong> Jawaban: ${correctText}</span>`;
-  else revealDiv.innerHTML = `<span>❌</span><span><strong>Salah.</strong> Jawaban benar: ${correctText}</span>`;
-  setTimeout(() => {
-    const nextCard = document.getElementById(`card-${idx+1}`);
-    if (nextCard) nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 250);
-}
 
-function resetTryout() {
-  renderQuiz();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+  document.getElementById('btn-finish').addEventListener('click', () => {
+    const answeredCount = Object.keys(answers).length;
+    if(answeredCount < total){
+      const sisa = total - answeredCount;
+      const ok = confirm('Masih ada ' + sisa + ' soal yang belum dijawab. Akhiri ujian sekarang?');
+      if(!ok) return;
+    }
+    finishExam();
+  });
 
-renderQuiz();
+  function finishExam(){
+    let benar = 0, salah = 0, kosong = 0;
+    QUESTIONS.forEach((q, idx) => {
+      const a = answers[idx];
+      if(a === undefined) kosong++;
+      else if(a === q.ans) benar++;
+      else salah++;
+    });
+    const score = Math.round((benar/total)*1000)/10;
+    document.getElementById('res-score').textContent = score.toFixed(1);
+    document.getElementById('res-fraction').textContent = benar + ' dari ' + total + ' jawaban benar';
+    document.getElementById('stat-benar').textContent = benar;
+    document.getElementById('stat-salah').textContent = salah;
+    document.getElementById('stat-kosong').textContent = kosong;
+
+    let grade = 'E';
+    if(score >= 80) grade = 'A';
+    else if(score >= 70) grade = 'B';
+    else if(score >= 60) grade = 'C';
+    else if(score >= 45) grade = 'D';
+    document.getElementById('res-grade').textContent = 'Predikat ' + grade;
+
+    renderReview('all');
+    showScreen(screenResult);
+  }
+
+  function renderReview(filter){
+    const list = document.getElementById('review-list');
+    list.innerHTML = '';
+    QUESTIONS.forEach((q, idx) => {
+      const a = answers[idx];
+      const isCorrect = a === q.ans;
+      if(filter === 'wrong' && isCorrect) return;
+      if(filter === 'correct' && !isCorrect) return;
+
+      const item = document.createElement('div');
+      item.className = 'review-item';
+
+      const top = document.createElement('div');
+      top.className = 'rtop';
+      const badge = document.createElement('span');
+      badge.className = 'badge ' + (isCorrect ? 'benar' : 'salah');
+      badge.textContent = isCorrect ? 'BENAR' : (a === undefined ? 'TIDAK DIJAWAB' : 'SALAH');
+      const numEl = document.createElement('span');
+      numEl.className = 'mono';
+      numEl.style.fontSize = '11px';
+      numEl.style.color = 'var(--ink-soft)';
+      numEl.textContent = 'No. ' + (idx+1);
+      top.appendChild(numEl);
+      top.appendChild(badge);
+      item.appendChild(top);
+
+      const qp = document.createElement('p');
+      qp.className = 'rq';
+      qp.textContent = q.q;
+      item.appendChild(qp);
+
+      ['A','B','C','D'].forEach(letter => {
+        const row = document.createElement('div');
+        let cls = 'ropt';
+        if(letter === q.ans) cls += ' correct';
+        else if(letter === a) cls += ' wrongpick';
+        row.className = cls;
+        row.innerHTML = '<span class="l">'+letter+'.</span><span></span>';
+        row.querySelector('span:last-child').textContent = q.opts[letter];
+        item.appendChild(row);
+      });
+
+      list.appendChild(item);
+    });
+  }
+
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      renderReview(chip.dataset.filter);
+    });
+  });
+
+  document.getElementById('btn-restart').addEventListener('click', () => {
+    Object.keys(answers).forEach(k => delete answers[k]);
+    showScreen(screenCover);
+  });
+
+  // keyboard shortcuts: 1-4 select option, arrows navigate
+  document.addEventListener('keydown', (e) => {
+    if(!screenQuiz.classList.contains('active')) return;
+    const map = {'1':'A','2':'B','3':'C','4':'D'};
+    if(map[e.key]){
+      const qIdx = order[current];
+      answers[qIdx] = map[e.key];
+      renderQuestion();
+    } else if(e.key === 'ArrowRight'){
+      if(current < total - 1){ current++; renderQuestion(); }
+    } else if(e.key === 'ArrowLeft'){
+      if(current > 0){ current--; renderQuestion(); }
+    }
+  });
+})();
 </script>
 </body>
 </html>
